@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: postgres
+    volumes:
+      - ./temp_data/odoo-db-data:/var/lib/postgresql/data
+
+  odoo:
+    image: odoo  # Use the appropriate Odoo version
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./temp_data/odoo-data:/var/lib/odoo
+      - ./src/addons:/mnt/extra-addons  # Mount Windows directory to Docker
+    environment:
+      - HOST=db
+    #command: 
+
+volumes:
+  odoo-db-data:
+  odoo-data:
+
+
+#note docker exec -u 0:0 odoo-addons-proj-odoo-1 chown -R odoo:odoo /mnt/extra-addons
