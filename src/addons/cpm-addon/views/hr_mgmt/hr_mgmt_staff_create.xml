@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="staff_create_view_form" model="ir.ui.view">
+            <field name="name">staff_create.view.form</field>
+            <field name="model">staff_create</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group name="staff_info" string="Staff Info" col=2>
+                            <group name="name" string="string" colspan=1>
+                                <field name="first_name">First Name</field>
+                                <field name="last_name">First Name</field>
+                            </group>
+                            <group name="name" string="string" colspan=1>
+                                <field name="avatar"></field>
+                            </group>
+                        </group>
+                        <group name="staff_acc_info" string="string">
+                            <field name="user_email">Email</field>
+                            <field name="password">Password</field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "cpm-addon",
+    'name': "Test module",
 
     'summary': "Short (1 phrase/line) summary of the module's purpose",
 
@@ -23,6 +23,7 @@ Long description of module's purpose
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        # 'security/res.groups.csv',
         'views/views.xml',
         'views/templates.xml',
     ],
