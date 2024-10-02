@@ -24,8 +24,7 @@ Long description of module's purpose
     'data': [
         # 'security/ir.model.access.csv',
         # 'security/res.groups.csv',
-        'views/views.xml',
-        'views/projects/create_new_project.xml'
+        'views/views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
