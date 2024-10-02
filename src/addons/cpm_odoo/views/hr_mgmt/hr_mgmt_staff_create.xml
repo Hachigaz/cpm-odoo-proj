@@ -12,13 +12,13 @@
                         <group name="staff_info" string="Staff Info" col=2>
                             <group name="name" string="string" colspan=1>
                                 <field name="first_name">First Name</field>
-                                <field name="last_name">First Name</field>
+                                <field name="last_name">Last Name</field>
                             </group>
                             <group name="name" string="string" colspan=1>
                                 <field name="avatar"></field>
                             </group>
                         </group>
-                        <group name="staff_acc_info" string="string">
+                        <group name="staff_login_info" string="Login Info">
                             <field name="user_email">Email</field>
                             <field name="password">Password</field>
                         </group>

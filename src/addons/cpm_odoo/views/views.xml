@@ -1,0 +1,174 @@
+<odoo>
+  <data>
+
+    <!-- ============================================== -->
+    <!-- ======== Project root menu-->
+    <!-- ============================================== -->
+    <menuitem name="Projects" id="cpm_odoo.proj_root"/>
+
+
+    <!-- ======== Create project -->
+    <record id="cpm_odoo.proj_create_new_project_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.root_project</field>
+      <field name="view_mode">form</field>
+    </record>
+
+    <menuitem parent='cpm_odoo.proj_root' name="Create New Project" id="cpm_odoo.proj_create_new_project" action="cpm_odoo.proj_create_new_project_act"/>
+
+
+
+    <!-- ============================================== -->
+    <!-- ======== Task menu -->
+    <!-- ============================================== -->
+    <!-- <menuitem parent='cpm_odoo.proj_root' name="Tasks" id="cpm_odoo.proj_task_sub_menu" action="cpm_odoo.proj_task_overview_act">
+      <menuitem name="Overview" id="cpm_odoo.proj_task_overview_sub_menu" action="cpm_odoo.proj_task_overview_act"/>
+      <menuitem name="Current Tasks" id="cpm_odoo.proj_task_current_task_sub_menu" action="cpm_odoo.proj_task_task_list_act"/>
+    </menuitem>
+
+    <record id="cpm_odoo.proj_task_overview_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_task</field>
+      <field name="view_mode">form</field>
+    </record>
+
+    <record id="cpm_odoo.proj_task_task_list_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_task</field>
+      <field name="view_mode">form</field>
+    </record> -->
+
+    
+    <!-- ============================================== -->
+    <!-- ======== Task planning menus -->
+    <!-- ============================================== -->
+    <!-- <menuitem parent='cpm_odoo.proj_root' name="Planning" id="cpm_odoo.proj_planning_menu" action="cpm_odoo.proj_planning_overview_act">
+      <menuitem name="Overview" id="cpm_odoo.proj_planning_overview_sub_menu" action="cpm_odoo.proj_planning_overview_act"/>
+      <menuitem name="Workflows" id="cpm_odoo.proj_planning_overview_sub_menu" action="cpm_odoo.proj_planning_workflows_act"/>
+      <menuitem name="Draft Tasks" id="cpm_odoo.proj_planning_draft_sub_menu" action="cpm_odoo.proj_planning_draft_act"/>
+      <menuitem name="Unassigned Tasks" id="cpm_odoo.proj_planning_unassigned_sub_menu" action="cpm_odoo.proj_planning_unassigned_act"/>
+    </menuitem>
+
+
+    <record id="cpm_odoo.proj_planning_overview_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record>
+
+    <record id="cpm_odoo.proj_planning_workflows_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record>
+
+    <record id="cpm_odoo.proj_planning_draft_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record>
+
+    <record id="cpm_odoo.proj_planning_unassigned_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record> -->
+
+
+    
+    <!-- ============================================== -->
+    <!-- ======== Project Finance menus -->
+    <!-- ============================================== -->
+    <!-- <menuitem parent='cpm_odoo.proj_root' name="Finance" id="cpm_odoo.proj_finance_menu" action="cpm_odoo.proj_finance_overview_act">
+      <menuitem name="Overview" id="cpm_odoo.proj_finance_overview_sub_menu" action="cpm_odoo.proj_finance_overview_act"/>
+      <menuitem name="Investments" id="cpm_odoo.proj_finance_investments_sub_menu" action="cpm_odoo.proj_finance_investments_act"/>
+      <menuitem name="Expenses" id="cpm_odoo.proj_finance_expenses_sub_menu" action="cpm_odoo.proj_finance_expenses_act"/>
+    </menuitem>
+
+
+    <record id="cpm_odoo.proj_finance_overview_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+      <field name="views">(cpm_odoo.proj_planning_overview_view,tree)</field>
+    </record>
+
+    <record id="cpm_odoo.proj_finance_investments_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record>
+    
+    <record id="cpm_odoo.proj_finance_expenses_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record> -->
+
+    
+
+    <!-- ============================================== -->
+    <!-- ======== Human Resources root menu -->
+    <!-- ============================================== -->
+    <!-- <menuitem name="Human Resources" id="cpm_odoo.hr_mgmt_root"/> -->
+    
+
+    <!-- ============================================== -->
+    <!-- ======== hr staffs menus -->
+    <!-- ============================================== -->
+    <!-- <menuitem parent='cpm_odoo.hr_mgmt_root' name="Staffs" id="cpm_odoo.hr_mgmt_staff_overview" action="cpm_odoo.hr_mgmt_staff_overview_act">
+
+    </menuitem>
+
+    <record id="cpm_odoo.hr_mgmt_staff_overview_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record> -->
+
+
+    <!-- ============================================== -->
+    <!-- ======== hr department menus -->
+    <!-- ============================================== -->
+    <!-- <menuitem parent='cpm_odoo.hr_mgmt_root' name="Departments" id="cpm_odoo.hr_mgmt_department_overview" action="cpm_odoo.hr_mgmt_department_overview_act">
+
+    </menuitem>
+    
+    <record id="cpm_odoo.hr_mgmt_department_overview_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record> -->
+
+
+
+    <!-- ============================================== -->
+    <!-- ======== Message root menu -->
+    <!-- ============================================== -->
+    <!-- <menuitem name="Message" id="cpm_odoo.message_root" action="cpm_odoo.message_act"/>
+
+
+    <record id="cpm_odoo.message_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record> -->
+
+
+
+    <!-- ============================================== -->
+    <!-- ======== logistics root menu -->
+    <!-- ============================================== -->
+    <!-- <menuitem name="Logistics" id="cpm_odoo.logistic_root" action="cpm_odoo.logistic_overview_act"/>
+
+
+    <record id="cpm_odoo.logistic_overview_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+    </record> -->
+
+
+
+  </data>
+</odoo>

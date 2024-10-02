@@ -25,7 +25,7 @@ Long description of module's purpose
         # 'security/ir.model.access.csv',
         # 'security/res.groups.csv',
         'views/views.xml',
-        'views/templates.xml',
+        'views/projects/create_new_project.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

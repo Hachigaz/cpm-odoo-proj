@@ -5,14 +5,14 @@ class DocumentSet(models.Model):
     _description = ""
     
     project_doc_mgmt_id = fields.Many2one(
-        'cpm_odoo.root_project_res_mgmt', 
+        'cpm_odoo.root_project_doc_mgmt', 
         string='project_doc_mgmt',
         readonly=True,
         required = True
     )
     
     name = fields.Char(
-        String = 'Name',
+        string = 'Name',
         required=True,
         size = 256
     )
@@ -47,8 +47,18 @@ class Document(models.Model):
     
     date_uploaded = fields.Datetime(
         string = 'Date Uploaded',
-        readonly=True,
         default = fields.Datetime.now()
+    )
+    
+    uploaded_by = fields.Many2one(
+        comodel_name = 'cpm_odoo.human_res_staff', 
+        string='Uploaded By'
+    )
+    
+    category_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.documents_document_category', 
+        string='Category',
+        ondelete='restrict'
     )
     
 class DocumentCategory(models.Model):
@@ -56,7 +66,7 @@ class DocumentCategory(models.Model):
     _description = ""
     
     name = fields.Char(
-        String = 'Name',
+        string = 'Name',
         required=True,
         size = 256
     )
