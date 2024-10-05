@@ -1,6 +1,5 @@
 <odoo>
   <data>
-
     <!-- ============================================== -->
     <!-- ======== Project root menu-->
     <!-- ============================================== -->
@@ -8,13 +7,13 @@
 
 
     <!-- ======== Create project -->
-    <record id="cpm_odoo.proj_create_new_project_act" model="ir.actions.act_window">
+    <record id="cpm_odoo.proj_create_project_act" model="ir.actions.act_window">
       <field name="name">Action Name</field>
       <field name="res_model">cpm_odoo.root_project</field>
-      <field name="view_mode">form</field>
+      <field name="views">(cpm_odoo.proj_project_create_view_form,form)</field>
     </record>
 
-    <menuitem parent='cpm_odoo.proj_root' name="Create New Project" id="cpm_odoo.proj_create_new_project" action="cpm_odoo.proj_create_new_project_act"/>
+    <menuitem parent='cpm_odoo.proj_root' name="Create New Project" id="cpm_odoo.proj_create_new_project_menu" action="cpm_odoo.proj_create_project_act"/>
 
 
 
@@ -115,8 +114,8 @@
     <!-- ============================================== -->
     <record id="cpm_odoo.hr_mgmt_staff_overview_act" model="ir.actions.act_window">
       <field name="name">Action Name</field>
-      <field name="res_model">cpm_odoo.planning_workflow</field>
-      <field name="view_mode">form</field>
+      <field name="res_model">cpm_odoo.human_res_staff</field>
+      <field name="views">(cpm_odoo.hr_mgmt_staff_create_view_form,form)</field>
     </record>
 
     <menuitem parent='cpm_odoo.hr_mgmt_root' name="Staffs" id="cpm_odoo.hr_mgmt_staff_overview" action="cpm_odoo.hr_mgmt_staff_overview_act"/>
@@ -159,7 +158,17 @@
 
     <menuitem name="Logistics" id="cpm_odoo.logistic_root" action="cpm_odoo.logistic_overview_act"/>
 
+    
 
+    <!-- ============================================== -->
+    <!-- ======== stakeholders root menu -->
+    <!-- ============================================== -->
+    <record id="cpm_odoo.stakeholders_contractor_create_act" model="ir.actions.act_window">
+      <field name="name">Action Name</field>
+      <field name="res_model">cpm_odoo.stakeholders_contractor</field>
+      <field name="views">(cpm_odoo.stakeholders_contractor_create_view_form,form)</field>
+    </record>
 
+    <menuitem name="Stakeholders" id="cpm_odoo.stakeholders_root" action="cpm_odoo.stakeholders_contractor_create_act"/>
   </data>
 </odoo>

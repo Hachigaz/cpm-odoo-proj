@@ -52,15 +52,25 @@ class Project(models.Model):
         required=True,
         size = 256
     )
+
+    description = fields.Text(
+        string = 'Description'
+    )
     
-    date_created = fields.Date(
-        string = 'date_created',
+    start_date = fields.Date(
+        string = 'Start Date',
+        required=True,
         default = fields.Date.today()
     )
     
+    exp_end = fields.Date(
+        string = 'Expected End Date'
+    )
+    
+    
     manager_ids = fields.Many2many(
         'cpm_odoo.human_res_staff', 
-        string='Manangers',
+        string='Project Managers',
         relation = 'cpm_odoo_root_proj_hr_mngrs',
         required=True
     )

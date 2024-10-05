@@ -4,13 +4,6 @@ class DocumentSet(models.Model):
     _name = "cpm_odoo.documents_document_set"
     _description = ""
     
-    project_doc_mgmt_id = fields.Many2one(
-        'cpm_odoo.root_project_doc_mgmt', 
-        string='project_doc_mgmt',
-        readonly=True,
-        required = True
-    )
-    
     name = fields.Char(
         string = 'Name',
         required=True,

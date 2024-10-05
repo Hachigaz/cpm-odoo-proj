@@ -4,35 +4,28 @@ class Stakeholder(models.AbstractModel):
     _name = "cpm_odoo.stakeholders_stakeholder"
     _description = ""
     
-    name = fields.Char(
-        string = 'Name',
+    _inherits = {
+        "res.partner":"partner_id"
+    }
+    
+    partner_id = fields.Many2one(
+        comodel_name = 'res.partner', 
+        string='Partner',
         required=True,
-        size = 256
+        ondelete="restrict"
+    )
+    
+    name = fields.Char(
+        string = 'Name'
     )
 
     description = fields.Text(
         string = 'Description'
     )
     
-    email = fields.Char(
-        string = 'Email',
-        size = 240
-    )
-    
-    phone_number = fields.Char(
-        string = 'Phone Number',
-        size = 64
-    )
-    
     address = fields.Char(
         string = 'Address',
         size = 1024
-    )
-    
-    image = fields.Image(
-        string = 'Image', 
-        max_width = 512, 
-        max_height= 512
     )
     
 class Contractor(models.Model):

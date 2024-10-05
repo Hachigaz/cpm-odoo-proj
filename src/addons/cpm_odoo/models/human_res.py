@@ -37,6 +37,12 @@ class Staff(models.Model):
         ondelete = "restrict"
     )
     
+    @api.model_create_multi
+    def create(self, vals):
+        for val in vals:
+            val["name"] = val["first_name"].lower() + " " + val["last_name"].lower()
+        return super().create(vals)
+    
 class Department(models.Model):
     _name = 'cpm_odoo.human_res_department'
     _description = ''
@@ -46,4 +52,13 @@ class Department(models.Model):
         required=True,
         size = 256
     )
+    
+    department_role_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.human_res_department_role', 
+        string='Role'
+    )
+    
+class DepartmentRole(models.Model):
+    _name = 'cpm_odoo.human_res_department_role'
+    _description = ''
     
