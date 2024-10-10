@@ -1,21 +1,26 @@
-<record id="cpm_odoo.proj_project_create_view_form" model="ir.ui.view">
-    <field name="name"></field>
-    <field name="model">cpm_odoo.root_project</field>
-    <field name="arch" type="xml">
-        <form string="New Project">
-            <sheet>
-                <group string='Project Info' col='1'>
-                    <field name="name">Project Name</field>
-                    <field name="description">Description</field>
-                    <field name="start_date" widget='date'>Start Date</field>
-                    <field name="exp_end" widget='date'>Expected End Date</field>
-                    <field name="manager_ids">Assigned PMs</field>
-                </group>
-                <group string="Stakeholders" col='1'>
-                    <field name="investor_ids">Investors</field>
-                    <field name="other_contact_ids">Other Contacts</field>
-                </group>
-            </sheet>
-        </form>
-    </field>
-</record>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.proj_project_create_view_form" model="ir.ui.view">
+            <field name="name">model_name.view.form</field>
+            <field name="model">cpm_odoo.root_project</field>
+            <field name="arch" type="xml">
+                <form string="New Project">
+                    <sheet>
+                        <group string='Project Info'>
+                            <field name="name">Project Name</field>
+                            <field name="description">Description</field>
+                            <field name="start_date" widget='date'>Start Date</field>
+                            <field name="exp_end" widget='date'>Expected End Date</field>
+                            <field name="manager_ids">Assigned PMs</field>
+                        </group>
+                        <group string="Stakeholders">
+                            <field name="investor_ids">Investors</field>
+                            <field name="other_contact_ids">Other Contacts</field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

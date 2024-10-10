@@ -2,7 +2,7 @@ from odoo import models, fields, api
 
 class Risk(models.Model):
     _name = "cpm_odoo.risk_mgmt_issue"
-    _description = ""
+    _description = "Model"
     
     title = fields.Char(
         string = 'Title',
@@ -22,7 +22,7 @@ class Risk(models.Model):
     
 class RiskCategory(models.Model):
     _name = "cpm_odoo.risk_mgmt_issue_category"
-    _description = ""
+    _description = "Model"
     
     name = fields.Char(
         string = 'name',
@@ -33,7 +33,7 @@ class RiskCategory(models.Model):
 
 class Issue(models.Model):
     _name = "cpm_odoo.risk_mgmt_issue"
-    _description = ""
+    _description = "Model"
     
     title = fields.Char(
         string = 'Title',
@@ -58,7 +58,7 @@ class Issue(models.Model):
 
 class IssueCategory(models.Model):
     _name = "cpm_odoo.risk_mgmt_issue_category"
-    _description = ""
+    _description = "Model"
     
     name = fields.Char(
         string = 'name',

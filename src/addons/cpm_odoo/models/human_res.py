@@ -2,7 +2,7 @@ from odoo import models, fields, api
 
 class Staff(models.Model):
     _name = "cpm_odoo.human_res_staff"
-    _description = ""
+    _description = "Model"
     
     first_name = fields.Char(
         string = 'First Name',
@@ -45,7 +45,7 @@ class Staff(models.Model):
     
 class Department(models.Model):
     _name = 'cpm_odoo.human_res_department'
-    _description = ''
+    _description = "Model"
     
     name = fields.Char(
         string = 'Name',
@@ -60,5 +60,5 @@ class Department(models.Model):
     
 class DepartmentRole(models.Model):
     _name = 'cpm_odoo.human_res_department_role'
-    _description = ''
+    _description = "Model"
     

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.proj_project_select_overview_view_kanban" model="ir.ui.view">
+            <field name="name">cpm_odoo.proj_project_select_overview.view.kanban</field>
+            <field name="model">cpm_odoo.root_project</field>
+            <field name="arch" type="xml">
+                <kanban string="Assigned Projects" create="False" edit="False" delete="False">
+                    <field name="id"></field>
+                    <field name="name">Name</field>
+                    <field name="description">Description</field>
+                    <field name="start_date">Start Date</field>
+                    <field name="exp_end">Expected End Date</field>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-att-data-id="record.id" class="oe_kanban_card">
+                                <div>
+                                    <span class="project_display_name oe_kanban_title">
+                                        <t t-esc="record.name.value"/>
+                                    </span>
+                                </div>
+                                <div class="project_desc oe_kanban_content">
+                                    <div class="description">
+                                        <t t-if="record.description.value">
+                                            <t t-esc="record.description"/> 
+                                        </t>
+                                        <t t-else="">
+                                            No Description
+                                        </t>
+                                    </div>
+                                    <div class="date_info">
+                                        <div class="start_date">
+                                            Start Date: 
+                                            <t t-esc="record.start_date.value"/>
+                                        </div>
+                                        <div class="end_date">
+                                            Expected End Date: 
+                                            <t t-if="record.exp_end.value">
+                                                <t t-esc="record.exp_end.value"/>
+                                            </t>
+                                            <t t-else="">
+                                                Not Specified
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="option">
+                                    <button name='cpm_odoo.project_manage_ui_act' type="action" class="btn btn-secondary" context="{'project_id':id}">
+                                        Manage
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+    </data>
+</odoo>

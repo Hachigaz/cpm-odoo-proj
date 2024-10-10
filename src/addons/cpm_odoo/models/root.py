@@ -4,7 +4,7 @@ from odoo import models, fields, api
 
 class ProjectPlanning(models.Model):
     _name = "cpm_odoo.root_project_planning"
-    _description = ""
+    _description = "Model"
     
     workflow_ids = fields.One2many(
         comodel_name = 'cpm_odoo.planning_workflow', 
@@ -19,7 +19,7 @@ class ProjectPlanning(models.Model):
 
 class ProjectFinance(models.Model):
     _name = "cpm_odoo.root_project_finance"
-    _description = ""
+    _description = "Model"
     
     investment_record_ids = fields.One2many(
         comodel_name = 'cpm_odoo.finance_investment_record', 
@@ -35,7 +35,7 @@ class ProjectFinance(models.Model):
 
 class ProjectDocMgmt(models.Model):
     _name = "cpm_odoo.root_project_doc_mgmt"
-    _description = ""
+    _description = "Model"
     
     attached_document_ids = fields.Many2many(
         comodel_name = 'cpm_odoo.documents_document_set', 
@@ -45,7 +45,7 @@ class ProjectDocMgmt(models.Model):
 
 class Project(models.Model):
     _name = "cpm_odoo.root_project"
-    _description = ""
+    _description = "Model"
     
     name = fields.Char(
         string = 'Name',

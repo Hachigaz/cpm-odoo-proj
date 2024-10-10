@@ -2,7 +2,7 @@ from odoo import models, fields, api
 
 class Stakeholder(models.AbstractModel):
     _name = "cpm_odoo.stakeholders_stakeholder"
-    _description = ""
+    _description = "Model"
     
     _inherits = {
         "res.partner":"partner_id"
@@ -15,9 +15,9 @@ class Stakeholder(models.AbstractModel):
         ondelete="restrict"
     )
     
-    name = fields.Char(
-        string = 'Name'
-    )
+    # name = fields.Char(
+    #     string = 'Name'
+    # )
 
     description = fields.Text(
         string = 'Description'
@@ -30,7 +30,7 @@ class Stakeholder(models.AbstractModel):
     
 class Contractor(models.Model):
     _name = "cpm_odoo.stakeholders_contractor"
-    _description = ""
+    _description = "Model"
     
     _inherit = "cpm_odoo.stakeholders_stakeholder"
     
@@ -42,7 +42,7 @@ class Contractor(models.Model):
     
 class ContractorCategory(models.Model):
     _name = "cpm_odoo.stakeholders_contractor_category"
-    _description = ""
+    _description = "Model"
     
     name = fields.Char(
         string = 'Name',
@@ -52,19 +52,19 @@ class ContractorCategory(models.Model):
     
 class Investor(models.Model):
     _name = "cpm_odoo.stakeholders_investor"
-    _description = ""
+    _description = "Model"
     
     _inherit = "cpm_odoo.stakeholders_stakeholder"
     
 class OtherContacts(models.Model):
     _name = "cpm_odoo.stakeholders_other_contacts"
-    _description = ""
+    _description = "Model"
     
     _inherit = "cpm_odoo.stakeholders_stakeholder"
     
 class Supplier(models.Model):
     _name = 'cpm_odoo.stakeholders_supplier'
-    _description = ''
+    _description = "Model"
     
     _inherit = "cpm_odoo.stakeholders_stakeholder"
     

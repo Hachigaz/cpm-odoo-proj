@@ -2,7 +2,7 @@ from odoo import models, fields, api
 
 class InvestmentRecord(models.Model):
     _name = 'cpm_odoo.finance_investment_record'
-    _description = ''
+    _description = "Model"
     
     project_finance_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project_finance', 
@@ -43,7 +43,7 @@ class InvestmentRecord(models.Model):
     
 class ExpenseRecord(models.Model):
     _name = 'cpm_odoo.finance_expense_record'
-    _description = ''
+    _description = "Model"
     
     project_finance_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project_finance', 

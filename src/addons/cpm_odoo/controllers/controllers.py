@@ -19,3 +19,14 @@
 #         return http.request.render('cpm_odoo.object', {
 #             'object': obj
 #         })
+
+from odoo import http
+from odoo.http import request
+
+class MyController(http.Controller):
+
+    @http.route('/project/overview', type='http', auth='user', website=True)
+    def project_overview(self):
+        # Perform your logic here
+        user = request.env.user
+        return request.render('cpm_odoo.my_template', {'user': user})

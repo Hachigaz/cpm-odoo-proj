@@ -2,7 +2,7 @@ from odoo import models,fields,api
 
 class Workflow(models.Model):
     _name = "cpm_odoo.planning_workflow"
-    _description = ""
+    _description = "Model"
     
     planning_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project_planning', 
@@ -92,7 +92,7 @@ class Workflow(models.Model):
 
 class Task(models.Model):
     _name = "cpm_odoo.planning_task"
-    _description = ""
+    _description = "Model"
     
     workflow_id = fields.Many2one(
         comodel_name = 'cpm_odoo.planning_workflow', 
@@ -210,7 +210,7 @@ class Task(models.Model):
 
 class TaskNote(models.Model):
     _name = 'cpm_odoo.planning_task_note'
-    _description = ''
+    _description = "Model"
     
     task_id = fields.Many2one(
         comodel_name = 'cpm_odoo.planning_task',
@@ -243,7 +243,7 @@ class TaskNote(models.Model):
 
 class TaskExpense(models.Model):
     _name = 'cpm_odoo.planning_task_expense'
-    _description = ''
+    _description = "Model"
     
     task_id = fields.Many2one(
         comodel_name = 'cpm_odoo.planning_task',
