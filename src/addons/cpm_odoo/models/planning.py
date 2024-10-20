@@ -1,4 +1,5 @@
 from odoo import models,fields,api
+import json
 
 class Workflow(models.Model):
     _name = "cpm_odoo.planning_workflow"
@@ -7,7 +8,7 @@ class Workflow(models.Model):
     planning_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project_planning', 
         string='planning_id',
-        readonly=True,
+        # readonly=True,
         required = True
     )
     
@@ -24,7 +25,7 @@ class Workflow(models.Model):
     )
     
     def _get_default_start_date(self):
-        def_start_date = self.planning_id.start_date
+        def_start_date = self.planning_id.project_id.start_date
         for deps in self.depends_on :
             if(def_start_date < deps.start_date):
                 def_start_date = deps.start_date
@@ -34,25 +35,30 @@ class Workflow(models.Model):
     @api.constrains('start_date')
     def  _check_date(self):
         for record in self:
-            if record.start_date <= record.planning_id.start_date:
+            if record.start_date <= record.planning_id.project_id.start_date:
                 raise ValidationError("Start date of the workflow must be larger than start date of the project.")
     
     exp_end = fields.Date(
-        string = 'Due',
-        compute = '_compute_exp_end_date',
-        store=True
+        string = 'Due Date',
+        default = lambda self: self._get_default_start_date()
     )
     
-    @api.depends('start_date','task_ids.exp_end')
-    def _compute_exp_end_date(self):
-        for record in self:
-            exp_end = record.start_date
-            for task_id in record.task_ids:
-                if(date < task_id.exp_end):
-                    exp_end = task_id.exp_end
+    # exp_end = fields.Date(
+    #     string = 'Due Date',
+    #     compute = '_compute_exp_end_date',
+    #     store=True
+    # )
+    
+    # @api.depends('start_date','task_ids.exp_end')
+    # def _compute_exp_end_date(self):
+    #     for record in self:
+    #         exp_end = record.start_date
+    #         for task_id in record.task_ids:
+    #             if(date < task_id.exp_end):
+    #                 exp_end = task_id.exp_end
                     
-            record.exp_end = exp_end
-        pass
+    #         record.exp_end = exp_end
+    #     pass
         
     end_date = fields.Date(
         string = 'Finished',
@@ -89,13 +95,57 @@ class Workflow(models.Model):
     description = fields.Text(
         string = 'Description'
     )
-
+    
+    task_count = fields.Integer(
+        string = 'Task Count',
+        compute = '_compute_task_count',
+        store=True
+    )
+    
+    @api.depends('task_ids')
+    def _compute_exp_end_date(self):
+        for record in self:
+            record.draft_task_count = len(record.task_ids)
+        pass
+    
+    draft_task_count = fields.Integer(
+        string = 'Draft Count',
+        compute = '_compute_draft_task_count',
+        store=True
+    )
+    
+    @api.depends('task_ids.is_draft')
+    def _compute_draft_task_count(self):
+        for record in self:
+            draft_task_count = sum(1 for task in record.task_ids if task.is_draft)
+            record.draft_task_count = draft_task_count
+        pass
+    
+    @api.model
+    def create_new_workflow(self):
+        default_planning_id = self.env.context["params"]["default_planning_id"]
+        client_action = self.env.context["params"]["client_action"]
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'name': 'Create New Workflow',
+            'res_model': 'cpm_odoo.planning_workflow',
+            # 'domain': [],
+            'context': {
+                'default_planning_id':default_planning_id,
+                "client_action":client_action
+            },
+            'target': 'self'
+            # 'help': '<p class="o_view_nocontent_smiling_face">No appointments found for this profile.</p>'
+        }
+   
 class Task(models.Model):
     _name = "cpm_odoo.planning_task"
     _description = "Model"
     
     workflow_id = fields.Many2one(
-        comodel_name = 'cpm_odoo.planning_workflow', 
+        comodel_name = 'cpm_odoo.planning_workflow',
         string = 'Workflow',
         readonly = True
     )

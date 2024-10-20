@@ -1,1 +1,13 @@
-name,category_id,implied_ids,comment
+id,name,implied_ids:id,comment
+cpm_overview_project,Project Overview,,
+cpm_view_project_plans,View Project Plans,cpm_overview_project,
+cpm_manage_project_plans,Planning Project,cpm_view_project_plans,
+
+cpm_qa_manage,Task QAs,cpm_view_project_plans,
+cpm_manage_assigned_tasks,Manage Assigned Task,cpm_view_project_plans,
+cpm_create_task_notes,Create Notes In Assigned Task,cpm_view_project_plans,
+
+
+
+cpm_view_project_finances,View Project Finances,cpm_overview_project,
+cpm_manage_project_finances,Manage Project Finances,cpm_overview_project,

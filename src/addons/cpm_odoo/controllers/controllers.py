@@ -1,32 +1,77 @@
-# -*- coding: utf-8 -*-
-# from odoo import http
-
-
-# class Cpm-addon(http.Controller):
-#     @http.route('/cpm_odoo/cpm_odoo', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
-
-#     @http.route('/cpm_odoo/cpm_odoo/objects', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('cpm_odoo.listing', {
-#             'root': '/cpm_odoo/cpm_odoo',
-#             'objects': http.request.env['cpm_odoo.cpm_odoo'].search([]),
-#         })
-
-#     @http.route('/cpm_odoo/cpm_odoo/objects/<model("cpm_odoo.cpm_odoo"):obj>', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('cpm_odoo.object', {
-#             'object': obj
-#         })
+# -*- coding: utf-8 -*-'
 
 from odoo import http
 from odoo.http import request
 
-class MyController(http.Controller):
-
-    @http.route('/project/overview', type='http', auth='user', website=True)
-    def project_overview(self):
-        # Perform your logic here
+class ProjectController(http.Controller):
+    
+    @http.route('/proj/authorize', type='json', auth='user',csrf=False)
+    def authorize_user(self):
+        # Get the currently logged-in user
         user = request.env.user
-        return request.render('cpm_odoo.my_template', {'user': user})
+        
+        groups = request.env['res.groups'].search([])  # Empty domain retrieves all groups
+        
+        
+        
+        
+        # request.env['res.users'].has_group('')
+        token = request.csrf_token()
+        
+        data = {
+            # "groups_id":[(group.id,group.name) for group in user.groups_id],
+            "csrf_token":token
+        }
+        return data
+    
+    @http.route('/proj/planning/get_workflow_list/<int:project_id>', type='http', auth='user', readonly=True)
+    def planning_overview(self, project_id):
+        
+        workflow_list = request.env["cpm_odoo.planning_workflow"].search([("planning_id.id",'=',project_id)])
+        
+        vals={
+            "workflow_list":workflow_list
+        }
+        
+        return request.render('cpm_odoo.project_workflow_list_template', vals)
+    
+    @http.route('/proj/view/get_view/<string:view_id>', type='http', auth='user')
+    def get_view(self, view_id):
+        
+        view_id = "cpm_odoo."+view_id
+        
+        view = request.env['ir.ui.view'].search([('xml_id', '=', view_id)], limit=1)
+
+        # Check if the view exists
+        if not view.exists():
+            return request.not_found()
+
+        # Render the view's XML
+        return request.render(view.id)
+    
+    @http.route('/action/get2/<string:action_id>', type='http', auth='user')
+    def get_action2(self, action_id):
+
+        action = request.env.ref(action_id)
+
+        if action:
+            if action.type == 'ir.actions.act_window':
+                context_values = request.httprequest.args
+
+                context_string = '&'.join(f"{key}={value}" for key, value in context_values.items())
+
+                url = '/web#action={}&model={}'.format(action.id, action.res_model)
+            
+                return url+'&context={'+context_string+"}"
+            
+        return request.not_found()
+    
+    @http.route('/action/get/<string:action_id>', type='json', auth='user', csrf=False)
+    def get_action(self, action_id):
+        action = request.env.ref(action_id)
+        
+        context_values = request.params
+        
+        context_string = '&'.join(f"{key}={value}" for key, value in context_values.items())
+        
+        return '/web#action={}&{}'.format(action.id,context_string)

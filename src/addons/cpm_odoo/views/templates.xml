@@ -1,9 +1,13 @@
 <odoo>
-    <template id="my_template">
-        <t t-call="web.layout">
-            <div class="o_form">
-                <h1>My Custom Page</h1>
-                <p>This is my custom content</p>
+    <template id="cpm_odoo.project_workflow_list_template">
+        <t t-foreach="workflow_list" t-as="workflow" t-key="workflow.id">
+            <div class="">
+                <p><t t-esc="workflow.name"/></p>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_name" type="object" class="oe_stat_button">
+                        <field name="field_name" string="Work" widget="statinfo"/>
+                    </button>
+                </div>
             </div>
         </t>
     </template>

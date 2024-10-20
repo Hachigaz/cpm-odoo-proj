@@ -11,6 +11,9 @@
                     <field name="description">Description</field>
                     <field name="start_date">Start Date</field>
                     <field name="exp_end">Expected End Date</field>
+                    <field name="proj_planning_id"></field>
+                    <field name="proj_finance_id"></field>
+                    <field name="proj_doc_id"></field>
                     <templates>
                         <t t-name="kanban-box">
                             <div t-att-data-id="record.id" class="oe_kanban_card">
@@ -45,8 +48,11 @@
                                     </div>
                                 </div>
                                 <div class="option">
-                                    <button name='cpm_odoo.project_manage_ui_act' type="action" class="btn btn-secondary" context="{'project_id':id}">
+                                    <button name='cpm_odoo.project_manage_ui_act' type="action" class="btn btn-secondary mx-1" context="{'project_id':id,'proj_planning_id':proj_planning_id,'proj_finance_id':proj_finance_id,'proj_doc_id':proj_doc_id}">
                                         Manage
+                                    </button>
+                                    <button name='cpm_odoo.project_manage_ui_qweb_act' type="action" class="btn btn-secondary mx-1" context="{'project_id':id,'proj_planning_id':proj_planning_id,'proj_finance_id':proj_finance_id,'proj_doc_id':proj_doc_id}">
+                                        Manage Qweb
                                     </button>
                                 </div>
                             </div>

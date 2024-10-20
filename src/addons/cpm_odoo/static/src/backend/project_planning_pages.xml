@@ -1,0 +1,224 @@
+<templates>
+    <t t-name="cpm_odoo.ProjectPlanningPage" owl="1">
+        <div class="">
+            <div class="pb-2">
+                <div class="btn-group">
+                    <div class="btn-group">
+                        <t t-foreach="availablePages" t-as="page" t-key="page.id">
+                            <t t-if="page.hidden !== true">
+                                <button type="button" class="btn btn-secondary me-1" t-on-click="() => callSubPage(page.id)"><t t-esc="page.name"/></button>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-2 pb-3" id="subpage-view">
+                <t t-component="subpageComponent" context_data="props.context_data"/>
+            </div>
+            <!-- <div class="container-fluid" id="subpage_view">
+
+            </div> -->
+            <!-- <div class="row text-center pt-2 pb-2">
+                <div class="col-4" id="planning-overview-info">
+                    
+                </div>
+                <div class="col-8" id="planning-tasks">
+                    
+                </div>
+            </div> -->
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningOverview" owl="1">
+        <div class="container-fluid">
+            <div class="pt-2 pb-2">
+                <div class="fw-bold fs-1">
+                    Overview
+                </div>
+            </div>
+            <div class="pt-2 pb-2">
+                <div class="row">
+                    <div class="col-8">
+                        
+                    </div>
+                    <div class=" col-4 graph-tabs">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">Tab 1</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">Tab 2</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                                <h5>Tab 1 Content</h5>
+                                <p>This is the content for tab 1.</p>
+                            </div>
+                            <div class="tab-pane fade p-3" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                                <h5>Tab 2 Content</h5>
+                                <p>This is the content for tab 2.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+    <t t-name="cpm_odoo.WorkflowListDisplay">
+        <table class="table table-bordered">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">Exp. End Date</th>
+              <th scope="col">Options</th>
+            </tr>
+          </thead>
+          <tbody>   
+            <t t-foreach="props.page_data.workflow_list" t-as="workflow" t-key="workflow.id">
+                <tr class="align-middle">
+                    <th scope="row">
+                        <t t-esc="workflow_index + 1"/>
+                    </th>
+                    <td><t t-esc="workflow.name"/></td>
+                    <td><t t-esc="workflow.start_date"/></td>
+                    <td>
+                        <t t-if="workflow.exp_end">
+                            <t t-esc="workflow.exp_end"/>
+                        </t>
+                        <t t-else="">
+                            Not Specified
+                        </t>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-secondary mx-1" t-on-click="(event)=>{}">
+                            Edit General Info
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary mx-1" t-on-click="(event)=>{act_manage_workflow(workflow.id)}">
+                            Manage
+                        </button>
+                    </td>
+                </tr>
+            </t>
+          </tbody>
+        </table>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningWorkflows" owl="1">
+        <div class="container-fluid">
+            <div class="pt-2 pb-2"> 
+                
+            </div>
+            <div class="pt-2 pb-2">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="container">
+                            <WorkflowListDisplay page_data="page_data"/>
+                        </div>
+                    </div>
+                    <div class=" col-4 graph-tabs">
+                        <div class="container btn-list pb-2">
+                            <t t-foreach="this.actionList" t-as="action" t-key="action.id">
+                                <!-- <button type="button" class="btn btn-secondary mx-1" data-bs-toggle="modal" t-att-data-bs-target="'#'+action.id" t-on-click="(event)=>{getForm(action.view_id,event.currentTarget.parentElement.querySelector('.modal-body'))}">
+                                    <t t-esc="action.name"/>
+                                </button>
+                                
+                                <div class="modal fade" t-att-id="action.id" tabindex="-1" t-att-aria-labelledby="action.id+'_label'" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" t-att-id="action.id+'_label'">
+                                                    <t t-esc="action.name"/>
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <button type="button" class="btn btn-secondary mx-1" t-on-click="(event)=>{this._do_action(action.action,action.params)}">
+                                    <t t-esc="action.name"/>
+                                </button>
+                            </t>
+                        </div>
+                        <div class="container pt-2 pb-2">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">Tab 1</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">Tab 2</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                                    <h5>Tab 1 Content</h5>
+                                    <p>This is the content for tab 1.</p>
+                                </div>
+                                <div class="tab-pane fade p-3" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                                    <h5>Tab 2 Content</h5>
+                                    <p>This is the content for tab 2.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningDrafts" owl="1">
+        <div class="">
+            Drafts
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningUnassignedTasks" owl="1">
+        <div class="">
+            Unassigned Tasks
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningManageWorkflow" owl="1">
+        <div class="pt-2 pb-2">
+            <div class="fw-bold fs-1">
+                Manage
+            </div>
+        </div>
+        <div class="pt-2 pb-2">
+            <div class="row">
+                <div class="col-8">
+                    
+                </div>
+                <div class=" col-4 graph-tabs">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">Tab 1</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">Tab 2</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                            <h5>Tab 1 Content</h5>
+                            <p>This is the content for tab 1.</p>
+                        </div>
+                        <div class="tab-pane fade p-3" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                            <h5>Tab 2 Content</h5>
+                            <p>This is the content for tab 2.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

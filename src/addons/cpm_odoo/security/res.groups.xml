@@ -1,0 +1,18 @@
+<record id="cpm_overview_project" model="model_name">
+    <field name="name">Project Overview</field>
+    <field name="implied_ids"></field>
+    <field name="comments"></field>
+</record>
+
+
+<record id="cpm_view_project_plans" model="model_name">
+    <field name="name">View Project Plans</field>
+    <field name="implied_ids">cpm_overview_project</field>
+    <field name="comments"></field>
+</record>
+
+<record id="cpm_manage_project_plans" model="model_name">
+    <field name="name">Planning Project</field>
+    <field name="implied_ids">cpm_view_project_plans</field>
+    <field name="comments"></field>
+</record>

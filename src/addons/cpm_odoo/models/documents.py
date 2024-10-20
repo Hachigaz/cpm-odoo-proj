@@ -2,7 +2,7 @@ from odoo import models,fields,api
 
 class DocumentSet(models.Model):
     _name = "cpm_odoo.documents_document_set"
-    _description = "Model"
+    _description = "Document Set"
     
     name = fields.Char(
         string = 'Name',
@@ -24,7 +24,7 @@ class DocumentSet(models.Model):
     
 class Document(models.Model):
     _name = "cpm_odoo.documents_document"
-    _description = "Model"
+    _description = "Document"
     
     document_set_id = fields.Many2one(
         comodel_name = 'cpm_odoo.documents_document_set', 
@@ -56,7 +56,7 @@ class Document(models.Model):
     
 class DocumentCategory(models.Model):
     _name = "cpm_odoo.documents_document_category"
-    _description = "Model"
+    _description = "Document Category"
     
     name = fields.Char(
         string = 'Name',

@@ -26,7 +26,7 @@
     <!-- Project Management Menu -->
     <record id="cpm_odoo.project_manage_ui_act" model="ir.actions.client">
       <field name="name">Action Name</field>
-      <field name="tag">cpm_odoo.project_manage_ui</field>
+      <field name="tag">cpm_module.project_manage_ui</field>
       <field name="target">main</field>
     </record>
 
@@ -55,6 +55,28 @@
     
     <menuitem parent='cpm_odoo.proj_task_menu' name="Overview" id="cpm_odoo.proj_task_overview_sub_menu" action="cpm_odoo.proj_task_overview_act"/>
     <menuitem parent='cpm_odoo.proj_task_menu' name="Current Tasks" id="cpm_odoo.proj_task_current_task_sub_menu" action="cpm_odoo.proj_task_task_list_act"/>
+    
+    
+    <!-- ============================================== -->
+    <!-- ======== Project Actions -->
+    <!-- ============================================== -->
+    <record id="cpm_odoo.project_create_new_workflow_act" model="ir.actions.act_window">
+      <field name="name">Create New Workflow</field>
+      <field name="res_model">cpm_odoo.planning_workflow</field>
+      <field name="view_mode">form</field>
+      <field name="views">(cpm_odoo.planning_workflow_create_view_form,form)</field>
+    </record>
+
+    
+    <record id="cpm_odoo.create_new_workflow_action_server" model="ir.actions.server">
+      <field name="name">Create New Workflow</field>
+      <field name="type">ir.actions.server</field>
+      <field name="model_id" ref="cpm_odoo.model_cpm_odoo_planning_workflow"/>
+      <field name="state">code</field>
+      <field name="code">
+          action = model.create_new_workflow()
+      </field>
+    </record>
 
     
     <!-- ============================================== -->
@@ -63,13 +85,13 @@
     <record id="cpm_odoo.proj_planning_overview_act" model="ir.actions.act_window">
       <field name="name">Action Name</field>
       <field name="res_model">cpm_odoo.planning_workflow</field>
-      <field name="view_mode">form</field>
+      <field name="view_mode">tree,form</field>
     </record>
 
     <record id="cpm_odoo.proj_planning_workflows_act" model="ir.actions.act_window">
       <field name="name">Action Name</field>
-      <field name="res_model">cpm_odoo.planning_workflow</field>
-      <field name="view_mode">form</field>
+      <field name="res_model">cpm_odoo.planning_task</field>
+      <field name="view_mode">tree,form</field>
     </record>
 
     <record id="cpm_odoo.proj_planning_draft_act" model="ir.actions.act_window">
@@ -87,11 +109,10 @@
     <menuitem sequence='30' parent='cpm_odoo.proj_root' name="Planning" id="cpm_odoo.proj_planning_menu" action="cpm_odoo.proj_planning_overview_act"/>
     
     <menuitem parent='cpm_odoo.proj_planning_menu' name="Overview" id="cpm_odoo.proj_planning_overview_sub_menu" action="cpm_odoo.proj_planning_overview_act"/>
-    <menuitem parent='cpm_odoo.proj_planning_menu' name="Workflows" id="cpm_odoo.proj_planning_overview_sub_menu" action="cpm_odoo.proj_planning_workflows_act"/>
+    <menuitem parent='cpm_odoo.proj_planning_menu' name="Workflows" id="cpm_odoo.proj_planning_workflows_sub_menu" action="cpm_odoo.proj_planning_workflows_act"/>
     <menuitem parent='cpm_odoo.proj_planning_menu' name="Draft Tasks" id="cpm_odoo.proj_planning_draft_sub_menu" action="cpm_odoo.proj_planning_draft_act"/>
     <menuitem parent='cpm_odoo.proj_planning_menu' name="Unassigned Tasks" id="cpm_odoo.proj_planning_unassigned_sub_menu" action="cpm_odoo.proj_planning_unassigned_act"/>
 
-    
     <!-- ============================================== -->
     <!-- ======== Project Finance menus -->
     <!-- ============================================== -->
@@ -126,6 +147,12 @@
     <!-- ======== Human Resources root menu -->
     <!-- ============================================== -->
     <menuitem name="Human Resources" id="cpm_odoo.hr_mgmt_root"/>
+
+
+    <!-- ============================================== -->
+    <!-- ======== Human Resources root menu -->
+    <!-- ============================================== -->
+    <menuitem name="Resources And Equipment" id="cpm_odoo.res_mgmt_root"/>
     
 
     <!-- ============================================== -->

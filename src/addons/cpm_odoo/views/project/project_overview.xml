@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="cpm_odoo.project_overview_view_qweb" model="ir.ui.view">
+            <field name="name">cpm_odoo.project_overview.view.qweb</field>
+            <field name="model">cpm_odoo.root_project</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <div>
+                    Project Overview
+                </div>
+            </field>
+        </record>
+    </data>
+
+</odoo>
