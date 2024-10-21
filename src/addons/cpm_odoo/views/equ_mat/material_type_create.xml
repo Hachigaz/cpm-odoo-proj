@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.material_type_create_view_form" model="ir.ui.view">
+            <field name="name">model_name.view</field>
+            <field name="model">cpm_odoo.res_mgmt_mat_type</field>
+            <field name="arch" type="xml">
+                <form string="New Material Type">
+                    <sheet>
+                        <group string='Material Type Info'>
+                            <field name="name">Type Name</field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

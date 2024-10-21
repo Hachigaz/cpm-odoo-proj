@@ -1,0 +1,10 @@
+<odoo>
+    <template id="my_template">
+        <t t-call="web.layout">
+            <div class="o_form">
+                <h1>My Custom Page</h1>
+                <p>This is my custom content</p>
+            </div>
+        </t>
+    </template>
+</odoo>

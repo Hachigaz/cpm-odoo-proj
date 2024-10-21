@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_project,access.project,model_cpm_odoo_root_project,base.group_user,1,1,1,1
+access_equipment,access.equipment,model_cpm_odoo_res_mgmt_equipment,base.group_user,1,1,1,1
+access_equipment_type,access.equipment.type,model_cpm_odoo_res_mgmt_eqp_type,base.group_user,1,1,1,1
+access_material,access.material,model_cpm_odoo_res_mgmt_material,base.group_user,1,1,1,1
+access_material_type,access.material.type,model_cpm_odoo_res_mgmt_mat_type,base.group_user,1,1,1,1
+access_supplier,access.supplier,model_cpm_odoo_stakeholders_supplier,base.group_user,1,1,1,1
