@@ -51,9 +51,6 @@
                                     <button name='cpm_odoo.project_manage_ui_act' type="action" class="btn btn-secondary mx-1" context="{'project_id':id,'proj_planning_id':proj_planning_id,'proj_finance_id':proj_finance_id,'proj_doc_id':proj_doc_id}">
                                         Manage
                                     </button>
-                                    <button name='cpm_odoo.project_manage_ui_qweb_act' type="action" class="btn btn-secondary mx-1" context="{'project_id':id,'proj_planning_id':proj_planning_id,'proj_finance_id':proj_finance_id,'proj_doc_id':proj_doc_id}">
-                                        Manage Qweb
-                                    </button>
                                 </div>
                             </div>
                         </t>

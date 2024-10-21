@@ -39,25 +39,25 @@ odoo.define(
 
         availablePages = [
             {
-                id:0,
+                id:"overview",
                 name:"Overview",
                 page:ProjectOverviewPage,
                 group_id:"cpm_overview_project"
             },
             {
-                id:1,
+                id:"planning",
                 name:"Planning",
                 page:ProjectPlanningPage,
                 group_id:"cpm_view_project_plans"
             },
             {
-                id:2,
+                id:"finance",
                 name:"Finance",
                 page:ProjectFinancePage,
                 group_id:"cpm_view_project_finances"
             },
             {
-                id:3,
+                id:"staffs",
                 name:"Staffs",
                 page:ProjectFinancePage,
                 group_id:"cpm_view_project_staffs"
@@ -89,10 +89,10 @@ odoo.define(
                 this.currentPage = getPageContext().page_id;
             }
             else{
-                this.currentPage = 0
+                this.currentPage = this.availablePages[0].id
                 storePageContext({
-                    page_id:0,
-                    subpage_id:0
+                    page_id: this.currentPage,
+                    subpage_id:null
                 })
             }
 
@@ -127,7 +127,7 @@ odoo.define(
         }
     
         async callPage(id) {
-            moveToPage(id,0)
+            moveToPage(id,null)
         }
     }
 

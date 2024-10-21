@@ -18,25 +18,6 @@ odoo.define(
         static template = "cpm_odoo.PlanningOverview";
         setup(){
             onMounted(() => {
-                // this.getOverviewView()
-            });
-        }
-    
-        getOverviewView(){
-            fetch('/proj/planning/overview_view', {
-                method: 'GET'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text(); // or response.text(), etc.
-            })
-            .then(data => {
-                document.querySelector("#planning-overview-info").innerHTML = data
-            })
-            .catch(error => {
-              console.error('There has been a problem with your fetch operation:', error);
             });
         }
     }
@@ -47,7 +28,7 @@ odoo.define(
 
         setup(){
             onWillStart(()=>{
-                console.log(this.props.page_data)
+                
             })
         }
 
@@ -66,34 +47,13 @@ odoo.define(
                     workflow_id:workflow_id
                 }
             )
-            moveToPage(false,4)
+            moveToPage(false,"manage_workflow")
         }
     }
 
     class PlanningWorkflows extends Component {
         static template = "cpm_odoo.PlanningWorkflows";
         static components = {WorkflowListDisplay}
-            
-        actionList = [
-            {
-                id:"act_add_workflow",
-                name:"Add New Workflow",
-                action:'/action/get/cpm_odoo.create_new_workflow_action_server',
-                params:{
-                    'default_planning_id':this.props.context_data.planning_id,
-                    'client_action':this.props.context_data.client_action
-                }
-            },
-            {
-                id:"manage_workflows",
-                name:"Manage Workflows",
-                action:'/action/get/cpm_odoo.create_new_workflow_action_server',
-                params:{
-                    'default_planning_id':this.props.context_data.planning_id,
-                    'client_action':this.props.context_data.client_action
-                }
-            }
-        ]
 
         setup(){
             this.page_data = useState({
@@ -101,19 +61,63 @@ odoo.define(
 
                 ]
             })
+
+            this.actionList = [
+                {
+                    id:"act_create_workflow",
+                    name:"Create New Workflow",
+                    action:'/action/get/cpm_odoo.create_new_workflow_action_server',
+                    params:{
+                        'default_planning_id':this.props.context_data.planning_id,
+                        'client_action':this.props.context_data.client_action
+                    }
+                }
+            ]
             // this.page_data = {
             //     workflow_list:[]
             // }
             onWillStart(()=>{
                 this.loadPage()
             })
+
+            onMounted(()=>{            
+                this.setupGraphs()
+            })
+        }
+
+        setupGraphs(){
+            gantt.config.date_format = "%Y-%m-%d %H:%i";
+            gantt.init("workflow-graph");
+            gantt.parse({
+                data: [
+                    {id: 1, text: "Project #1", start_date: null, duration: null, parent:0, progress: 0, open: true},
+                    {id: 2, text: "Task #1", start_date: "2019-08-01 00:00", duration:5, parent:1, progress: 1},
+                    {id: 3, text: "Task #2", start_date: "2019-08-06 00:00", duration:2, parent:1, progress: 0.5},
+                    {id: 4, text: "Task #3", start_date: null, duration: null, parent:1, progress: 0.8, open: true},
+                    {id: 5, text: "Task #3.1", start_date: "2019-08-09 00:00", duration:2, parent:4, progress: 0.2},
+                    {id: 6, text: "Task #3.2", start_date: "2019-08-11 00:00", duration:1, parent:4, progress: 0}
+                ],
+                links:[
+                    {id:1, source:2, target:3, type:"0"},
+                    {id:2, source:3, target:4, type:"0"},
+                    {id:3, source:5, target:6, type:"0"}
+                ]
+            });
         }
 
         async loadPage(){
-            let list_result = await this.props.context_data.orm.call('cpm_odoo.planning_workflow','search_read',[[]])
-            // list_result.forEach(element => {
-            //     this.page_data.workflow_list.push(element)
-            // });
+            let list_result = await this.props.context_data.orm.call(
+                'cpm_odoo.planning_workflow',
+                'search_read',
+                [
+                    [
+                        ['planning_id.id','=',this.props.context_data.planning_id]
+                    ],
+                    ["id","planning_id","name","start_date","exp_end"],
+                    0,null,"start_date"
+                ]
+            )
+            
             this.page_data.workflow_list = list_result
         }
 
@@ -144,12 +148,29 @@ odoo.define(
     class PlanningManageWorkflow extends Component{
         static page_name = "PlanningManageWorkflow"
         static template = "cpm_odoo.PlanningManageWorkflow";
+
+            
+
         setup(){
             const page_name = PlanningManageWorkflow.page_name
             this.pageInfo = getPageInfo(page_name)
+
+            this.actionList = [
+                {
+                    id:"act_create_task",
+                    name:"Create New Task",
+                    action:'/action/get/cpm_odoo.create_new_task_action_server',
+                    params:{
+                        'default_workflow_id':this.pageInfo.workflow_id,
+                        'client_action':this.props.context_data.client_action
+                    }
+                }
+            ]
+
+
             if(this.pageInfo===undefined){
                 alert("no page info")
-                moveToPage(false,1)
+                moveToPage(false,"workflow")
             }
             onWillStart(()=>{
                 this.loadData()
@@ -158,12 +179,26 @@ odoo.define(
         
 
         async loadData(){
-            let workflow_info = await this.props.context_data.orm.call(
+            this.workflow_info = await this.props.context_data.orm.call(
                 'cpm_odoo.planning_workflow',
                 'search_read',
-                [['id','=',this.pageInfo.workflow_id]]
+                [
+                    [
+                        ['id','=',this.pageInfo.workflow_id]
+                    ],
+                    ["id","name","start_date","exp_end"],
+                    0,1,null
+                ]
             )
-            console.log(workflow_info)
+        }
+
+        async _do_action(action,params){
+            let result = await this.props.context_data.rpc(
+                action,
+                params
+            )
+
+            window.location.href=result
         }
     }
 
@@ -179,31 +214,19 @@ odoo.define(
 
         availablePages = [
             {
-                id: 0,
+                id: "overview",
                 name:"Overview",
                 page:PlanningOverview,
                 group_id:"cpm_view_project_plans"
             },
             {
-                id: 1,
+                id: "workflow",
                 name:"Workflows",
                 page:PlanningWorkflows,
                 group_id:"cpm_manage_project_plans"
             },
             {
-                id: 2,
-                name:"Drafts",
-                page:PlanningDrafts,
-                group_id:"cpm_manage_project_plans"
-            },
-            {
-                id: 3,
-                name:"Unassgined Tasks",
-                page:PlanningUnassignedTasks,
-                group_id:"cpm_manage_project_plans"
-            },
-            {
-                id: 4,
+                id: "manage_workflow",
                 name:"Manage Workflow",
                 page:PlanningManageWorkflow,
                 group_id:"cpm_manage_project_plans",
@@ -213,6 +236,9 @@ odoo.define(
 
         setup(){
             this.currentPage = getPageContext().subpage_id;
+            if (this.currentPage == null){
+                this.currentPage=this.availablePages[0].id
+            }
             
         }
     

@@ -1,4 +1,7 @@
 from odoo import models,fields,api
+
+from odoo.exceptions import ValidationError
+
 import json
 
 class Workflow(models.Model):
@@ -8,7 +11,7 @@ class Workflow(models.Model):
     planning_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project_planning', 
         string='planning_id',
-        # readonly=True,
+        readonly=True,
         required = True
     )
     
@@ -20,27 +23,22 @@ class Workflow(models.Model):
     
     start_date = fields.Date(
         string = 'Start Date',
-        required=True,
-        default = lambda self: self._get_default_start_date()
+        required=True
     )
-    
-    def _get_default_start_date(self):
-        def_start_date = self.planning_id.project_id.start_date
-        for deps in self.depends_on :
-            if(def_start_date < deps.start_date):
-                def_start_date = deps.start_date
-        return def_start_date
-    
     
     @api.constrains('start_date')
     def  _check_date(self):
         for record in self:
-            if record.start_date <= record.planning_id.project_id.start_date:
+            if record.start_date < record.planning_id.project_id.start_date:
                 raise ValidationError("Start date of the workflow must be larger than start date of the project.")
+            
+            if(record.depends_on):
+                for workflow in record.depends_on:
+                    if(record.start_date < workflow.start_date):
+                        raise ValidationError("The start date must be larger than the expected end date of the depending workflows.")
     
     exp_end = fields.Date(
-        string = 'Due Date',
-        default = lambda self: self._get_default_start_date()
+        string = 'Due Date'
     )
     
     # exp_end = fields.Date(
@@ -105,20 +103,90 @@ class Workflow(models.Model):
     @api.depends('task_ids')
     def _compute_exp_end_date(self):
         for record in self:
-            record.draft_task_count = len(record.task_ids)
+            record.not_started_task_count = len(record.task_ids)
         pass
     
-    draft_task_count = fields.Integer(
-        string = 'Draft Count',
-        compute = '_compute_draft_task_count',
+    not_started_task_count = fields.Integer(
+        string = 'Not Started Count',
+        compute = '_compute_not_started_task_count',
         store=True
     )
     
-    @api.depends('task_ids.is_draft')
-    def _compute_draft_task_count(self):
+    @api.depends('task_ids.task_status')
+    def _compute_not_started_task_count(self):
         for record in self:
-            draft_task_count = sum(1 for task in record.task_ids if task.is_draft)
-            record.draft_task_count = draft_task_count
+            not_started_task_count = sum(1 for task in record.task_ids if task.status == "not_started")
+            record.not_started_task_count = not_started_task_count
+        pass
+    
+    in_progress_task_count = fields.Integer(
+        string = 'Not Started Count',
+        compute = '_compute_in_progress_task_count',
+        store=True
+    )
+    
+    @api.depends('task_ids.task_status')
+    def _compute_in_progress_task_count(self):
+        for record in self:
+            in_progress_task_count = sum(1 for task in record.task_ids if task.status == "in_progress")
+            record.in_progress_task_count = in_progress_task_count
+        pass
+    
+    completed_task_count = fields.Integer(
+        string = 'Not Started Count',
+        compute = '_compute_completed_task_count',
+        store=True
+    )
+    
+    @api.depends('task_ids.task_status')
+    def _compute_completed_task_count(self):
+        for record in self:
+            completed_task_count = sum(1 for task in record.task_ids if task.status == "completed")
+            record.completed_task_count = completed_task_count
+        pass
+    
+    verified_task_count = fields.Integer(
+        string = 'Not Started Count',
+        compute = '_compute_verified_task_count',
+        store=True
+    )
+    
+    @api.depends('task_ids.task_status')
+    def _compute_verified_task_count(self):
+        for record in self:
+            verified_task_count = sum(1 for task in record.task_ids if task.status == "verified")
+            record.verified_task_count = verified_task_count
+        pass
+    
+    workflow_status = fields.Selection(
+        [
+            ('draft', 'Draft'),
+            ('active', 'Active'),
+            ('finished', 'Finished')
+        ], 
+        string='Status',
+        default='draft',
+        readonly=True
+    )
+    
+    @api.model
+    def mark_active(self, workflow_id):
+        workflow = self.env["cpm_odoo.planning_workflow"].browse(workflow_id)
+        
+        #check for unassigned tasks
+        
+        #set active status
+        
+        pass
+    
+    @api.model
+    def mark_finished(self, workflow_id):
+        workflow = self.env["cpm_odoo.planning_workflow"].browse(workflow_id)
+        
+        #check for unverified tasks
+        
+        #set end date and set finished status
+        
         pass
     
     @api.model
@@ -160,18 +228,28 @@ class Task(models.Model):
         string = 'Description'
     )
     
-    is_draft = fields.Boolean(
-        string = 'Draft',
-        default = 'False'
+    task_status = fields.Selection(
+        [
+            ('not_started', 'Not Started'),
+            ('in_progress', 'In Progress'),
+            ('completed', 'Completed'),
+            ('verified', 'Verified')
+        ], 
+        string='task_status',
+        readonly=True
     )
-    is_completed = fields.Boolean(
-        string = 'Completed',
-        default = 'False'
-    )
-    is_verified = fields.Boolean(
-        string = 'Verified',
-        default = 'False'
-    )
+    
+    @api.model
+    def mark_completed(self, task_id):
+        
+        pass
+    
+    
+    @api.model
+    def mark_verified(self, task_id):
+        
+        pass
+    
     
     assigned_staff_ids = fields.Many2many(
         comodel_name = 'cpm_odoo.human_res_staff', 
@@ -257,6 +335,24 @@ class Task(models.Model):
         string='Created By',
         required=True
     )
+    
+    @api.model
+    def create_new_task(self):
+        default_workflow_id = self.env.context["params"]["default_workflow_id"]
+        client_action = self.env.context["params"]["client_action"]
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'name': 'Create New Task',
+            'res_model': 'cpm_odoo.planning_task',
+            # 'domain': [],
+            'context': {
+                'default_workflow_id':default_workflow_id,
+                "client_action":client_action
+            },
+            'target': 'self'
+        }
 
 class TaskNote(models.Model):
     _name = 'cpm_odoo.planning_task_note'

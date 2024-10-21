@@ -24,17 +24,6 @@ class ProjectController(http.Controller):
         }
         return data
     
-    @http.route('/proj/planning/get_workflow_list/<int:project_id>', type='http', auth='user', readonly=True)
-    def planning_overview(self, project_id):
-        
-        workflow_list = request.env["cpm_odoo.planning_workflow"].search([("planning_id.id",'=',project_id)])
-        
-        vals={
-            "workflow_list":workflow_list
-        }
-        
-        return request.render('cpm_odoo.project_workflow_list_template', vals)
-    
     @http.route('/proj/view/get_view/<string:view_id>', type='http', auth='user')
     def get_view(self, view_id):
         
@@ -48,23 +37,6 @@ class ProjectController(http.Controller):
 
         # Render the view's XML
         return request.render(view.id)
-    
-    @http.route('/action/get2/<string:action_id>', type='http', auth='user')
-    def get_action2(self, action_id):
-
-        action = request.env.ref(action_id)
-
-        if action:
-            if action.type == 'ir.actions.act_window':
-                context_values = request.httprequest.args
-
-                context_string = '&'.join(f"{key}={value}" for key, value in context_values.items())
-
-                url = '/web#action={}&model={}'.format(action.id, action.res_model)
-            
-                return url+'&context={'+context_string+"}"
-            
-        return request.not_found()
     
     @http.route('/action/get/<string:action_id>', type='json', auth='user', csrf=False)
     def get_action(self, action_id):

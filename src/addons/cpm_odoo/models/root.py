@@ -1,10 +1,29 @@
 from odoo import models, fields, api
 
 
+class ProjectHRM(models.Model):
+    _name = "cpm_odoo.root_project_hrm"
+    _description = "Project HRM"
+    
+    project_staff_ids = fields.Many2many(
+        comodel_name = 'cpm_odoo.human_res_staff', 
+        string='Staffs'
+    )
+    
+    # assigned_accountant_ids = fields.Many2many(
+    #     comodel_name = 'cpm_odoo.human_res_staff',
+    #     string='Assigned Accountants'
+    # )
+    
+    # assigned_qcs = fields.Many2many(
+    #     comodel_name = 'cpm_odoo.human_res_staff', 
+    #     string='assigned_qcs'
+    # )
+
 
 class ProjectPlanning(models.Model):
     _name = "cpm_odoo.root_project_planning"
-    _description = "Model"
+    _description = "Project Planning"
     
     project_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project', 
@@ -15,11 +34,6 @@ class ProjectPlanning(models.Model):
         comodel_name = 'cpm_odoo.planning_workflow', 
         inverse_name = 'planning_id',
         string='Workflows'
-    )
-    
-    assigned_qcs = fields.Many2one(
-        comodel_name = 'cpm_odoo.human_res_staff', 
-        string='assigned_qcs'
     )
 
 class ProjectFinance(models.Model):
@@ -87,7 +101,6 @@ class Project(models.Model):
     exp_end = fields.Date(
         string = 'Expected End Date'
     )
-    
     
     manager_ids = fields.Many2many(
         'cpm_odoo.human_res_staff', 

@@ -12,20 +12,9 @@
                     </div>
                 </div>
             </div>
-            <div class="pt-2 pb-3" id="subpage-view">
+            <div class="pt-2 pb-2" id="subpage-view">
                 <t t-component="subpageComponent" context_data="props.context_data"/>
             </div>
-            <!-- <div class="container-fluid" id="subpage_view">
-
-            </div> -->
-            <!-- <div class="row text-center pt-2 pb-2">
-                <div class="col-4" id="planning-overview-info">
-                    
-                </div>
-                <div class="col-8" id="planning-tasks">
-                    
-                </div>
-            </div> -->
         </div>
     </t>
 
@@ -39,9 +28,50 @@
             <div class="pt-2 pb-2">
                 <div class="row">
                     <div class="col-8">
+                        <div class="container">
+                            <div class="row">
+                                <!-- To Do Column -->
+                                <div class="col-md-4">
+                                    <h4>To Do</h4>
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Task 1</h5>
+                                            <p class="card-text">Description for task 1.</p>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Task 2</h5>
+                                            <p class="card-text">Description for task 2.</p>
+                                        </div>
+                                    </div>
+                                </div>
                         
+                                <!-- In Progress Column -->
+                                <div class="col-md-4">
+                                    <h4>In Progress</h4>
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Task 3</h5>
+                                            <p class="card-text">Description for task 3.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                        
+                                <!-- Done Column -->
+                                <div class="col-md-4">
+                                    <h4>Done</h4>
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Task 4</h5>
+                                            <p class="card-text">Description for task 4.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class=" col-4 graph-tabs">
+                    <div class="col-4">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">Tab 1</button>
@@ -94,7 +124,7 @@
                         </t>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-secondary mx-1" t-on-click="(event)=>{}">
+                        <button type="button" class="btn btn-sm btn-secondary mx-1" t-on-click="(event)=>{_do_action()}">
                             Edit General Info
                         </button>
                         <button type="button" class="btn btn-sm btn-secondary mx-1" t-on-click="(event)=>{act_manage_workflow(workflow.id)}">
@@ -109,17 +139,21 @@
 
     <t t-name="cpm_odoo.PlanningWorkflows" owl="1">
         <div class="container-fluid">
-            <div class="pt-2 pb-2"> 
-                
-            </div>
             <div class="pt-2 pb-2">
                 <div class="row">
                     <div class="col-8">
-                        <div class="container">
-                            <WorkflowListDisplay page_data="page_data"/>
+                        <div class="mb-4">
+                            <div class="fw-bold fs-1">
+                                Workflows
+                            </div>
+                        </div>
+                        <WorkflowListDisplay page_data="page_data"/>
+                        
+                        <div id="workflow-graph" style='width:100%; height:200px;'>
+
                         </div>
                     </div>
-                    <div class=" col-4 graph-tabs">
+                    <div class="col-4">
                         <div class="container btn-list pb-2">
                             <t t-foreach="this.actionList" t-as="action" t-key="action.id">
                                 <!-- <button type="button" class="btn btn-secondary mx-1" data-bs-toggle="modal" t-att-data-bs-target="'#'+action.id" t-on-click="(event)=>{getForm(action.view_id,event.currentTarget.parentElement.querySelector('.modal-body'))}">
@@ -152,16 +186,15 @@
                         <div class="container pt-2 pb-2">
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">Tab 1</button>
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target=".workflow-info-tab #workflow-graph-tab" type="button" role="tab">Graph</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">Tab 2</button>
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target=".workflow-info-tab #tab2" type="button" role="tab">Tab 2</button>
                                 </li>
                             </ul>
-                            <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-                                    <h5>Tab 1 Content</h5>
-                                    <p>This is the content for tab 1.</p>
+                            <div class="tab-content workflow-info-tab" id="myTabContent">
+                                <div class="tab-pane fade show active p-3" id="workflow-graph-tab" role="tabpanel">
+                                    <h5>Workflows</h5>
                                 </div>
                                 <div class="tab-pane fade p-3" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
                                     <h5>Tab 2 Content</h5>
@@ -188,33 +221,53 @@
     </t>
 
     <t t-name="cpm_odoo.PlanningManageWorkflow" owl="1">
-        <div class="pt-2 pb-2">
-            <div class="fw-bold fs-1">
-                Manage
-            </div>
-        </div>
-        <div class="pt-2 pb-2">
-            <div class="row">
-                <div class="col-8">
-                    
+        <div class="row mt-2">
+            <div class="d-flex align-items-center mb-2">
+                <div class="fw-bold fs-1 me-5">
+                    Manage
                 </div>
-                <div class=" col-4 graph-tabs">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">Tab 1</button>
+                <div class="btn-list">
+                    <t t-foreach="this.actionList" t-as="action" t-key="action.id">
+                        <button type="button" class="btn btn-outline-secondary ms-1" t-on-click="(event)=>{this._do_action(action.action,action.params)}">
+                            <t t-esc="action.name"/>
+                        </button>
+                    </t>
+                </div>
+            </div>
+            <!-- <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="fw-bold fs-1">
+                    Manage
+                </div>
+                <div class="btn-list">
+                    <button type="button" class="btn btn-outline-secondary ms-1" t-on-click="(event)=>{}">
+                        Add New Task
+                    </button>
+                </div>
+            </div> -->
+            <div class="row">
+                <div class="col-md-2">
+                    <ul class="nav nav-pills flex-column" role="tablist">
+                        <li class="nav-item">
+                            <div class="nav-link active"  data-bs-toggle="tab" data-bs-target=".task-tabs #task-list" role="tab">
+                                Tasks
+                            </div>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">Tab 2</button>
+                        <li class="nav-item">
+                            <div class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #unassigned-task-list" role="tab">
+                                Unassigned Tasks
+                            </div>
                         </li>
+
                     </ul>
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-                            <h5>Tab 1 Content</h5>
-                            <p>This is the content for tab 1.</p>
+                </div>
+                <div class="col-md-10">
+                    <div class="tab-content task-tabs">
+                        <div class="tab-pane fade show active" id="task-list" role="tabpanel">
+                            
                         </div>
-                        <div class="tab-pane fade p-3" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
-                            <h5>Tab 2 Content</h5>
-                            <p>This is the content for tab 2.</p>
+                        <div class="tab-pane fade" id="unassigned-task-list" role="tabpanel">
+                            <h4>Unassigned Tasks</h4>
+                            <p>This is the content for the tab.</p>
                         </div>
                     </div>
                 </div>

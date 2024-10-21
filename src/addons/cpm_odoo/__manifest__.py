@@ -41,7 +41,7 @@ Long description of module's purpose
             'cpm_odoo/static/src/backend/**/*',
         ],
         'web.assets_frontend': [
-
+            
         ],
     },
     # only loaded in demonstration mode
