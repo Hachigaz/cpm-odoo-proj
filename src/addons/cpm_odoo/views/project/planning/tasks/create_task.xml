@@ -19,14 +19,30 @@
                                 <field name="exp_end" string="Expected End Date" widget="date"></field>
                             </group>
                         </group>
-                        <group>
-                            <field name="depends_on" string="Depends On"></field>
+                        <group string="Dependencies">
+                            <field name="depends_on" string="Depends On" widget='many2many'>
+                                <tree 
+                                    create="False" edit="False" delete="False" import="False" export_xlsx="False" 
+                                    open_form_view="False" default_order="start_date asc,exp_end asc,name asc" 
+                                    domain="[('workflow_id','=',workflow_id)]"
+                                >
+                                    <field name="name" string="Name"></field>
+                                    <field name="start_date" string="Start Date"></field>
+                                    <field name="exp_end" string="Exp. End Date"></field>
+                                </tree>
+                            </field>
                         </group>
-                        <!-- <group string="Actions">
-                            <button class="btn btn-secondary" invisible="context.get('client_action')=='cpm_odoo.project_manage_ui_act'" special="cancel" onclick="window.location.href='/web#action=170'">
-                                Back
-                            </button>
-                        </group> -->
+                        <group string="Assignments">
+                            <field name="depends_on" string="Depends On" widget='many2many'>
+                                <tree create="False" edit="False" delete="False" import="False" export_xlsx="False" open_form_view="False" default_order="start_date asc,exp_end asc,name asc" domain="[('planning_id','=',planning_id)]">
+                                    <field name="name" string="Name"></field>
+                                    <field name="start_date" string="Start Date"></field>
+                                    <field name="exp_end" string="Exp. End Date"></field>
+                                </tree>
+                            </field>
+                            <field name="assigned_staff_ids" string="Assigned Staffs" widget='many2many'></field>
+                            <field name="assigned_contractor_ids" string="Assigned Contractors" widget='many2many'></field>
+                        </group>
                     </sheet>
                 </form>
             </field>

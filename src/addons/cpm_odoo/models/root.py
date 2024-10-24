@@ -5,10 +5,34 @@ class ProjectHRM(models.Model):
     _name = "cpm_odoo.root_project_hrm"
     _description = "Project HRM"
     
+    project_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.root_project', 
+        string='Project'
+    )
+    
     project_staff_ids = fields.Many2many(
         comodel_name = 'cpm_odoo.human_res_staff', 
-        string='Staffs'
+        string='Staffs',
+        relation = "project_assigned_staffs",
+        column1 = "hrm_id",
+        column2 = "staff_id"
     )
+    
+    # @api.onchange("project_staff_ids")
+    # def _onchange_staff_ids(self):
+    #     current_ids = self.project_staff_ids.ids
+    #     previous_ids = self.env['cpm_odoo.human_res_staff'].browse(self.id).project_staff_ids.ids
+        
+    #     # added_ids = set(current_ids) - set(previous_ids)
+    #     # if added_ids:
+    #     #     pass
+        
+        
+    #     removed_ids = set(previous_ids) - set(current_ids)
+    #     if removed_ids:
+    #         for id in removed_ids:
+    #             if(self.env["cpm_odoo.planning_task"].)
+    #         pass
     
     # assigned_accountant_ids = fields.Many2many(
     #     comodel_name = 'cpm_odoo.human_res_staff',
@@ -19,6 +43,12 @@ class ProjectHRM(models.Model):
     #     comodel_name = 'cpm_odoo.human_res_staff', 
     #     string='assigned_qcs'
     # )
+    
+    def name_get(self, cr, user, ids, context=None):
+        result = []
+        for record in self:
+            result.append((record.project_id.short_name))
+        return result
 
 
 class ProjectPlanning(models.Model):
@@ -35,6 +65,12 @@ class ProjectPlanning(models.Model):
         inverse_name = 'planning_id',
         string='Workflows'
     )
+    
+    def name_get(self, cr, user, ids, context=None):
+        result = []
+        for record in self:
+            result.append((record.project_id.short_name))
+        return result
 
 class ProjectFinance(models.Model):
     _name = "cpm_odoo.root_project_finance"
@@ -56,6 +92,12 @@ class ProjectFinance(models.Model):
         inverse_name = 'project_finance_id', 
         string='Expenses'
     )
+    
+    def name_get(self, cr, user, ids, context=None):
+        result = []
+        for record in self:
+            result.append((record.project_id.short_name))
+        return result
 
 class ProjectDocMgmt(models.Model):
     _name = "cpm_odoo.root_project_doc_mgmt"
@@ -71,6 +113,12 @@ class ProjectDocMgmt(models.Model):
         string='Attached Documents',
         relation = 'cpm_odoo_proj_doc_mgmt_doc_set'
     )
+    
+    def name_get(self, cr, user, ids, context=None):
+        result = []
+        for record in self:
+            result.append((record.project_id.short_name))
+        return result
 
 class Project(models.Model):
     _name = "cpm_odoo.root_project"
@@ -122,10 +170,19 @@ class Project(models.Model):
     )
     
     _inherits = {
+        "cpm_odoo.root_project_hrm":"proj_hrm_id",
         "cpm_odoo.root_project_planning":"proj_planning_id",
         "cpm_odoo.root_project_finance":"proj_finance_id",
         "cpm_odoo.root_project_doc_mgmt":"proj_doc_id"
     }
+    
+    proj_hrm_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.root_project_hrm', 
+        string='HRM Management',
+        readonly=True,
+        required = True,
+        ondelete = 'restrict'
+    )
     
     proj_planning_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project_planning', 
@@ -154,6 +211,7 @@ class Project(models.Model):
     @api.model_create_multi
     def create(self, vals):
         record = super().create(vals)
+        record.proj_hrm_id.project_id = record.id
         record.proj_planning_id.project_id = record.id
         record.proj_finance_id.project_id = record.id
         record.proj_doc_id.project_id = record.id

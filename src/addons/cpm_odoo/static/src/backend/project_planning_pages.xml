@@ -136,24 +136,43 @@
           </tbody>
         </table>
     </t>
+    
+    <t t-name="cpm_odoo.WorkflowGraphDisplay">
+        <div id="workflow-graph" t-att-style="`width: ${temp_data.display_size.width}; height:${temp_data.display_size.height}`">
+            
+        </div>
+    </t>
 
     <t t-name="cpm_odoo.PlanningWorkflows" owl="1">
         <div class="container-fluid">
             <div class="pt-2 pb-2">
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-9">
                         <div class="mb-4">
                             <div class="fw-bold fs-1">
                                 Workflows
                             </div>
                         </div>
-                        <WorkflowListDisplay page_data="page_data"/>
-                        
-                        <div id="workflow-graph" style='width:100%; height:200px;'>
-
+                        <div class="pt-2 pb-2">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target=".workflow-main-tab #workflow-list-tab" type="button" role="tab">List</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target=".workflow-main-tab #workflow-graph-tab" type="button" role="tab">Graph</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content workflow-main-tab">
+                                <div class="tab-pane fade show active p-3" id="workflow-list-tab" role="tabpanel">
+                                    <WorkflowListDisplay page_data="page_data"/>
+                                </div>
+                                <div class="tab-pane fade p-3" id="workflow-graph-tab" role="tabpanel">
+                                    <WorkflowGraphDisplay page_data="page_data" other_data="{display_size:{height:'60vh'}}"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <div class="container btn-list pb-2">
                             <t t-foreach="this.actionList" t-as="action" t-key="action.id">
                                 <!-- <button type="button" class="btn btn-secondary mx-1" data-bs-toggle="modal" t-att-data-bs-target="'#'+action.id" t-on-click="(event)=>{getForm(action.view_id,event.currentTarget.parentElement.querySelector('.modal-body'))}">
@@ -186,14 +205,14 @@
                         <div class="container pt-2 pb-2">
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target=".workflow-info-tab #workflow-graph-tab" type="button" role="tab">Graph</button>
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target=".workflow-info-tab #tab1" type="button" role="tab">Graph</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" data-bs-toggle="tab" data-bs-target=".workflow-info-tab #tab2" type="button" role="tab">Tab 2</button>
                                 </li>
                             </ul>
-                            <div class="tab-content workflow-info-tab" id="myTabContent">
-                                <div class="tab-pane fade show active p-3" id="workflow-graph-tab" role="tabpanel">
+                            <div class="tab-content workflow-info-tab">
+                                <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel">
                                     <h5>Workflows</h5>
                                 </div>
                                 <div class="tab-pane fade p-3" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
@@ -220,6 +239,14 @@
         </div>
     </t>
 
+    <t t-name="cpm_odoo.PlanningTaskList">
+
+    </t>
+
+    <t t-name="cpm_odoo.PlanningWorkflowTaskSchedule">
+
+    </t>
+
     <t t-name="cpm_odoo.PlanningManageWorkflow" owl="1">
         <div class="row mt-2">
             <div class="d-flex align-items-center mb-2">
@@ -234,25 +261,20 @@
                     </t>
                 </div>
             </div>
-            <!-- <div class="d-flex justify-content-between align-items-center mb-2">
-                <div class="fw-bold fs-1">
-                    Manage
-                </div>
-                <div class="btn-list">
-                    <button type="button" class="btn btn-outline-secondary ms-1" t-on-click="(event)=>{}">
-                        Add New Task
-                    </button>
-                </div>
-            </div> -->
             <div class="row">
                 <div class="col-md-2">
                     <ul class="nav nav-pills flex-column" role="tablist">
-                        <li class="nav-item">
+                        <li class="nav-item user-select-none">
                             <div class="nav-link active"  data-bs-toggle="tab" data-bs-target=".task-tabs #task-list" role="tab">
                                 Tasks
                             </div>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item user-select-none">
+                            <div class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #workflow-task-schedule" role="tab">
+                                Schedule
+                            </div>
+                        </li>
+                        <li class="nav-item user-select-none">
                             <div class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #unassigned-task-list" role="tab">
                                 Unassigned Tasks
                             </div>
@@ -264,6 +286,10 @@
                     <div class="tab-content task-tabs">
                         <div class="tab-pane fade show active" id="task-list" role="tabpanel">
                             
+                        </div>
+                        <div class="tab-pane fade" id="workflow-task-schedule" role="tabpanel">
+                            <h4>Schedule</h4>
+                            <p>This is the content for the tab.</p>
                         </div>
                         <div class="tab-pane fade" id="unassigned-task-list" role="tabpanel">
                             <h4>Unassigned Tasks</h4>

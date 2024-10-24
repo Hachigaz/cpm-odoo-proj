@@ -2,8 +2,6 @@ from odoo import models,fields,api
 
 from odoo.exceptions import ValidationError
 
-import json
-
 class Workflow(models.Model):
     _name = "cpm_odoo.planning_workflow"
     _description = "Model"
@@ -30,50 +28,39 @@ class Workflow(models.Model):
     def  _check_date(self):
         for record in self:
             if record.start_date < record.planning_id.project_id.start_date:
-                raise ValidationError("Start date of the workflow must be larger than start date of the project.")
+                raise ValidationError("The start date of the workflow must be larger than start date of the project ({}).".format(record.planning_id.project_id.start_date))
             
             if(record.depends_on):
                 for workflow in record.depends_on:
                     if(record.start_date < workflow.start_date):
-                        raise ValidationError("The start date must be larger than the expected end date of the depending workflows.")
+                        raise ValidationError("The start date must be larger than the expected end date of the depending workflows ({}).".format(workflow.start_date))
     
     exp_end = fields.Date(
-        string = 'Due Date'
-    )
-    
-    # exp_end = fields.Date(
-    #     string = 'Due Date',
-    #     compute = '_compute_exp_end_date',
-    #     store=True
-    # )
-    
-    # @api.depends('start_date','task_ids.exp_end')
-    # def _compute_exp_end_date(self):
-    #     for record in self:
-    #         exp_end = record.start_date
-    #         for task_id in record.task_ids:
-    #             if(date < task_id.exp_end):
-    #                 exp_end = task_id.exp_end
-                    
-    #         record.exp_end = exp_end
-    #     pass
-        
-    end_date = fields.Date(
-        string = 'Finished',
-        compute = '_compute_end_date',
+        string = 'Due Date',
+        compute = '_compute_exp_end_date',
         store=True
     )
     
-    @api.depends('start_date','task_ids.end_date')
+    @api.depends('task_ids.exp_end')
     def _compute_exp_end_date(self):
         for record in self:
-            exp_end = record.start_date
+            min_date = fields.Date.to_date('0001-01-01')
+            exp_end = min_date
             for task_id in record.task_ids:
-                if(date < task_id.exp_end):
+                if(exp_end < task_id.exp_end):
                     exp_end = task_id.exp_end
                     
-            record.exp_end = exp_end
+            if exp_end == min_date:
+                record.exp_end = False
+            else:
+                record.exp_end = exp_end
         pass
+        
+    end_date = fields.Date(
+        string = 'Finished',
+        default = fields.Date.from_string('1000-01-01'),
+        readonly=True
+    )
     
     
     depends_on = fields.Many2many(
@@ -83,6 +70,15 @@ class Workflow(models.Model):
         column1='cur_workflow',
         column2='dep_workflow'
     )
+    
+    @api.constrains('depends_on')
+    def _validate_task_dependencies(self):
+        for record in self:
+            if(record.depends_on):
+                for workflow in record.depends_on:
+                    if(record.planning_id != workflow.planning_id):
+                        raise ValidationError("The depending workflows must be in the same project as the current workflow.")
+    
     
     name = fields.Char(
         string = 'Name',
@@ -101,7 +97,7 @@ class Workflow(models.Model):
     )
     
     @api.depends('task_ids')
-    def _compute_exp_end_date(self):
+    def _compute_task_count(self):
         for record in self:
             record.not_started_task_count = len(record.task_ids)
         pass
@@ -115,7 +111,7 @@ class Workflow(models.Model):
     @api.depends('task_ids.task_status')
     def _compute_not_started_task_count(self):
         for record in self:
-            not_started_task_count = sum(1 for task in record.task_ids if task.status == "not_started")
+            not_started_task_count = sum(1 for task in record.task_ids if task.task_status == "not_started")
             record.not_started_task_count = not_started_task_count
         pass
     
@@ -128,7 +124,7 @@ class Workflow(models.Model):
     @api.depends('task_ids.task_status')
     def _compute_in_progress_task_count(self):
         for record in self:
-            in_progress_task_count = sum(1 for task in record.task_ids if task.status == "in_progress")
+            in_progress_task_count = sum(1 for task in record.task_ids if task.task_status == "in_progress")
             record.in_progress_task_count = in_progress_task_count
         pass
     
@@ -141,7 +137,7 @@ class Workflow(models.Model):
     @api.depends('task_ids.task_status')
     def _compute_completed_task_count(self):
         for record in self:
-            completed_task_count = sum(1 for task in record.task_ids if task.status == "completed")
+            completed_task_count = sum(1 for task in record.task_ids if task.task_status == "completed")
             record.completed_task_count = completed_task_count
         pass
     
@@ -154,7 +150,7 @@ class Workflow(models.Model):
     @api.depends('task_ids.task_status')
     def _compute_verified_task_count(self):
         for record in self:
-            verified_task_count = sum(1 for task in record.task_ids if task.status == "verified")
+            verified_task_count = sum(1 for task in record.task_ids if task.task_status == "verified")
             record.verified_task_count = verified_task_count
         pass
     
@@ -207,6 +203,19 @@ class Workflow(models.Model):
             'target': 'self'
             # 'help': '<p class="o_view_nocontent_smiling_face">No appointments found for this profile.</p>'
         }
+    
+    unassigned_task_count = fields.Integer(
+        string = 'Unassigned Task Count',
+        compute = '_compute_unassigned_task_count',
+        store=True
+    )
+    
+    @api.depends('task_ids.task_status')
+    def _compute_unassigned_task_count(self):
+        for record in self:
+            unassigned_task_count = sum(1 for task in record.task_ids if len(task.assigned_staff_ids) == 0 and len(task.assigned_contractor_ids) == 0)
+            record.unassigned_task_count = unassigned_task_count
+        pass
    
 class Task(models.Model):
     _name = "cpm_odoo.planning_task"
@@ -236,6 +245,7 @@ class Task(models.Model):
             ('verified', 'Verified')
         ], 
         string='task_status',
+        default="not_started",
         readonly=True
     )
     
@@ -281,26 +291,18 @@ class Task(models.Model):
     
     start_date = fields.Date(
         string = 'Start Date',
-        required = True,
-        default = lambda self: self._get_default_start_date()
+        required = True
     )
-    
-    def _get_default_start_date(self):
-        def_start_date = self.workflow_id.start_date
-        for deps in self.depends_on :
-            if(def_start_date < deps.start_date):
-                def_start_date = deps.start_date
-        return def_start_date
     
     @api.constrains('start_date')
     def _validate_start_date(self):
         for record in self:
             if(record.start_date < record.workflow_id.start_date):
-                raise ValidationError("The start date must be larger than the start date of the workflow.")
+                raise ValidationError("The task start date must be larger than the start date of the workflow ({}).".format(record.workflow_id.start_date))
             if(record.depends_on):
                 for task in record.depends_on:
                     if(record.start_date < task.exp_end):
-                        raise ValidationError("The start date must be larger than the expected end date of the depending tasks.")
+                        raise ValidationError("The start date must be larger than the expected end date of the depending tasks ({}).".format(task.exp_end))
                     
     
     exp_end = fields.Date(
@@ -312,10 +314,11 @@ class Task(models.Model):
     def _validate_exp_end(self):
         for record in self:
             if(record.exp_end < record.start_date):
-                raise ValidationError("The end date must be larger than the start date.")
+                raise ValidationError("The expected end date must be larger than the start date.")
     
     end_date = fields.Date(
-        string = 'Finished'
+        string = 'Finished',
+        readonly=True
     )
     
     @api.onchange('is_verified')
@@ -324,17 +327,17 @@ class Task(models.Model):
             if(record.is_verified):
                 record.end_date = fields.Date.today()
         
-    date_created = fields.Datetime(
-        'Date Created',
-        default = fields.Datetime.now(),
-        required=True
-    )
+    # date_created = fields.Datetime(
+    #     'Date Created',
+    #     default = fields.Datetime.now(),
+    #     required=True
+    # )
     
-    created_by = fields.Many2one(
-        comodel_name ='cpm_odoo.human_res_staff', 
-        string='Created By',
-        required=True
-    )
+    # created_by = fields.Many2one(
+    #     comodel_name ='cpm_odoo.human_res_staff', 
+    #     string='Created By',
+    #     required=True
+    # )
     
     @api.model
     def create_new_task(self):
@@ -347,9 +350,38 @@ class Task(models.Model):
             'name': 'Create New Task',
             'res_model': 'cpm_odoo.planning_task',
             # 'domain': [],
+            'view_id':self.env.ref("cpm_odoo.planning_task_create_view_form").id,
             'context': {
                 'default_workflow_id':default_workflow_id,
-                "client_action":client_action
+                "client_action":client_action,
+            },
+            'target': 'self'
+        }
+        
+        
+    task_note_ids = fields.One2many(
+        comodel_name = 'cpm_odoo.planning_task_note', 
+        inverse_name = 'task_id', 
+        string='Notes'
+    )
+    
+    task_expense_ids = fields.One2many(
+        comodel_name = 'cpm_odoo.planning_task_expense', 
+        inverse_name = 'task_id', 
+        string='Expenses'
+    )
+    
+    @api.model
+    def create_new_expense(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'name': 'Create New Task',
+            'res_model': 'cpm_odoo.planning_task_expense',
+            # 'domain': [],
+            'context': {
+                'default_workflow_id':default_workflow_id,
+                "client_action":client_action,
             },
             'target': 'self'
         }

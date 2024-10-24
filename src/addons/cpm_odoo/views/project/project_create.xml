@@ -8,16 +8,16 @@
                 <form string="New Project">
                     <sheet>
                         <group string='Project Info'>
-                            <field name="short_name">Short Name</field>
-                            <field name="name">Project Name</field>
-                            <field name="description">Description</field>
-                            <field name="start_date" widget='date'>Start Date</field>
-                            <field name="exp_end" widget='date'>Expected End Date</field>
-                            <field name="manager_ids">Assigned PMs</field>
+                            <field name="short_name" string="Project Short Name"></field>
+                            <field name="name" string="Project Name"></field>
+                            <field name="description" string="Description"></field>
+                            <field name="start_date" widget='date' string="Start Date"></field>
+                            <field name="exp_end" widget='date' string="Expected End Date"></field>
+                            <field name="manager_ids" string="Assigned PMs"></field>
                         </group>
                         <group string="Stakeholders">
-                            <field name="investor_ids">Investors</field>
-                            <field name="other_contact_ids">Other Contacts</field>
+                            <field name="investor_ids" string="Investors"></field>
+                            <field name="other_contact_ids" string="Other Contacts"></field>
                         </group>
                     </sheet>
                 </form>

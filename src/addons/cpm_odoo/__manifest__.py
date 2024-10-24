@@ -31,7 +31,7 @@ Long description of module's purpose
         'views/project/project_select_overview.xml',
         'views/project/project_create.xml',
         'views/project/project_overview.xml',
-        'views/project/planning/workflows/workflows_list.xml',
+        'views/project/planning/tasks/create_task.xml',
         'views/project/planning/workflows/create_workflow.xml',
         'views/hr_mgmt/staff_create.xml',
         'views/stakeholders/contractor_create.xml',
