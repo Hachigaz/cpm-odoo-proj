@@ -42,7 +42,7 @@
                                                 <t t-esc="record.exp_end.value"/>
                                             </t>
                                             <t t-else="">
-                                                Not Specified
+                                                TBD
                                             </t>
                                         </div>
                                     </div>

@@ -1,4 +1,6 @@
 /** @odoo-module **/
+import { GanttDisplay } from "./components";
+
 odoo.define(
     'cpm_modules.project_planning_pages', 
     [
@@ -9,21 +11,23 @@ odoo.define(
     function (require) {
     'use strict';
 
-    const { Component, onWillStart, onMounted, onWillPatch, useEffect, onWillUpdateProps, mount, loadFile, useState, reactive} = require("@odoo/owl");
-    const { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo} = require("cpm_modules.component_utils");
-
-
+    const { Component, onWillStart, onMounted, onWillPatch, useEffect, onWillUpdateProps, mount, loadFile, useState, useRef} = require("@odoo/owl");
+    const { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate} = require("cpm_modules.component_utils");
+    
     class PlanningOverview extends Component {
         static page_name = "PlanningOverview"
         static template = "cpm_odoo.PlanningOverview";
         setup(){
             onMounted(() => {
+
             });
         }
     }
 
-    class WorkflowListDisplay extends Component{
-        static template = "cpm_odoo.WorkflowListDisplay";
+    class PlanningWorkflowList extends Component{
+        static template = "cpm_odoo.PlanningWorkflowList";
+
+        formatDate = formatDate
 
         setup(){
             onWillStart(()=>{
@@ -50,94 +54,12 @@ odoo.define(
         }
     }
 
-    class WorkflowGraphDisplay extends Component{
-        static template = "cpm_odoo.WorkflowGraphDisplay";
-        
+    class PlanningWorkflowGraph extends GanttDisplay{
         setup(){
-            this.temp_data = {
-                display_size:{
-                    width:"100%",
-                    height:"60vh"
-                }
-            }
-
-            let display_size = this.props.other_data.display_size
-            if(display_size!==undefined){
-                if(display_size.width!==undefined){
-                    this.temp_data.display_size.width = display_size.width   
-                }
-                if(display_size.height!==undefined){
-                    this.temp_data.display_size.height = display_size.height
-                }
-            }
-        
-            onWillStart(()=>{
-                
-            })
-
-            onMounted(()=>{
-                this.setupGraphs()
-            })
-
-            useEffect(()=>{
-                this.updateGraphData()
-            })
+            super.setup()
         }
 
-        setupGraphs(){
-            gantt.config.date_format = "%Y-%m-%d";
-            gantt.init("workflow-graph");
-
-            gantt.config.scales = [
-                {
-                    format : "%m/%y",
-                    unit : "month",
-                    step: 1
-                },
-                {
-                    unit: "week", 
-                    step: 2, 
-                    date: "Week %W"
-                }
-            ]
-
-            gantt.config.layout = {
-                css: "gantt_container",
-                rows:[
-                    {
-                       cols: [
-                        {
-                          // the default grid view  
-                          view: "grid",  
-                          scrollX:"scrollHor", 
-                          scrollY:"scrollVer"
-                        },
-                        { resizer: true, width: 1 },
-                        {
-                          // the default timeline view
-                          view: "timeline", 
-                          scrollX:"scrollHor", 
-                          scrollY:"scrollVer"
-                        },
-                        {
-                          view: "scrollbar", 
-                          id:"scrollVer"
-                        }
-                    ]},
-                    {
-                        view: "scrollbar", 
-                        id:"scrollHor"
-                    }
-                ]
-            }
-
-            gantt.config.min_column_width = 100;
-
-            gantt.config.drag_move = false;     
-            gantt.config.drag_resize = false;   
-            gantt.config.drag_progress = false;
-            gantt.config.drag_links = false;
-            
+        setup_graph(){
             gantt.config.columns = [
                 {name: "text", label: "Task Name", width: "*"},
                 {name: "start_date", label: "Start Date", align: "center", width: 100},
@@ -145,11 +67,8 @@ odoo.define(
             ];
         }
 
-        updateGraphData(){
-            let graph_data = []
-            let graph_links = []
-            console.log(this.props.page_data.workflow_list)
-            for(const workflow of this.props.page_data.workflow_list){
+        update_graph_data(){
+            for(const workflow of this.props.state_data.workflow_list){
 
                 let duration = 21
                 let text = workflow.name
@@ -163,7 +82,7 @@ odoo.define(
                     // text+=""
                 }
 
-                graph_data.push({
+                this.graph_data.data.push({
                     id:workflow.id,
                     text: text,
                     start_date: workflow.start_date,
@@ -173,28 +92,23 @@ odoo.define(
                     options:options
                 })
                 
-                for(const deps of workflow.depends_on){
-                    graph_links.push({
-                        id:graph_links.length, 
-                        source:deps, 
-                        target:workflow.id, 
-                        type:"0"
-                    })
+                if(workflow.depends_on){
+                    for(const deps of workflow.depends_on){
+                        this.graph_data.links.push({
+                            id:this.graph_data.links.length, 
+                            source:deps, 
+                            target:workflow.id, 
+                            type:"0"
+                        })
+                    }
                 }
             }
-
-
-            gantt.clearAll();
-            gantt.parse({
-                data: graph_data,
-                links:graph_links
-            });
         }
     }
 
     class PlanningWorkflows extends Component {
         static template = "cpm_odoo.PlanningWorkflows";
-        static components = {WorkflowListDisplay,WorkflowGraphDisplay}
+        static components = {PlanningWorkflowList,PlanningWorkflowGraph}
 
         setup(){
             this.page_data = useState({
@@ -269,41 +183,108 @@ odoo.define(
         setup(){
         }
     }
+
+    //=============================================================
+    // Manage Workflow Component
+    //=============================================================
     
 
-    class PlanningWorkflowTaskList extends Component {
-        static template = "cpm_odoo.PlanningWorkflowTaskList";
+    class PlanningTaskList extends Component {
+        static template = "cpm_odoo.PlanningTaskList";
+
+        formatDate = formatDate
+
         setup(){
         }
+
+        act_manage_task(task_id){
+            storePageInfo(
+                PlanningManageTask.page_name,
+                {
+                    task_id:task_id
+                }
+            )
+            moveToPage(false,"manage_task")
+        }
+
+        act_search()
     }
+
     
-
-    class PlanningWorkflowTaskSchedule extends Component {
-        static template = "cpm_odoo.PlanningWorkflowTaskSchedule";
+    class PlanningTaskGraph extends GanttDisplay{
         setup(){
+            super.setup()
+        }
+
+        setup_graph(){
+            gantt.config.columns = [
+                {name: "text", label: "Task Name", width: "*"},
+                {name: "start_date", label: "Start Date", align: "center", width: 100},
+                { name: "_end_date", label: "Exp. End Date", align: "center", width: 100 }
+            ];
+        }
+
+        update_graph_data(){
+            for(const task of this.props.state_data.task_list){
+
+                let duration = 21
+                let text = task.name
+                let options = "none"
+                let _end_date = task.exp_end
+                if(_end_date !== false){
+                    duration = (new Date(_end_date) - new Date(task.start_date))/(24 * 60 * 60 * 1000)
+                }
+                else{
+                    _end_date = "TBD"
+                    // text+=""
+                }
+
+                this.graph_data.data.push({
+                    id:task.id,
+                    text: text,
+                    start_date: task.start_date,
+                    duration:duration,
+                    _end_date:_end_date,
+                    status:task.task_status,
+                    options:options
+                })
+                
+                if(task.depends_on){
+                    for(const deps of task.depends_on){
+                        this.graph_data.links.push({
+                            id:this.graph_data.links.length, 
+                            source:deps, 
+                            target:task.id, 
+                            type:"0"
+                        })
+                    }
+                }
+            }
         }
     }
-
 
     class PlanningManageWorkflow extends Component{
         static page_name = "PlanningManageWorkflow"
         static template = "cpm_odoo.PlanningManageWorkflow";
-        static components = [
-            PlanningWorkflowTaskList,PlanningWorkflowTaskSchedule
-        ]
+        static components = {PlanningTaskList,PlanningTaskGraph}
 
         setup(){
             const page_name = PlanningManageWorkflow.page_name
             this.pageInfo = getPageInfo(page_name)
+            
+            if(this.pageInfo===undefined){
+                alert("no page info")
+                moveToPage(false,"workflow")
+            }
 
             this.page_data = useState({
                 workflow_info:{
 
                 },
-                task_list:{
-
-                }
+                task_list:[]
             })
+            
+            this.loadData()
 
             this.actionList = [
                 {
@@ -318,18 +299,14 @@ odoo.define(
             ]
 
 
-            if(this.pageInfo===undefined){
-                alert("no page info")
-                moveToPage(false,"workflow")
-            }
             onWillStart(()=>{
-                this.loadData()
+
             })
         }
         
 
         async loadData(){
-            this.page_data.workflow_info = await this.props.context_data.orm.call(
+            this.page_data.workflow_info = (await this.props.context_data.orm.call(
                 'cpm_odoo.planning_workflow',
                 'search_read',
                 [
@@ -339,7 +316,11 @@ odoo.define(
                     ["id","name","start_date","exp_end","workflow_status","task_count","unassigned_task_count"],
                     0,1,null
                 ]
-            )
+            ))[0]
+            if(!this.page_data.workflow_info){
+                moveToPage(false,"workflow")
+            }
+
             this.page_data.task_list = await this.props.context_data.orm.call(
                 'cpm_odoo.planning_task',
                 'search_read',
@@ -347,11 +328,10 @@ odoo.define(
                     [
                         ['workflow_id','=',this.pageInfo.workflow_id]
                     ],
-                    ["id","name","start_date","exp_end"],
-                    0,1,null
+                    ["id","name","description","start_date","exp_end"],
+                    0,null,null
                 ]
             )
-            console.log(this.page_data)
         }
 
         async _do_action(action,params){
@@ -364,6 +344,88 @@ odoo.define(
         }
     }
 
+
+
+    //=============================================================
+    // Manage Task Component
+    //=============================================================
+    class PlanningManageTask extends Component{
+        static page_name = "PlanningManageTask"
+        static template = "cpm_odoo.PlanningManageTask";
+        // static components = {PlanningTaskList,PlanningTaskGraph}
+
+        formatDate = formatDate
+
+        setup(){
+            const page_name = PlanningManageTask.page_name
+            this.pageInfo = getPageInfo(page_name)
+            
+            if(this.pageInfo===undefined){
+                alert("no page info")
+                moveToPage(false,"workflow")
+            }
+
+            this.page_data = useState({
+                task_info:{
+
+                }
+            })
+            
+            this.loadData()
+
+            this.actionList = [
+                {
+                    id:"act_edit_task_general_info",
+                    name:"Edit General Info",
+                    action:'/action/get/cpm_odoo.edit_task_general_info_action_server',
+                    params:{
+                        'default_workflow_id':this.pageInfo.task_id,
+                        'client_action':this.props.context_data.client_action
+                    }
+                }
+            ]
+
+
+            onWillStart(()=>{
+
+            })
+        }
+        
+
+        async loadData(){
+            this.page_data.task_info = (await this.props.context_data.orm.call(
+                'cpm_odoo.planning_task',
+                'search_read',
+                [
+                    [
+                        ['id','=',this.pageInfo.task_id]
+                    ],
+                    ["id","name","start_date","exp_end","task_status"],
+                    0,1,null
+                ]
+            ))[0]
+            if(!this.page_data.task_info){
+                moveToPage(false,"workflow")
+            }
+        }
+
+        async _do_action(action,params){
+            let result = await this.props.context_data.rpc(
+                action,
+                params
+            )
+
+            window.location.href=result
+        }
+    }
+
+    
+
+
+
+    //=============================================================
+    // Root Component
+    //=============================================================    
     class ProjectPlanningPage extends Component {
         static page_name = "ProjectPlanningPage"
         static template = "cpm_odoo.ProjectPlanningPage";
@@ -391,6 +453,13 @@ odoo.define(
                 id: "manage_workflow",
                 name:"Manage Workflow",
                 page:PlanningManageWorkflow,
+                group_id:"cpm_manage_project_plans",
+                hidden:true
+            },
+            {
+                id: "manage_task",
+                name:"Manage Task",
+                page:PlanningManageTask,
                 group_id:"cpm_manage_project_plans",
                 hidden:true
             }

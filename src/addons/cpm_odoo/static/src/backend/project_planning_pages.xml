@@ -96,7 +96,7 @@
         </div>
     </t>
     
-    <t t-name="cpm_odoo.WorkflowListDisplay">
+    <t t-name="cpm_odoo.PlanningWorkflowList">
         <table class="table table-bordered">
           <thead class="table-primary">
             <tr>
@@ -114,13 +114,13 @@
                         <t t-esc="workflow_index + 1"/>
                     </th>
                     <td><t t-esc="workflow.name"/></td>
-                    <td><t t-esc="workflow.start_date"/></td>
+                    <td><t t-esc="formatDate(workflow.start_date)"/></td>
                     <td>
                         <t t-if="workflow.exp_end">
-                            <t t-esc="workflow.exp_end"/>
+                            <t t-esc="formatDate(workflow.exp_end)"/>
                         </t>
                         <t t-else="">
-                            Not Specified
+                            TBD
                         </t>
                     </td>
                     <td>
@@ -135,12 +135,6 @@
             </t>
           </tbody>
         </table>
-    </t>
-    
-    <t t-name="cpm_odoo.WorkflowGraphDisplay">
-        <div id="workflow-graph" t-att-style="`width: ${temp_data.display_size.width}; height:${temp_data.display_size.height}`">
-            
-        </div>
     </t>
 
     <t t-name="cpm_odoo.PlanningWorkflows" owl="1">
@@ -164,10 +158,10 @@
                             </ul>
                             <div class="tab-content workflow-main-tab">
                                 <div class="tab-pane fade show active p-3" id="workflow-list-tab" role="tabpanel">
-                                    <WorkflowListDisplay page_data="page_data"/>
+                                    <PlanningWorkflowList page_data="page_data"/>
                                 </div>
                                 <div class="tab-pane fade p-3" id="workflow-graph-tab" role="tabpanel">
-                                    <WorkflowGraphDisplay page_data="page_data" other_data="{display_size:{height:'60vh'}}"/>
+                                    <PlanningWorkflowGraph state_data="{workflow_list: page_data.workflow_list}" context_params="{display_size:{height:'60vh'}}"/>
                                 </div>
                             </div>
                         </div>
@@ -239,19 +233,72 @@
         </div>
     </t>
 
+    
+
+
+    <!-- ===================================================== -->
+    <!-- Workflow Manage UI -->
+    <!-- ===================================================== -->
     <t t-name="cpm_odoo.PlanningTaskList">
-
-    </t>
-
-    <t t-name="cpm_odoo.PlanningWorkflowTaskSchedule">
-
+        <div class="">
+            <div class="mb-3">
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" t-ref="search_bar"/>
+                    <button class="btn btn-primary" type="button" t-ref="search_btn">Search</button>
+                </form>
+            </div>
+            <div class="grid gap-3">
+                <t t-foreach="props.task_list" t-as="task" t-key="task.id">
+                    <div class="card g-col-4">
+                        <div class="card-body">
+                            <h5 class="card-title mt-2">
+                                <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
+                                <t t-esc="task.name"/>
+                            </h5>
+                            <p class="card-text mt-2">
+                                <t t-if="task.description">
+                                    <t t-esc="task.description"/>
+                                </t>
+                                <t t-else="">
+                                    No Description.
+                                </t>
+                            </p>
+                            <div class="mt-2">
+                                <span>
+                                    <t t-esc="formatDate(task.start_date)"/> - <t t-esc="formatDate(task.exp_end)"/>
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <span class="me-2">
+                                    <i class="fa-solid fa-helmet-safety me-2"></i>
+                                    <span class="">
+                                        50
+                                    </span>
+                                </span>
+                                <span class="me-2">
+                                    <i class="fa-solid fa-building me-2"></i>
+                                    <span class="">
+                                        50
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="task-options mt-3">
+                                <button type="button" class="btn btn-secondary mx-1" t-on-click="(event)=>{act_manage_task(task.id)}">
+                                    Manage
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
     </t>
 
     <t t-name="cpm_odoo.PlanningManageWorkflow" owl="1">
         <div class="row mt-2">
             <div class="d-flex align-items-center mb-2">
-                <div class="fw-bold fs-1 me-5">
-                    Manage
+                <div class="fw-bold fs-1 me-5 mb-2">
+                    Manage - <t t-esc="page_data.workflow_info.name"/>
                 </div>
                 <div class="btn-list">
                     <t t-foreach="this.actionList" t-as="action" t-key="action.id">
@@ -284,15 +331,80 @@
                 </div>
                 <div class="col-md-10">
                     <div class="tab-content task-tabs">
-                        <div class="tab-pane fade show active" id="task-list" role="tabpanel">
-                            
+                        <div class="tab-pane fade show active overflow-auto" id="task-list" role="tabpanel">
+                            <PlanningTaskList task_list="page_data.task_list">
+
+                            </PlanningTaskList>
                         </div>
                         <div class="tab-pane fade" id="workflow-task-schedule" role="tabpanel">
                             <h4>Schedule</h4>
-                            <p>This is the content for the tab.</p>
+                            <PlanningTaskGraph state_data="{task_list: page_data.task_list}" context_params="{display_size:{height:'60vh'}}"/>
                         </div>
                         <div class="tab-pane fade" id="unassigned-task-list" role="tabpanel">
                             <h4>Unassigned Tasks</h4>
+                            <p>This is the content for the tab.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+
+
+    <!-- ===================================================== -->
+    <!-- Task Manage UI -->
+    <!-- ===================================================== -->
+    <t t-name="cpm_odoo.PlanningTaskAssignedMembers">
+
+    </t>
+
+    <t t-name="cpm_odoo.PlanningManageTask">
+        <div class="row mt-2">
+            <div class="d-flex align-items-center mb-2">
+                <div class="fw-bold fs-1 me-5 mb-2">
+                    Manage - <t t-esc="page_data.task_info.name"/>
+                </div>
+                <div class="btn-list">
+                    <t t-foreach="this.actionList" t-as="action" t-key="action.id">
+                        <button type="button" class="btn btn-outline-secondary ms-1" t-on-click="(event)=>{this._do_action(action.action,action.params)}">
+                            <t t-esc="action.name"/>
+                        </button>
+                    </t>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <ul class="nav nav-pills flex-column" role="tablist">
+                        <li class="nav-item user-select-none">
+                            <div class="nav-link active" data-bs-toggle="tab" data-bs-target=".task-tabs #assigned-members-tab" role="tab">
+                                Assigned Members
+                            </div>
+                        </li>
+                        <li class="nav-item user-select-none">
+                            <div class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #documents-tab" role="tab">
+                                Documents
+                            </div>
+                        </li>
+                        <li class="nav-item user-select-none">
+                            <div class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #task-expenses-tab" role="tab">
+                                Expenses
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="col-md-10">
+                    <div class="tab-content task-tabs">
+                        <div class="tab-pane fade active show" id="assigned-members-tab" role="tabpanel">
+                            <h4>Assigned Members</h4>
+                        </div>
+                        <div class="tab-pane fade" id="documents-tab" role="tabpanel">
+                            <h4>Document</h4>
+                            <p>This is the content for the tab.</p>
+                        </div>
+                        <div class="tab-pane fade" id="task-expenses-tab" role="tabpanel">
+                            <h4>Expenses</h4>
                             <p>This is the content for the tab.</p>
                         </div>
                     </div>

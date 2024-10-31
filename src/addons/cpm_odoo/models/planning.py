@@ -267,11 +267,35 @@ class Task(models.Model):
         relation = 'cpm_odoo_pl_task_hr_staff'
     )
     
+    assigned_staff_count = fields.Integer(
+        string = 'Assigned Staff Count',
+        compute = '_compute_assigned_staff_count',
+        store=True
+    )
+    
+    @api.depends('assigned_staff_count')
+    def _compute_assigned_staff_count(self):
+        for record in self:
+            record.assigned_staff_count = len(record.assigned_staff_ids)
+        pass
+    
     assigned_contractor_ids = fields.Many2many(
         comodel_name = 'cpm_odoo.stakeholders_contractor', 
         string='Assigned Contractors',
         relation = 'cpm_odoo_pl_task_stk_contractor'
     )
+    
+    assigned_contractor_count = fields.Integer(
+        string = 'Assigned Contractor Count',
+        compute = '_compute_assigned_contractor_count',
+        store=True
+    )
+    
+    @api.depends('assigned_contractor_count')
+    def _compute_assigned_contractor_count(self):
+        for record in self:
+            record.assigned_contractor_count = len(record.assigned_contractor_ids)
+        pass
     
     depends_on = fields.Many2many(
         comodel_name = 'cpm_odoo.planning_task', 

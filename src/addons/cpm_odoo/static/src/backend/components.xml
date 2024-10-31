@@ -1,0 +1,7 @@
+<templates>
+    <t t-name="cpm_odoo.cmp_schedule_display" owl="1">
+        <div t-ref="gantt_graph_display" t-att-style="`width: ${component_context.display_size.width}; height:${component_context.display_size.height}`">
+            
+        </div>
+    </t>
+</templates>

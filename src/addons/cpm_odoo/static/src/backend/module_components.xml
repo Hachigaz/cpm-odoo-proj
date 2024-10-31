@@ -1,9 +1,0 @@
-<templates>
-    <t t-name="cpm_odoo.planning_WorkflowKanban" t-inherit="web.KanbanView" owl="1" >
-            <xpath expr="//Layout" position="before">
-                <div>
-                    Hello world !
-                </div>
-            </xpath>
-    </t>
-</templates>

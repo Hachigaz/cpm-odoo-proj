@@ -55,5 +55,23 @@ odoo.define(
         }
     }
 
-    return {storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo}
+    function formatDate(date_str){
+        const inputDate = date_str;
+
+        // Split the date string (DD-MM-YYYY)
+        const [year, month, day] = inputDate.split('-');
+        // Create a new Date object (months are zero-based in JavaScript, so subtract 1)
+        const date = new Date(`${year}-${month}-${day}`);
+
+        // Format the date to 'MMM DD YYYY' (e.g., 'Jun 19 2025')
+        const formattedDate = date.toLocaleDateString('en-US', {
+            month: 'short', // Jun
+            day: 'numeric', // 19
+            year: 'numeric' // 2025
+        });
+
+        return formattedDate
+    }
+
+    return {storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo,formatDate}
 });

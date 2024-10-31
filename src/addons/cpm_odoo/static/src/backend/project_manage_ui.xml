@@ -2,9 +2,12 @@
 <templates xml:space="preserve">
 
     <t t-name="cpm_odoo.ProjectManageUI">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/fontawesome/css/all.css"/>
+        </xpath>
         <body class="bg-light">
-            <div class="content-wrapper mx-3">
-                <div class="container-fluid pt-2 pb-2 mt-2 bg-white">
+            <div class="content-wrapper mx-3 h-100 overflow-auto">
+                <div class="container-fluid pt-2 pb-2 mt-2 bg-white sticky-top">
                     <div class="btn-group">
                         <t t-foreach="availablePages" t-as="page" t-key="page.id">
                             <button type="button" class="btn btn-secondary me-1" t-on-click="() => callPage(page.id)"><t t-esc="page.name"/></button>

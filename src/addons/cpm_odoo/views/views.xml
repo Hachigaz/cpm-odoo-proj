@@ -4,7 +4,7 @@
     <!-- ======== Project root menu-->
     <!-- ============================================== -->
     <record id="cpm_odoo.proj_assigned_project_overview_act" model="ir.actions.act_window">
-      <field name="name">Action Name</field>
+      <field name="name">Assigned Projects</field>
       <field name="res_model">cpm_odoo.root_project</field>
       <field name="view_mode">kanban</field>
       <field name="views">(cpm_odoo.proj_project_select_overview_view_kanban,kanban)</field>
@@ -15,7 +15,7 @@
 
     <!-- ======== Create project -->
     <record id="cpm_odoo.proj_project_create_act" model="ir.actions.act_window">
-      <field name="name">Action Name</field>
+      <field name="name">New Project</field>
       <field name="res_model">cpm_odoo.root_project</field>
       <field name="views">(cpm_odoo.proj_project_create_view_form,form)</field>
     </record>
@@ -25,15 +25,9 @@
 
     <!-- Project Management Menu -->
     <record id="cpm_odoo.project_manage_ui_act" model="ir.actions.client">
-      <field name="name">Action Name</field>
+      <field name="name">Manage Project</field>
       <field name="tag">cpm_module.project_manage_ui</field>
       <field name="target">main</field>
-    </record>
-
-    <record id="cpm_odoo.project_manage_ui_act2" model="ir.actions.act_url">
-      <field name="name">Action Name</field>
-      <field name="url">/project/overview</field>
-      <field name="target">self</field>
     </record>
 
     <!-- ============================================== -->
