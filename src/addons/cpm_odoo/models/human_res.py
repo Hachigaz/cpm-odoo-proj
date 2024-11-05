@@ -23,7 +23,8 @@ class Staff(models.Model):
     
     department_id = fields.Many2one(
         comodel_name = 'cpm_odoo.human_res_department', 
-        string='Department'
+        string='Department',
+        auto_join=True
     )
     
     _inherits = {

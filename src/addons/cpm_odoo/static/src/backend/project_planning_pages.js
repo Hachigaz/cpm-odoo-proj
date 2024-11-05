@@ -195,6 +195,35 @@ odoo.define(
         formatDate = formatDate
 
         setup(){
+            this.search_bar_el = useRef('search_bar')
+            
+            this.state_data = useState({
+                task_list:this.props.page_data.task_list
+            })
+
+            onWillStart(()=>{
+
+            })
+
+            onMounted(()=>{
+                this.bind_keys()
+            })
+
+            useEffect(
+                () => {
+                    this.state_data.task_list = this.props.page_data.task_list
+                }, () => [this.props.page_data.task_list]
+            )
+        }
+
+        bind_keys(){
+            this.search_bar_el.el.addEventListener("keydown", 
+                (event) => {
+                    if (event.key === "Enter") {
+                        this.act_search();
+                    }
+                }
+            );
         }
 
         act_manage_task(task_id){
@@ -207,7 +236,21 @@ odoo.define(
             moveToPage(false,"manage_task")
         }
 
-        act_search()
+        async act_search(){
+            let kw = this.search_bar_el.el.value
+            if(kw){
+                let keywords = kw.split(" ")
+
+                this.state_data.task_list = this.props.page_data.task_list.filter((item) =>
+                    keywords.some((keyword) =>
+                        item.name.includes(keyword)
+                    )
+                );
+            }
+            else{
+                this.state_data.task_list = this.props.page_data.task_list
+            }
+        }
     }
 
     
@@ -220,7 +263,7 @@ odoo.define(
             gantt.config.columns = [
                 {name: "text", label: "Task Name", width: "*"},
                 {name: "start_date", label: "Start Date", align: "center", width: 100},
-                { name: "_end_date", label: "Exp. End Date", align: "center", width: 100 }
+                {name: "_end_date", label: "Exp. End Date", align: "center", width: 100 }
             ];
         }
 
@@ -349,10 +392,345 @@ odoo.define(
     //=============================================================
     // Manage Task Component
     //=============================================================
+    class ItemListManager{
+        filter_options={
+            search_bar:{
+                el:undefined,
+                search_cols:[]
+            }
+        }
+        filter_cols=[]
+
+        disp_item_list = []
+        org_item_list = []
+
+        //called on mounted
+        bind_keys(){
+            if(this.filter_options.search_bar.el){
+                this.filter_options.search_bar.el.el.addEventListener("keydown", 
+                    (event) => {
+                        if (event.key === "Enter") {
+                            this.act_search();
+                        }
+                    }
+                );
+            }
+        }
+        async act_load(){
+            let item_list = this.org_item_list
+            //filter by search keyword
+            if(this.search_kw){
+                let keywords = kw.split(" ")
+
+                this.item_list = this.org_item_list.filter((item) =>
+                    keywords.some((keyword) =>{
+                            is_avail = false
+                            this.filter_options.search_bar.search_cols.forEach((col)=>{
+                                is_avail|=item[col].includes(keyword)
+                            })
+                            return is_avail
+                        }
+                    )
+                );
+            }
+
+            //filter by others
+            this.disp_item_list = item_list
+        }
+        //called on buttons
+        async act_search(){
+            this.search_kw = this.search_bar.el.el.value
+            this.act_load()
+        }
+
+        async act_filter(){
+
+        }
+    }
+
+    class PlanningStaffList extends Component{
+        static template = "cpm_odoo.PlanningStaffList"
+        itemList = new ItemListManager()
+        
+
+        setup(){
+            this.state_data = useState({
+                staff_list:[]
+            })
+            this.itemList.filter_options={
+                search_bar:{
+                    el:useRef('search-bar'),
+                    search_cols:['first_name','last_name']
+                }
+            }
+            useEffect(
+                () => {
+                    this.itemList.org_item_list = this.props.staff_list
+                    this.itemList.act_load()
+                    this.state_data.staff_list = this.itemList.disp_item_list
+                }, () => [this.props.staff_list]
+            )
+            onMounted(()=>{
+                // this.itemList.bind_keys()
+            })
+        }
+    }
+
+    class PlanningContractorList extends Component{
+        static template = "cpm_odoo.PlanningContractorList"
+        itemList = new ItemListManager()
+        
+
+        setup(){
+            this.state_data = useState({
+                contractor_list:[]
+            })
+            this.itemList.filter_options={
+                search_bar:{
+                    el:useRef('search-bar'),
+                    search_cols:['first_name','last_name']
+                }
+            }
+            useEffect(
+                () => {
+                    this.itemList.org_item_list = this.props.contractor_list
+                    this.itemList.act_load()
+                    this.state_data.contractor_list = this.itemList.disp_item_list
+                }, () => [this.props.contractor_list]
+            )
+            onMounted(()=>{
+                // this.itemList.bind_keys()
+            })
+        }
+    }
+    
+    class PlanningStaffAssignPanel extends Component{
+        static template = "cpm_odoo.PlanningStaffAssignPanel";
+        
+        setup(){
+            this.state_data = useState({
+                staff_list:[]
+            })
+
+            this.assigned_staff_ids = this.props.task_info
+
+            this.loadData(this)
+            this.cmp_root = useRef('cmp-root')
+
+
+            this.props.asgn_act.load = this.loadData
+            this.props.asgn_act.save = this.act_save
+            this.props.asgn_act.cancel = this.act_reset
+            this.props.asgn_act.inst = this
+        }
+
+        async loadData(inst){
+            inst.state_data.staff_list = await inst.props.context_data.orm.call(
+                'cpm_odoo.human_res_staff',
+                'search_read',
+                [
+                    [
+                        
+                    ],
+                    [],
+                    // ["id","first_name","last_name","department_id"],
+                    0,21,null
+                ]
+            )
+        }
+
+        assign_actions = []
+        cancel_actions = []
+
+        async act_assign(staff_id){
+            this.assign_actions.push(staff_id)
+            if(this.cancel_actions.includes(staff_id)){
+                let index = this.cancel_actions.indexOf(staff_id);
+                if (index !== -1) {
+                    this.cancel_actions.splice(index, 1);
+                }                
+            }
+
+            let card_el = this.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${staff_id}`)
+
+            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+        }
+
+        async act_cancel(staff_id){
+            this.cancel_actions.push(staff_id)
+            if(this.assign_actions.includes(staff_id)){
+                let index = this.assign_actions.indexOf(staff_id);
+                if (index !== -1) {
+                    this.assign_actions.splice(index, 1);
+                }                
+            }
+            
+            let card_el = this.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${staff_id}`)
+
+            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+        }
+
+        async act_save(inst){
+            if(inst.assign_actions.length>0 || inst.cancel_actions.length > 0){
+                let actions = []
+                inst.assign_actions.forEach((staff_id)=>{
+                    actions.push([4,staff_id])
+                })
+    
+                inst.cancel_actions.forEach((staff_id)=>{
+                    actions.push([3,staff_id])
+                })
+
+                const result = await (inst.props.context_data.orm.call(
+                    'cpm_odoo.planning_task',
+                    'write',
+                    [
+                        [inst.props.task_info.id],
+                        {
+                            "assigned_staff_ids":actions
+                        }
+                    ]
+                ))
+    
+                inst.act_reset(inst)
+                window.location.reload()
+            }
+        }
+
+        async act_reset(inst){
+            inst.assign_actions = []
+            inst.cancel_actions = []
+        }
+    }
+
+    
+    class PlanningContractorAssignPanel extends Component{
+        static template = "cpm_odoo.PlanningContractorAssignPanel";
+        
+        setup(){
+            this.state_data = useState({
+                contractor_list:[]
+            })
+
+            this.assigned_contractor_ids = this.props.task_info
+
+            this.loadData(this)
+            this.cmp_root = useRef('cmp-root')
+
+            this.props.asgn_act.load = this.loadData
+            this.props.asgn_act.save = this.act_save
+            this.props.asgn_act.cancel = this.act_reset
+            this.props.asgn_act.inst = this
+        }
+
+        async loadData(inst){
+            inst.state_data.contractor_list = await inst.props.context_data.orm.call(
+                'cpm_odoo.stakeholders_contractor',
+                'search_read',
+                [
+                    [
+                        
+                    ],
+                    [],
+                    // ["id","first_name","last_name","department_id"],
+                    0,21,null
+                ]
+            )
+        }
+
+        assign_actions = []
+        cancel_actions = []
+
+        async act_assign(contractor_id){
+            this.assign_actions.push(contractor_id)
+            if(this.cancel_actions.includes(contractor_id)){
+                let index = this.cancel_actions.indexOf(contractor_id);
+                if (index !== -1) {
+                    this.cancel_actions.splice(index, 1);
+                }                
+            }
+
+            let card_el = this.cmp_root.el.querySelector(`.contractor-card-list#assign-list #contractor-${contractor_id}`)
+            
+            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+        }
+
+        async act_cancel(contractor_id){
+            this.cancel_actions.push(contractor_id)
+            if(this.assign_actions.includes(contractor_id)){
+                let index = this.assign_actions.indexOf(contractor_id);
+                if (index !== -1) {
+                    this.assign_actions.splice(index, 1);
+                }                
+            }
+            
+            let card_el = this.cmp_root.el.querySelector(`.contractor-card-list#assign-list #contractor-${contractor_id}`)
+
+            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+        }
+
+        async act_save(inst){
+            if(inst.assign_actions.length>0 || inst.cancel_actions.length > 0){
+                let actions = []
+                inst.assign_actions.forEach((contractor_id)=>{
+                    actions.push([4,contractor_id])
+                })
+    
+                inst.cancel_actions.forEach((contractor_id)=>{
+                    actions.push([3,contractor_id])
+                })
+
+                const result = await (inst.props.context_data.orm.call(
+                    'cpm_odoo.planning_task',
+                    'write',
+                    [
+                        [inst.props.task_info.id],
+                        {
+                            "assigned_contractor_ids":actions
+                        }
+                    ]
+                ))
+    
+                inst.act_reset(inst)
+                window.location.reload()
+            }
+        }
+
+        async act_reset(inst){
+            inst.assign_actions = []
+            inst.cancel_actions = []
+        }
+    }
+
     class PlanningManageTask extends Component{
         static page_name = "PlanningManageTask"
         static template = "cpm_odoo.PlanningManageTask";
-        // static components = {PlanningTaskList,PlanningTaskGraph}
+        static components = {
+            PlanningStaffList,
+            PlanningContractorList,
+            PlanningStaffAssignPanel,
+            PlanningContractorAssignPanel
+        }
 
         formatDate = formatDate
 
@@ -368,7 +746,8 @@ odoo.define(
             this.page_data = useState({
                 task_info:{
 
-                }
+                },
+                assigned_staff_list:[]
             })
             
             this.loadData()
@@ -385,6 +764,17 @@ odoo.define(
                 }
             ]
 
+            this.staff_asgn_act = useState({
+                load:undefined,
+                save:undefined,
+                cancel:undefined
+            })
+            
+            this.contractor_asgn_act = useState({
+                load:undefined,
+                save:undefined,
+                cancel:undefined
+            })
 
             onWillStart(()=>{
 
@@ -400,13 +790,34 @@ odoo.define(
                     [
                         ['id','=',this.pageInfo.task_id]
                     ],
-                    ["id","name","start_date","exp_end","task_status"],
+                    ["id","name","start_date","exp_end","task_status","assigned_staff_ids","assigned_contractor_ids"],
                     0,1,null
                 ]
             ))[0]
             if(!this.page_data.task_info){
                 moveToPage(false,"workflow")
             }
+
+            
+            this.page_data.assigned_staff_list = await this.props.context_data.orm.call(
+                'cpm_odoo.human_res_staff',
+                'read',
+                [
+                    this.page_data.task_info.assigned_staff_ids  
+                ]
+            )
+
+            // this.page_data.assigned_contractor_list = await this.props.context_data.orm.call(
+            //     'cpm_odoo.planning_task',
+            //     'search_read',
+            //     [
+            //         [
+            //             ['id','=',this.pageInfo.task_id]
+            //         ],
+            //         ["id","name","start_date","exp_end","task_status"],
+            //         0,1,null
+            //     ]
+            // )
         }
 
         async _do_action(action,params){

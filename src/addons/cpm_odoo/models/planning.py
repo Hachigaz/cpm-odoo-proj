@@ -232,6 +232,13 @@ class Task(models.Model):
         required=True,
         size = 256
     )
+    
+    category_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.planning_task_category', 
+        string='Category',
+        ondelete='restrict',
+        auto_join = True
+    )
 
     description = fields.Text(
         string = 'Description'
@@ -266,6 +273,13 @@ class Task(models.Model):
         string='Assigned Staffs',
         relation = 'cpm_odoo_pl_task_hr_staff'
     )
+    
+    @api.model    
+    def assign_staff():
+        pass
+    
+    def assign_contractor():
+        pass
     
     assigned_staff_count = fields.Integer(
         string = 'Assigned Staff Count',
@@ -410,9 +424,27 @@ class Task(models.Model):
             'target': 'self'
         }
 
+class TaskCategory(models.Model):
+    _name = 'cpm_odoo.planning_task_category'
+    _description = "Task Categories"
+    
+    # name = fields.Char(
+    #     string = 'Category Name',
+    #     size = '64',
+    #     required=True
+    # )
+    
+    # color = fields.Char(
+    #     string = 'Category Color',
+    #     required=True,
+    #     size=7,
+    #     default = "#FF5733"
+    # )
+    
+
 class TaskNote(models.Model):
     _name = 'cpm_odoo.planning_task_note'
-    _description = "Model"
+    _description = "Task Notes"
     
     task_id = fields.Many2one(
         comodel_name = 'cpm_odoo.planning_task',

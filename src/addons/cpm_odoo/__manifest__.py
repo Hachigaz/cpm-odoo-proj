@@ -35,6 +35,8 @@ Long description of module's purpose
         'views/project/planning/workflows/create_workflow.xml',
         'views/hr_mgmt/staff_create.xml',
         'views/stakeholders/contractor_create.xml',
+        'init_res/cpm_odoo.human_res_department.csv',
+        'init_res/cpm_odoo.human_res_staff.csv',
     ],
     'assets': {
         'web.assets_backend': [
