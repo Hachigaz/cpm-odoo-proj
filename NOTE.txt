@@ -1,0 +1,19 @@
+How to create new container
+    - Tạo folder dự án, đưa file compose.yaml vào trong folder
+    - Mở terminal trong docker, cd vào thư mục chứa dự án
+    - Chạy file compose bằng lệnh: docker compose up
+    - Chờ terminal chạy xong thì lên trình duyệt gõ: http://localhost:8069/
+
+How to enter developer mode
+    - Đăng nhập tài khoản
+    - Trên đường link, sau chữ web thì hãy nhập thêm ?debug=1
+    VD: http://localhost:8069/web?debug=1#
+    - Logout ra và vào lại bằng Log in as Super user
+
+How to create new module in container
+    - Khi container đang chạy, vào mục odoo-1 trong 2 mục của container
+    - gõ lệnh: odoo scaffold tên /mnt/extra-addons
+    - vào folder module mới tạo trong project, Xóa toàn bộ comment code trong module
+    - reset container lại 
+    - Vào app trong odoo và bấm Update app list
+    - Tìm module trong app, active nó rồi nhấn update cho nó Upgrade

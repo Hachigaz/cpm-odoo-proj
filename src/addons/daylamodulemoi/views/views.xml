@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>    <!--https://www.odoo.com/documentation/18.0/developer/tutorials/backend.html-->
+  <data>  <!--thêm view nhớ update module-->
+    <!-- explicit list view definition -->
+    <!--view tree được khi khai báo record là 1 bảng ghi trong model
+          ir.ui.view (nó ở trong database)-->
+    <record model="ir.ui.view" id="daylamodulemoi.list">
+      <field name="name">daylamodulemoi list</field>  <!--tên bảng ghi-->
+      <field name="model">daylamodulemoi.daylamodulemoi</field> <!--trỏ tới model khai báo xong file model-->
+      <field name="arch" type="xml">
+        <tree>  <!--thẻ tree: kiểu view dạng danh sách, Bên trong là các field (trường) trong database-->
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+    <!--để truy cập vào view ở trên cần có action-->
+    <record model="ir.actions.act_window" id="daylamodulemoi.action_window">
+      <field name="name">daylamodulemoi window</field>
+      <field name="res_model">daylamodulemoi.daylamodulemoi</field> <!--view khai báo khi nhấn vào action này-->
+      <field name="view_mode">tree,form</field> <!--chỗ này khai cáo cái view tree ở trên(view tree và view form)-->
+    </record>
+    <!--khi nhấn vào action cần có menu trỏ đến action-->
+
+
+    <!-- server action to the one above -->
+
+    <record model="ir.actions.server" id="daylamodulemoi.action_server">
+      <field name="name">daylamodulemoi server</field>
+      <field name="model_id" ref="model_daylamodulemoi_daylamodulemoi"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+
+
+    
+    <!-- Top menu item (menu tổng của trang) -->
+    <menuitem name="daylamodulemoi" id="daylamodulemoi.menu_root"/>
+
+    <!-- menu categories (menu con của menu tổng) -->
+    <menuitem name="Menu 1" id="daylamodulemoi.menu_1" parent="daylamodulemoi.menu_root"/>
+    <menuitem name="Menu 2" id="daylamodulemoi.menu_2" parent="daylamodulemoi.menu_root"/>
+
+    <!-- actions -->
+    <!--Menu con của menu categories phía trên , trỏ tới 2 cái action
+    phía trên: action_window và action_server-->
+    <menuitem name="List" id="daylamodulemoi.menu_1_list" 
+              parent="daylamodulemoi.menu_1"
+              action="daylamodulemoi.action_window"/>
+    <menuitem name="Server to list" id="daylamodulemoi" 
+              parent="daylamodulemoi.menu_2"
+              action="daylamodulemoi.action_server"/>
+    <!--khi kích vào menu list này, nó sẽ trỏ action, action sẽ truy 
+    cập vào cái view đầu tiên khai báo trong view_mode-->
+  </data>
+</odoo>
