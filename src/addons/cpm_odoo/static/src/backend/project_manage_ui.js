@@ -83,7 +83,8 @@ odoo.define(
                 doc_id: sessionStorage.getItem('doc_id'),
                 client_action: clientAction,
                 rpc: useService("rpc"),
-                orm: useService("orm")
+                orm: useService("orm"),
+                action: useService("action")
             }
             if(getPageContext()){
                 this.currentPage = getPageContext().page_id;

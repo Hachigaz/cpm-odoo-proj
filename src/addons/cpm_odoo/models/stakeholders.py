@@ -34,10 +34,12 @@ class Contractor(models.Model):
     
     _inherit = "cpm_odoo.stakeholders_stakeholder"
     
-    category_id = fields.Many2one(
+    category_ids = fields.Many2many(
         comodel_name = 'cpm_odoo.stakeholders_contractor_category', 
         string='Category',
-        ondelete = "restrict"
+        relation='cpm_odoo_contractor_cate_contractor',
+        column1="contractor_cate_contractor_id",
+        column2="contractor_cate_category_id"
     )
     
 class ContractorCategory(models.Model):
@@ -48,6 +50,19 @@ class ContractorCategory(models.Model):
         string = 'Name',
         required=True,
         size = 64
+    )
+    
+    color = fields.Char(
+        string = 'Category Color',
+        required=True,
+        size=24,
+        default = "#FF5733"
+    )
+    
+    display = fields.Boolean(
+        string = 'Display',
+        required=True,
+        default=False
     )
     
 class Investor(models.Model):

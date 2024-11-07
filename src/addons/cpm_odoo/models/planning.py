@@ -21,6 +21,7 @@ class Workflow(models.Model):
     
     start_date = fields.Date(
         string = 'Start Date',
+        default = fields.Date.today(),
         required=True
     )
     
@@ -103,7 +104,7 @@ class Workflow(models.Model):
         pass
     
     not_started_task_count = fields.Integer(
-        string = 'Not Started Count',
+        string = 'Not Started',
         compute = '_compute_not_started_task_count',
         store=True
     )
@@ -116,7 +117,7 @@ class Workflow(models.Model):
         pass
     
     in_progress_task_count = fields.Integer(
-        string = 'Not Started Count',
+        string = 'In Progress',
         compute = '_compute_in_progress_task_count',
         store=True
     )
@@ -129,7 +130,7 @@ class Workflow(models.Model):
         pass
     
     completed_task_count = fields.Integer(
-        string = 'Not Started Count',
+        string = 'Completed',
         compute = '_compute_completed_task_count',
         store=True
     )
@@ -428,18 +429,18 @@ class TaskCategory(models.Model):
     _name = 'cpm_odoo.planning_task_category'
     _description = "Task Categories"
     
-    # name = fields.Char(
-    #     string = 'Category Name',
-    #     size = '64',
-    #     required=True
-    # )
+    name = fields.Char(
+        string = 'Category Name',
+        size = 64,
+        required=True
+    )
     
-    # color = fields.Char(
-    #     string = 'Category Color',
-    #     required=True,
-    #     size=7,
-    #     default = "#FF5733"
-    # )
+    color = fields.Char(
+        string = 'Category Color',
+        required=True,
+        size=24,
+        default = "#FF5733"
+    )
     
 
 class TaskNote(models.Model):

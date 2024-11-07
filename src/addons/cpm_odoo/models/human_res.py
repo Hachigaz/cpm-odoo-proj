@@ -44,6 +44,19 @@ class Staff(models.Model):
             val["name"] = val["first_name"].lower() + " " + val["last_name"].lower()
         return super().create(vals)
     
+    # def unlink(self):
+    #     # Get the parent record from the child
+    #     user_rec = self.mapped('user_id')
+
+    #     # First, unlink the child record(s)
+    #     result = super().unlink()
+
+    #     # Now, unlink the corresponding parent record(s)
+    #     user_rec.unlink()
+
+    #     return result
+
+    
 class Department(models.Model):
     _name = 'cpm_odoo.human_res_department'
     _description = "Model"

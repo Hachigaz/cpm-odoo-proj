@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="cpm_odoo.stakeholders_contractor_create_view_form" model="ir.ui.view">
+        <record id="cpm_odoo.stakeholders_contractor_category_create_view_form" model="ir.ui.view">
             <field name="name">model_name.view.form</field>
-            <field name="model">cpm_odoo.stakeholders_contractor</field>
+            <field name="model">cpm_odoo.stakeholders_contractor_category</field>
             <field name="arch" type="xml">
                 <form string="New Contractor">
                     <sheet>
@@ -11,7 +11,7 @@
                             <group colspan='2'>
                                 <field name="name">Contractor Name</field>
                                 <field name="description">Description</field>
-                                <field name="category_id">Contractor Type</field>
+                                <field name="category">Contractor Type</field>
                             </group>
                             <group colspan='1'>
                                 <field name="avatar_128" invisible="1"></field>

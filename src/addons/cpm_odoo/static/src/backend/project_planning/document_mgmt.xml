@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="cpm_odoo.PlanningDocumentManagementTab">
+        <!-- document main tab -->
+        <div class="container-fluid tab-title d-flex align-items-center">
+            <div class="me-3">
+                <h2 class="m-0">
+                    Project Documents
+                </h2>
+            </div>
+            <div class="btn-list">
+                <button type="button" class="btn btn-outline-secondary me-2" t-on-click="()=>{this.act_add_document()}">
+                    New Document Set
+                </button>
+                <button type="button" class="btn btn-outline-secondary me-2" t-on-click="()=>{this.act_add_category()}">
+                    New Category
+                </button>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="display-row mt-3">
+                <!-- some document categories -->
+                <div class="row-title d-flex align-items-center">
+                    <div class="me-3">
+                        <h3 class="m-0">
+                            Categories
+                        </h3>
+                    </div>
+                    <div class="btn-list">
+                        <button type="button" class="btn btn-outline-secondary" t-on-click="()=>{this.act_show_more_document_categories()}">
+                            More
+                        </button>
+                    </div>
+                </div>
+                <div class="row align-items-center mt-2 g-3">
+                    <t t-foreach="page_data.display_document_category_list" t-as="category" t-key="category.id">
+                        <div class="col-3">
+                            <div class="card" t-att-style="`background-color:${category.color}`">
+                                <div class="card-img-top text-white p-2">
+                                    <h4 class="card-title text-white m-0"><t t-esc="category.name"/></h4>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        This is a wider card with supporting text below as a
+                                        natural lead-in to additional content. This content is a
+                                        little bit longer.
+                                    </p>
+                                    <div class="row align-items-center">
+                                        <div class="col d-flex">
+                                            <span class="me-2">
+                                                10 <i class="fa-regular fa-file-lines"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col btn-list d-flex justify-content-end">
+                                            <div class="btn btn-outline-dark">
+                                                View Documents
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+            <div class="display-row mt-5">
+                <!-- recently added docs -->
+                <div class="row-title d-flex align-items-center">
+                    <div class="me-3">
+                        <h3 class="m-0">
+                            Recently Uploaded
+                        </h3>
+                    </div>
+                    <div class="btn-list">
+                        <button type="button" class="btn btn-outline-secondary" t-on-click="()=>{act_show_more_document_sets(null)}">
+                            More
+                        </button>
+                    </div>
+                </div>
+                <div class="row align-items-center mt-2 g-3">
+                    <t t-foreach="page_data.document_set_list" t-as="doc_set" t-key="doc_set.id">
+                        <t t-set="card_category" t-value="page_data.display_document_category_list.find((cat)=>cat.id === doc_set.category_id[0])"/>
+                        <t t-if="card_category">
+                            <t t-set="card_color" t-value="card_category.color"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="card_color" t-value="'grey'"/>
+                        </t>
+                        <div class="col-3">
+                            <div class="card" t-att-style="`background-color:${card_color}`">
+                                <div class="card-img-top p-2">
+                                    <h4 class="card-title m-0"><t t-esc="doc_set.name"/></h4>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <t t-if="doc_set.description">
+                                            <t t-esc="doc_set.description"/>
+                                        </t>
+                                        <t t-else="">
+                                            This is a wider card with supporting text below as a
+                                            natural lead-in to additional content. This content is a
+                                            little bit longer.
+                                        </t>
+                                    </p>
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="card-text mb-1">
+                                                <small class="text-muted">
+                                                    <t t-if="doc_set.document_count &lt; 2">
+                                                        <t t-esc="doc_set.document_count"/>
+                                                        Document
+                                                    </t>
+                                                    <t t-else="">
+                                                        <t t-esc="doc_set.document_count"/>
+                                                        Documents
+                                                    </t>
+                                                </small>
+                                            </div>
+                                            <div class="card-text">
+                                                <small class="text-muted">
+                                                    Last Updated:
+                                                    <t t-if="doc_set.updated_at">
+                                                        <t t-esc="doc_set.updated_at"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        Never
+                                                    </t>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col btn-list d-flex justify-content-end">
+                                            <div class="btn btn-outline-dark">
+                                                View Details
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.ItemListViewTemplate">
+
+    </t>
+
+    <t t-name="cpm_odoo.DocumentSetDetail">
+
+    </t>
+
+    <t t-name="cpm_odoo.DocumentCategoryItemList">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/fontawesome/css/all.css"/>
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/animate_css/animate.min.css"/>
+        </xpath>
+        <div class="bg-light container-fluid d-flex flex-column h-100">
+            <div class="bg-white text-white p-3 mb-2 row align-items-center">
+                <div class="col-3 d-flex align-items-center">
+                    <button class="btn btn-outline-secondary px-4 py-2 me-2" onclick="window.history.back()"><i class="oi oi-arrow-left"/></button>
+                    <h2 class="m-0">Document Categories</h2>    
+                </div>
+                <div class="col-9 d-flex justify-content-end">
+                    <button class="btn btn-secondary px-3 py-1 me-2" onclick="window.history.back()">Back</button>
+                    <button class="btn btn-secondary px-3 py-1" onclick="window.history.back()">Back 2</button>
+                </div>
+            </div>
+            <div class="flex-fill bg-white p-3 d-flex flex-column">
+                <div class="item-list-header mb-2">
+                    YHeaer
+                </div>
+                <div class="item-list flex-fill">
+                    <div class="row g-3">
+                        <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                            <div class="col-3">
+                                <div class="card" t-att-style="`background-color:grey`">
+                                    <div class="card-img-top text-white p-2 d-flex align-items-center text-center">
+                                        <i class="fas fa-circle fa-sm" t-att-style="`color: ${item.color}; font-size:0.8rem; margin-right: 8px;`"></i>
+                                        <h4 class="card-title text-white m-0"><t t-esc="item.name"/></h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            This is a wider card with supporting text below as a
+                                            natural lead-in to additional content. This content is a
+                                            little bit longer.
+                                        </p>
+                                        <div class="row align-items-center">
+                                            <div class="col btn-list d-flex justify-content-end">
+                                                <div class="btn btn-outline-dark" t-on-click="()=>{this.act_show_more_document_sets({category_id:item.id})}">
+                                                    View Documents
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <t t-if="page_data.page_count > 1">
+                    <div class="item-list-footer mt-2 pt-2 pb-2 bg-primary">
+                            <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                    <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                        <t t-esc="page+1"/>
+                                    </button>
+                                </t>
+                            </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.DocumentSetItemList">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/fontawesome/css/all.css"/>
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/animate_css/animate.min.css"/>
+        </xpath>
+        <div class="bg-light container-fluid d-flex flex-column h-100">
+            <div class="bg-white text-white p-3 mb-2 row align-items-center">
+                <div class="col-3 d-flex align-items-center">
+                    <button class="btn btn-outline-secondary px-4 py-2 me-2" onclick="window.history.back()"><i class="oi oi-arrow-left"/></button>
+                    <h2 class="m-0">Documents</h2>    
+                </div>
+                <div class="col-9 d-flex justify-content-end">
+                    <button class="btn btn-secondary px-3 py-1 me-2" onclick="window.history.back()">Back</button>
+                    <button class="btn btn-secondary px-3 py-1" onclick="window.history.back()">Back 2</button>
+                </div>
+            </div>
+            <div class="flex-fill bg-white p-3 d-flex flex-column">
+                <div class="item-list-header mb-2">
+                    YHeaer
+                </div>
+                <div class="item-list flex-fill">
+                    <div class="row g-3">
+                        <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                            <div class="col-3">
+                                <div class="card" t-att-style="`background-color:grey`">
+                                    <div class="card-img-top text-white p-2 d-flex align-items-center text-center">
+                                        <i class="fas fa-circle fa-sm" t-att-style="`color: ${item.color}; font-size:0.8rem; margin-right: 8px;`"></i>
+                                        <h4 class="card-title text-white m-0"><t t-esc="item.name"/></h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            This is a wider card with supporting text below as a
+                                            natural lead-in to additional content. This content is a
+                                            little bit longer.
+                                        </p>
+                                        <div class="row align-items-center">
+                                            <div class="col btn-list d-flex justify-content-end">
+                                                <div class="btn btn-outline-dark" t-on-click="()=>{this.act_show_more_document_sets({category_id:item.id})}">
+                                                    View Documents
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <t t-if="page_data.page_count > 1">
+                    <div class="item-list-footer mt-2 pt-2 pb-2 bg-primary">
+                            <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                    <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                        <t t-esc="page+1"/>
+                                    </button>
+                                </t>
+                            </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

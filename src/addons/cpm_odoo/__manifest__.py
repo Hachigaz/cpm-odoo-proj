@@ -19,7 +19,7 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','web'],
+    'depends': ['base','web','web_widget_colorpicker'],
 
     # always loaded
     'data': [
@@ -33,10 +33,22 @@ Long description of module's purpose
         'views/project/project_overview.xml',
         'views/project/planning/tasks/create_task.xml',
         'views/project/planning/workflows/create_workflow.xml',
+        'views/doc_mgmt/document_category_create.xml',
+        'views/doc_mgmt/document_set_create.xml',
+        'views/doc_mgmt/document_create.xml',
         'views/hr_mgmt/staff_create.xml',
         'views/stakeholders/contractor_create.xml',
+        # 'init_res/cpm_odoo.root_project_hrm.csv',
+        # 'init_res/cpm_odoo.root_project_planning.csv',
+        # 'init_res/cpm_odoo.root_project_finance.csv',
+        # 'init_res/cpm_odoo.root_project_doc_mgmt.csv',
+        # 'init_res/cpm_odoo.root_project.csv',
+        'init_res/cpm_odoo.stakeholders_contractor_category.csv',
+        'init_res/cpm_odoo.stakeholders_contractor.csv',
         'init_res/cpm_odoo.human_res_department.csv',
         'init_res/cpm_odoo.human_res_staff.csv',
+        'init_res/cpm_odoo.documents_document_category.csv',
+        'init_res/cpm_odoo.documents_document_set.csv',
     ],
     'assets': {
         'web.assets_backend': [

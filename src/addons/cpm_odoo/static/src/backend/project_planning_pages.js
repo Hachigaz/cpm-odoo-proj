@@ -1,5 +1,6 @@
 /** @odoo-module **/
 import { GanttDisplay } from "./components";
+import { DocumentManagementTab } from "./project_planning/document_mgmt";
 
 odoo.define(
     'cpm_modules.project_planning_pages', 
@@ -11,7 +12,7 @@ odoo.define(
     function (require) {
     'use strict';
 
-    const { Component, onWillStart, onMounted, onWillPatch, useEffect, onWillUpdateProps, mount, loadFile, useState, useRef} = require("@odoo/owl");
+    const { Component, onWillStart, onMounted, useEffect, useState, useRef} = require("@odoo/owl");
     const { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate} = require("cpm_modules.component_utils");
     
     class PlanningOverview extends Component {
@@ -520,7 +521,7 @@ odoo.define(
 
             this.props.asgn_act.load = this.loadData
             this.props.asgn_act.save = this.act_save
-            this.props.asgn_act.cancel = this.act_reset
+            this.props.asgn_act.cancel = this.act_cancel_all
             this.props.asgn_act.inst = this
         }
 
@@ -581,7 +582,7 @@ odoo.define(
         }
 
         async act_save(inst){
-            if(inst.assign_actions.length>0 || inst.cancel_actions.length > 0){
+            if(inst.assign_actions.length>0 || inst.cancel_actions.length > 0){``
                 let actions = []
                 inst.assign_actions.forEach((staff_id)=>{
                     actions.push([4,staff_id])
@@ -607,7 +608,34 @@ odoo.define(
             }
         }
 
+        async act_cancel_all(inst){
+            inst.assign_actions.forEach((id)=>{
+                let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
+
+                card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+                card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+            })
+
+            inst.cancel_actions.forEach((id)=>{
+                let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
+
+                card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+                card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+            })
+
+            inst.act_reset(inst)
+        }
+
         async act_reset(inst){
+
             inst.assign_actions = []
             inst.cancel_actions = []
         }
@@ -629,7 +657,7 @@ odoo.define(
 
             this.props.asgn_act.load = this.loadData
             this.props.asgn_act.save = this.act_save
-            this.props.asgn_act.cancel = this.act_reset
+            this.props.asgn_act.cancel = this.act_cancel_all
             this.props.asgn_act.inst = this
         }
 
@@ -716,9 +744,43 @@ odoo.define(
             }
         }
 
+        async act_cancel_all(inst){
+            inst.assign_actions.forEach((id)=>{
+                let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
+
+                card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+                card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+            })
+
+            inst.cancel_actions.forEach((id)=>{
+                let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
+
+                card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+                card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+            })
+
+            inst.act_reset(inst)
+        }
+
         async act_reset(inst){
             inst.assign_actions = []
             inst.cancel_actions = []
+        }
+    }
+
+    class PlanningAttachedDocumentsPanel extends Component{
+        static template = "cpm_odoo.PlanningAttachedDocumentsPanel";
+
+        setup(){
+
         }
     }
 
@@ -729,7 +791,8 @@ odoo.define(
             PlanningStaffList,
             PlanningContractorList,
             PlanningStaffAssignPanel,
-            PlanningContractorAssignPanel
+            PlanningContractorAssignPanel,
+            PlanningAttachedDocumentsPanel
         }
 
         formatDate = formatDate
@@ -737,7 +800,6 @@ odoo.define(
         setup(){
             const page_name = PlanningManageTask.page_name
             this.pageInfo = getPageInfo(page_name)
-            
             if(this.pageInfo===undefined){
                 alert("no page info")
                 moveToPage(false,"workflow")
@@ -747,7 +809,8 @@ odoo.define(
                 task_info:{
 
                 },
-                assigned_staff_list:[]
+                assigned_staff_list:[],
+                assigned_contractor_list:[]
             })
             
             this.loadData()
@@ -779,6 +842,12 @@ odoo.define(
             onWillStart(()=>{
 
             })
+
+            onMounted(()=>{
+                if(this.pageInfo.currentTab){
+                    let el = document.querySelector(`.task-tabs #${this.pageInfo.currentTab}-btn`).click();
+                }
+            })
         }
         
 
@@ -807,6 +876,15 @@ odoo.define(
                 ]
             )
 
+            
+            this.page_data.assigned_contractor_list = await this.props.context_data.orm.call(
+                'cpm_odoo.stakeholders_contractor',
+                'read',
+                [
+                    this.page_data.task_info.assigned_contractor_ids  
+                ]
+            )
+
             // this.page_data.assigned_contractor_list = await this.props.context_data.orm.call(
             //     'cpm_odoo.planning_task',
             //     'search_read',
@@ -828,6 +906,15 @@ odoo.define(
 
             window.location.href=result
         }
+
+        act_save_tab(tab_name){
+            let pageInfo = this.pageInfo
+            pageInfo.currentTab=tab_name
+            storePageInfo(
+                PlanningManageTask.page_name,
+                pageInfo
+            )
+        }
     }
 
     
@@ -840,7 +927,13 @@ odoo.define(
     class ProjectPlanningPage extends Component {
         static page_name = "ProjectPlanningPage"
         static template = "cpm_odoo.ProjectPlanningPage";
-        static components = {PlanningOverview,PlanningWorkflows,PlanningDrafts,PlanningUnassignedTasks}
+        static components = {
+            PlanningOverview,
+            PlanningWorkflows,
+            PlanningDrafts,
+            PlanningUnassignedTasks,
+            DocumentManagementTab
+        }
         
         get subpageComponent() {
             const renderPage = this.availablePages.find(page => page.id === this.currentPage);
@@ -858,6 +951,12 @@ odoo.define(
                 id: "workflow",
                 name:"Workflows",
                 page:PlanningWorkflows,
+                group_id:"cpm_manage_project_plans"
+            },
+            {
+                id: "documents",
+                name:"Project Documents",
+                page:DocumentManagementTab,
                 group_id:"cpm_manage_project_plans"
             },
             {

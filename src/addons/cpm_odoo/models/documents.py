@@ -10,6 +10,10 @@ class DocumentSet(models.Model):
         size = 256
     )
     
+    description = fields.Text(
+        string = 'description'
+    )
+    
     category_id = fields.Many2one(
         comodel_name = 'cpm_odoo.documents_document_category', 
         string='Category',
@@ -21,6 +25,36 @@ class DocumentSet(models.Model):
         inverse_name = 'document_set_id', 
         string='Documents'
     )
+    
+    updated_at = fields.Datetime(
+        compute='_compute_updated_at', 
+        string='updated_at',
+        store=True
+    )
+    
+    @api.depends('document_ids.date_uploaded')
+    def _compute_updated_at(self):
+        
+        for record in self:
+            return_date = False
+            for doc in record.document_ids:
+                if return_date < doc.date_uploaded:
+                    return_date=doc.date_uploaded
+            record.updated_at = return_date
+        pass
+    
+    document_count = fields.Integer(
+        compute='_compute_document_count', 
+        string='document_count',
+        store=True
+    )
+    
+    @api.depends('document_ids.date_uploaded')
+    def _compute_document_count(self):
+        
+        for record in self:
+            record.document_count = len(record.document_ids)
+        pass
     
 class Document(models.Model):
     _name = "cpm_odoo.documents_document"
@@ -62,4 +96,21 @@ class DocumentCategory(models.Model):
         string = 'Name',
         required=True,
         size = 256
+    )
+    
+    description = fields.Text(
+        string = 'Description'
+    )
+    
+    color = fields.Char(
+        string = 'Category Color',
+        required=True,
+        size=24,
+        default = "#FF5733"
+    )
+    
+    display = fields.Boolean(
+        string = 'Display',
+        required=True,
+        default=False
     )

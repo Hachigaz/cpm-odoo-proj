@@ -7,7 +7,8 @@ class ProjectHRM(models.Model):
     
     project_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project', 
-        string='Project'
+        string='Project',
+        ondelete="cascade"
     )
     
     project_staff_ids = fields.Many2many(
@@ -57,7 +58,8 @@ class ProjectPlanning(models.Model):
     
     project_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project', 
-        string='Project'
+        string='Project',
+        ondelete="cascade"
     )
     
     workflow_ids = fields.One2many(
@@ -78,7 +80,8 @@ class ProjectFinance(models.Model):
     
     project_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project', 
-        string='Project'
+        string='Project',
+        ondelete="cascade"
     )
     
     investment_record_ids = fields.One2many(
@@ -105,7 +108,8 @@ class ProjectDocMgmt(models.Model):
     
     project_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project', 
-        string='Project'
+        string='Project',
+        ondelete="cascade"
     )
     
     attached_document_ids = fields.Many2many(
