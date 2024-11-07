@@ -6,7 +6,7 @@
           ir.ui.view (nó ở trong database)-->
     <record model="ir.ui.view" id="daylamodulemoi.list">
       <field name="name">daylamodulemoi list</field>  <!--tên bảng ghi-->
-      <field name="model">daylamodulemoi.daylamodulemoi</field> <!--trỏ tới model khai báo xong file model-->
+      <field name="model">daylamodulemoi.daylamodulemoi</field> <!--tên module . tên model-->
       <field name="arch" type="xml">
         <tree>  <!--thẻ tree: kiểu view dạng danh sách, Bên trong là các field (trường) trong database-->
           <field name="name"/>
@@ -14,6 +14,28 @@
           <field name="value2"/>
         </tree>
       </field>
+    </record>
+
+    <!--test tạo 1 bảng ghi mới, với model stakeholders ở module chính-->
+    <record model='ir.ui.view' id="cacbenlienquan">
+      <field name="name">cacbenlienquan list</field>
+      <field name="model">daylamodulemoi.models_StakeHolder</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="description"/>
+          <field name="email"/>
+          <field name="phone_number"/>
+          <field name="address"/>
+          <field name="image"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="cacbenlienquan.action_window">
+      <field name="name">cacbenlienquan window</field>
+      <field name="res_model">daylamodulemoi.models_StakeHolder</field> 
+      <field name="view_mode">tree,form</field>
     </record>
 
 
