@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="cpm_odoo.document_category_create_form_view" model="ir.ui.view">
-            <field name="name">cpm_odoo.document_category_create_form_view</field>
-            <field name="model">cpm_odoo.documents_document_category</field>
+        <record id="cpm_odoo.document_add_form_view" model="ir.ui.view">
+            <field name="name">cpm_odoo.document_add_form_view</field>
+            <field name="model">cpm_odoo.documents_document</field>
             <field name="arch" type="xml">
-                <form string="Create Document Category">
+                <form string="">
                     <header>
                         <!-- <button class="btn btn-secondary" special="save" onclick="window.history.back()">
                             Save
@@ -17,12 +17,14 @@
                     <sheet>
                         <group col="3">
                             <group colspan="2">
-                                <field name="name" string="Category Name"></field>
-                                <field name="description" string="Description"></field>
+                                <field name="document_set_id" string="Document Set" readonly="True"></field>
+                                <field name="file" widget="binary" filename="file_name"/>
+                                <field name="file_name"/>
+                                <field name="file_size" digits="[42,2]"/>
                             </group>
                             <group colspan="1">
-                                <field name="color" widget="colorpicker" string="Category Color"/>
-                                <field name="display" string="Display On Top"></field>
+                                <field name="uploaded_by"></field>
+                                <field name="date_uploaded" readonly="True"></field>
                             </group>
                         </group>
                     </sheet>

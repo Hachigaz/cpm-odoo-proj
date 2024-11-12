@@ -1,0 +1,3 @@
+id,name,model_id,groups,domain_force,perm_create,perm_read,perm_write,perm_unlink
+"cpm_rule_proj_mgmt_access","cpm_rule_proj_mem_access","cpm_odoo.root_project","","[('proj_mgmt_group_id','in',user.groups_id.ids)]",0,1,1,0
+"cpm_rule_proj_mem_access","cpm_rule_proj_mem_access","cpm_odoo.root_project","","[('proj_mem_group_id','in',user.groups_id.ids)]",0,1,1,0

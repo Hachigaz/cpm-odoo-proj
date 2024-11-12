@@ -1,13 +1,13 @@
-id,name,implied_ids:id,comment
-cpm_overview_project,Project Overview,,
-cpm_view_project_plans,View Project Plans,cpm_overview_project,
-cpm_manage_project_plans,Planning Project,cpm_view_project_plans,
+id,name,display_name,implied_ids:id,comment
+cpm_gr_overview_project,cpm_gr_overview_project,Project Overview,,
+cpm_gr_project_edit_info,cpm_gr_project_create,Project Edit,cpm_gr_overview_project,
+cpm_gr_project_create,cpm_gr_project_create,Project Create,cpm_gr_project_edit_info,
+cpm_gr_view_project_plans,cpm_gr_view_project_plans,View Project Plans,cpm_gr_overview_project,
+cpm_gr_manage_project_plans,cpm_gr_manage_project_plans,Planning Project,cpm_gr_view_project_plans,
 
-cpm_qa_manage,Task QAs,cpm_view_project_plans,
-cpm_manage_assigned_tasks,Manage Assigned Task,cpm_view_project_plans,
-cpm_create_task_notes,Create Notes In Assigned Task,cpm_view_project_plans,
+cpm_gr_qa_manage,cpm_gr_qa_manage,Task QAs,cpm_gr_view_project_plans,
+cpm_gr_manage_assigned_tasks,cpm_gr_manage_assigned_tasks,Manage Assigned Task,cpm_gr_view_project_plans,
+cpm_gr_create_task_notes,cpm_gr_create_task_notes,Create Notes In Assigned Task,cpm_gr_view_project_plans,
 
-
-
-cpm_view_project_finances,View Project Finances,cpm_overview_project,
-cpm_manage_project_finances,Manage Project Finances,cpm_overview_project,
+cpm_gr_view_project_finances,cpm_gr_view_project_finances,View Project Finances,cpm_gr_overview_project,
+cpm_gr_manage_project_finances,cpm_gr_manage_project_finances,Manage Project Finances,cpm_gr_overview_project,

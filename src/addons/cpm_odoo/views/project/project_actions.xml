@@ -5,33 +5,6 @@
     <!-- ============================================== -->
     <!-- ======== Project Actions -->
     <!-- ============================================== -->
-    <record id="cpm_odoo.project_create_new_workflow_act" model="ir.actions.act_window">
-      <field name="name">Create New Workflow</field>
-      <field name="res_model">cpm_odoo.planning_workflow</field>
-      <field name="view_mode">form</field>
-      <field name="views">(cpm_odoo.planning_workflow_create_view_form,form)</field>
-    </record>
-
-    
-    <record id="cpm_odoo.create_new_workflow_action_server" model="ir.actions.server">
-      <field name="name">Create New Workflow</field>
-      <field name="type">ir.actions.server</field>
-      <field name="model_id" ref="cpm_odoo.model_cpm_odoo_planning_workflow"/>
-      <field name="state">code</field>
-      <field name="code">
-          action = model.create_new_workflow()
-      </field>
-    </record>
-    
-    <record id="cpm_odoo.create_new_task_action_server" model="ir.actions.server">
-      <field name="name">Create New Workflow</field>
-      <field name="type">ir.actions.server</field>
-      <field name="model_id" ref="cpm_odoo.model_cpm_odoo_planning_task"/>
-      <field name="state">code</field>
-      <field name="code">
-          action = model.create_new_task()
-      </field>
-    </record>
     
     <!-- ============================================== -->
     <!-- ======== Document Actions -->

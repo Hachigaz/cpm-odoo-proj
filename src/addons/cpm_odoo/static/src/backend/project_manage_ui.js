@@ -1,4 +1,5 @@
 /** @odoo-module **/
+import { storePageContext,getPageContext,moveToPage} from "./component_utils";
 
 odoo.define(
     'cpm_module.project_manage_ui', 
@@ -6,8 +7,7 @@ odoo.define(
         "@odoo/owl",
         "@web/core/registry",
         "cpm_modules.project_planning_pages",
-        "cpm_modules.project_finance_pages",
-        "cpm_modules.component_utils"
+        "cpm_modules.project_finance_pages"
     ], 
     function (require) {
     'use strict';
@@ -17,14 +17,10 @@ odoo.define(
     const { registry } = require("@web/core/registry")
     const { ProjectPlanningPage} = require("cpm_modules.project_planning_pages");
     const { ProjectOverviewPage, ProjectFinancePage} = require("cpm_modules.project_finance_pages");
-    const { storePageContext,getPageContext,moveToPage} = require("cpm_modules.component_utils");
-    // const { csrf_token } = require("@web/core")
-
-
-    const clientAction = "cpm_module.project_manage_ui"
 
     class ProjectManageUI extends Component {
         static template = "cpm_odoo.ProjectManageUI";
+        static clientActionName = "cpm_odoo.project_manage_ui"
     
         static components = {
             ProjectOverviewPage,
@@ -81,7 +77,7 @@ odoo.define(
                 planning_id: sessionStorage.getItem('planning_id'),
                 finance_id: sessionStorage.getItem('finance_id'),
                 doc_id: sessionStorage.getItem('doc_id'),
-                client_action: clientAction,
+                client_action: this.clientActionName,
                 rpc: useService("rpc"),
                 orm: useService("orm"),
                 action: useService("action")
@@ -132,7 +128,7 @@ odoo.define(
         }
     }
 
-    registry.category("actions").add(clientAction, ProjectManageUI);
+    registry.category("actions").add(ProjectManageUI.clientActionName, ProjectManageUI);
 
-    return ProjectManageUI,clientAction
+    return ProjectManageUI,this.clientActionName
 });

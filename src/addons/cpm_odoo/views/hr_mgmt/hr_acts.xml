@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    <!-- ============================================== -->
+    <!-- ======== Human Resources root menu -->
+    <!-- ============================================== -->
+    <menuitem name="Human Resources" id="cpm_odoo.hr_mgmt_root"/>
+    
+
+    <!-- ============================================== -->
+    <!-- ======== hr staffs menus -->
+    <!-- ============================================== -->
+    <record id="cpm_odoo.hr_mgmt_staff_overview_act" model="ir.actions.act_window">
+        <field name="name">Action Name</field>
+        <field name="res_model">cpm_odoo.human_res_staff</field>
+        <field name="views">(cpm_odoo.hr_mgmt_staff_create_view_form,form)</field>
+    </record>
+
+    <menuitem 
+        sequence='10' parent='cpm_odoo.hr_mgmt_root' 
+        name="Staffs" id="cpm_odoo.hr_mgmt_staff_overview" 
+        action="cpm_odoo.hr_mgmt_staff_overview_act"
+    />
+
+
+    <!-- ============================================== -->
+    <!-- ======== hr department menus -->
+    <!-- ============================================== -->
+    <record id="cpm_odoo.hr_mgmt_department_overview_act" model="ir.actions.act_window">
+        <field name="name">Action Name</field>
+        <field name="res_model">cpm_odoo.planning_workflow</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <menuitem 
+        sequence='20' parent='cpm_odoo.hr_mgmt_root' 
+        name="Departments" id="cpm_odoo.hr_mgmt_department_overview" 
+        action="cpm_odoo.hr_mgmt_department_overview_act"
+    />
+    </data>
+    
+
+</odoo>

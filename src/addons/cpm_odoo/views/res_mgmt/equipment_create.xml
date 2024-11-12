@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.equipment_create_view_form" model="ir.ui.view">
+            <field name="name">model_name.view</field>
+            <field name="model">cpm_odoo.res_mgmt_equipment</field>
+            <field name="arch" type="xml">
+                <form string="New Equipment">
+                    <sheet>
+                        <group string='Equipment Info'>
+                            <field name="name">Equipment Name</field>
+                            <field name="eqp_type_id">Type</field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

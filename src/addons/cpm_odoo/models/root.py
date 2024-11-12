@@ -1,5 +1,6 @@
 from odoo import models, fields, api
-
+from odoo.exceptions import ValidationError
+import json
 
 class ProjectHRM(models.Model):
     _name = "cpm_odoo.root_project_hrm"
@@ -212,11 +213,58 @@ class Project(models.Model):
         ondelete = 'restrict'
     )
     
+    proj_mgmt_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='proj_mgmt_group',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
+    proj_mem_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='proj_mem_group',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
     @api.model_create_multi
     def create(self, vals):
-        record = super().create(vals)
-        record.proj_hrm_id.project_id = record.id
-        record.proj_planning_id.project_id = record.id
-        record.proj_finance_id.project_id = record.id
-        record.proj_doc_id.project_id = record.id
-        return record
+        records = super().create(vals)
+        for record in records:
+            record.proj_hrm_id.project_id = record.id
+            record.proj_planning_id.project_id = record.id
+            record.proj_finance_id.project_id = record.id
+            record.proj_doc_id.project_id = record.id
+            
+            
+            # mgmt_gr_rec = self.env["res.groups"].create({
+            #     "id":f"cpm_gr_proj{record.id}",
+            #     "name":f"Project Mgmt Group {record.id}",
+            #     "implied_ids":[self.env["res.groups"].search([("name","=","cpm_gr_overview_project")],limit=1).id],
+            #     "comment":f"Project Management Group {record.short_name}"
+            # })
+            
+            # record.proj_mgmt_group_id = mgmt_gr_rec.id
+            
+            # mem_gr_rec = self.env["res.groups"].create({
+            #     "id":f"cpm_gr_proj{record.id}",
+            #     "name":f"Project Member Group {record.id}",
+            #     "implied_ids":[],
+            #     "comment":f"Project Member Group {record.short_name}"
+            # })
+            
+            # self.env.user.write({
+            #     'groups_id': [(4,mgmt_gr_rec.id),(4,mem_gr_rec.id)]
+            # })
+            
+            # record.proj_mem_group_id = mem_gr_rec.id
+            
+        return records
+    
+    def unlink(self):
+        for record in self:
+            record.proj_mgmt_group_id.unlink()
+            record.proj_mem_group_id.unlink()
+            for rule in record.rule_ids:
+                rule.unlink()
+        return super().unlink()

@@ -24,20 +24,32 @@ Long description of module's purpose
     # always loaded
     'data': [
         'security/res.groups.csv',
+        # 'security/ir.rule.csv',
         # 'security/ir.model.access.csv',
+        
         'views/views.xml',
         'views/project/project_actions.xml',
         'views/templates.xml',
+        
         'views/project/project_select_overview.xml',
         'views/project/project_create.xml',
         'views/project/project_overview.xml',
         'views/project/planning/tasks/create_task.xml',
+        'views/project/planning/tasks/create_task_expense.xml',
         'views/project/planning/workflows/create_workflow.xml',
+        
         'views/doc_mgmt/document_category_create.xml',
         'views/doc_mgmt/document_set_create.xml',
-        'views/doc_mgmt/document_create.xml',
+        'views/doc_mgmt/add_doc_to_set_form.xml',
+        
+        'views/hr_mgmt/hr_acts.xml',
         'views/hr_mgmt/staff_create.xml',
+        
         'views/stakeholders/contractor_create.xml',
+        
+        'views/res_mgmt/res_mgmt_acts.xml',
+        
+        
         # 'init_res/cpm_odoo.root_project_hrm.csv',
         # 'init_res/cpm_odoo.root_project_planning.csv',
         # 'init_res/cpm_odoo.root_project_finance.csv',

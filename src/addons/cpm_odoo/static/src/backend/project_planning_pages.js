@@ -1,27 +1,129 @@
 /** @odoo-module **/
-import { GanttDisplay } from "./components";
-import { DocumentManagementTab } from "./project_planning/document_mgmt";
+import { GanttDisplay, ItemList, SearchBar} from "./components";
+import { PlanningDocumentManagementTab } from "./project_planning/document_mgmt";
+import { DocumentSetItemList } from "./project_planning/document_mgmt";
+import { useService } from "@web/core/utils/hooks";
+import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime} from "./component_utils";
 
 odoo.define(
     'cpm_modules.project_planning_pages', 
     [
         "@odoo/owl",
-        "@web/core/utils/hooks",
-        "cpm_modules.component_utils"
+        "@web/core/utils/hooks"
     ], 
     function (require) {
     'use strict';
 
     const { Component, onWillStart, onMounted, useEffect, useState, useRef} = require("@odoo/owl");
-    const { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate} = require("cpm_modules.component_utils");
     
     class PlanningOverview extends Component {
         static page_name = "PlanningOverview"
         static template = "cpm_odoo.PlanningOverview";
         setup(){
+            this.page_info = useState({
+                in_drafts:[],
+                in_draft_count:0,
+                active_workflows:[],
+                active_workflow_count:0,
+                finished_workflows:[],
+                finished_workflow_count:0
+            })
+
             onMounted(() => {
 
             });
+
+            this.orm=useService('orm')
+            this.action=useService('action')
+
+            this.loadData()
+        }
+
+        async loadData(){
+            this.page_info.in_drafts = await this.orm.call(
+                "cpm_odoo.planning_workflow",
+                "search_read",
+                [
+                    [
+                        ["planning_id","=",this.props.context_data.planning_id],
+                        ["workflow_status","=","draft"]
+                    ],
+                    [],
+                    0,6,
+                    "name asc"
+                ]
+            )
+
+            this.page_info.in_draft_count = await this.orm.call(
+                "cpm_odoo.planning_workflow",
+                "search_count",
+                [
+                    [
+                        ["planning_id","=",this.props.context_data.planning_id],
+                        ["workflow_status","=","draft"]
+                    ]
+                ]
+            )
+            
+            this.page_info.active_workflows = await this.orm.call(
+                "cpm_odoo.planning_workflow",
+                "search_read",
+                [
+                    [
+                        ["planning_id","=",this.props.context_data.planning_id],
+                        ["workflow_status","=","active"]
+                    ],
+                    [],
+                    0,6,
+                    "name asc"
+                ]
+            )
+
+            this.page_info.active_workflow_count = await this.orm.call(
+                "cpm_odoo.planning_workflow",
+                "search_count",
+                [
+                    [
+                        ["planning_id","=",this.props.context_data.planning_id],
+                        ["workflow_status","=","active"]
+                    ]
+                ]
+            )
+            
+            this.page_info.finished_workflows = await this.orm.call(
+                "cpm_odoo.planning_workflow",
+                "search_read",
+                [
+                    [
+                        ["planning_id","=",this.props.context_data.planning_id],
+                        ["workflow_status","=","finished"]
+                    ],
+                    [],
+                    0,6,
+                    "name asc"
+                ]
+            )
+
+            this.page_info.finished_workflow_count = await this.orm.call(
+                "cpm_odoo.planning_workflow",
+                "search_count",
+                [
+                    [
+                        ["planning_id","=",this.props.context_data.planning_id],
+                        ["workflow_status","=","finished"]
+                    ]
+                ]
+            )
+        }
+
+        act_manage_workflow(workflow_id){
+            storePageInfo(
+                PlanningManageWorkflow.page_name,
+                {
+                    workflow_id:workflow_id
+                }
+            )
+            moveToPage(false,"manage_workflow")
         }
     }
 
@@ -34,14 +136,21 @@ odoo.define(
             onWillStart(()=>{
                 
             })
+
+            this.action=useService('action')
         }
 
-        act_edit_general_info(workflow_id){
-            let action = '/action/get/cpm_odoo.edit_general_info'
-            let params = {
-                'default_planning_id':this.props.context_data.planning_id,
-                'client_action':this.props.context_data.client_action
-            }
+        async act_edit_general_info(workflow_id){
+            await this.action.doAction({
+                type: 'ir.actions.act_window',
+                name: 'Workflow - Edit Info',
+                res_model: 'cpm_odoo.planning_workflow',
+                view_mode: 'form',
+                res_id:workflow_id,
+                views: [[false, 'form']],
+                target: 'new',
+                context: { 'default_field': 'value' },
+            });
         }
 
         act_manage_workflow(workflow_id){
@@ -123,18 +232,6 @@ odoo.define(
 
                 ]
             })
-
-            this.actionList = [
-                {
-                    id:"act_create_workflow",
-                    name:"Create New Workflow",
-                    action:'/action/get/cpm_odoo.create_new_workflow_action_server',
-                    params:{
-                        'default_planning_id':this.props.context_data.planning_id,
-                        'client_action':this.props.context_data.client_action
-                    }
-                }
-            ]
             
             onWillStart(()=>{
                 this.loadPage()
@@ -143,6 +240,8 @@ odoo.define(
             onMounted(()=>{
                 
             })
+
+            this.action=useService('action')
         }
 
         async loadPage(){
@@ -161,13 +260,16 @@ odoo.define(
             this.page_data.workflow_list = list_result
         }
 
-        async _do_action(action,params){
-            let result = await this.props.context_data.rpc(
-                action,
-                params
-            )
-
-            window.location.href=result
+        async act_add_new_workflow(){
+            await this.action.doAction({
+                type: 'ir.actions.act_window',
+                name: 'Create New Workflow',
+                res_model: 'cpm_odoo.planning_workflow',
+                view_mode: 'form',
+                views: [[false, 'form']],
+                target: 'new',
+                context: { 'default_planning_id': parseInt(this.props.context_data.planning_id) },
+            });
         }
     }
 
@@ -330,19 +432,6 @@ odoo.define(
             
             this.loadData()
 
-            this.actionList = [
-                {
-                    id:"act_create_task",
-                    name:"Create New Task",
-                    action:'/action/get/cpm_odoo.create_new_task_action_server',
-                    params:{
-                        'default_workflow_id':this.pageInfo.workflow_id,
-                        'client_action':this.props.context_data.client_action
-                    }
-                }
-            ]
-
-
             onWillStart(()=>{
 
             })
@@ -357,10 +446,11 @@ odoo.define(
                     [
                         ['id','=',this.pageInfo.workflow_id]
                     ],
-                    ["id","name","start_date","exp_end","workflow_status","task_count","unassigned_task_count"],
+                    ["id","name","start_date","exp_end","workflow_status","task_count","unassigned_task_count","workflow_status"],
                     0,1,null
                 ]
             ))[0]
+
             if(!this.page_data.workflow_info){
                 moveToPage(false,"workflow")
             }
@@ -372,19 +462,39 @@ odoo.define(
                     [
                         ['workflow_id','=',this.pageInfo.workflow_id]
                     ],
-                    ["id","name","description","start_date","exp_end"],
+                    ["id","name","description","start_date","exp_end","assigned_staff_count","assigned_contractor_count","depends_on"],
                     0,null,null
                 ]
             )
         }
 
-        async _do_action(action,params){
-            let result = await this.props.context_data.rpc(
-                action,
-                params
+        async act_create_new_task(){
+            const result = await this.props.context_data.orm.call(
+                "cpm_odoo.planning_task",
+                "act_create_task",
+                [this.pageInfo.workflow_id]
             )
+            this.props.context_data.action.doAction(result)
+            // await this.props.context_data.action.doAction({
+            //     type: 'ir.actions.act_window',
+            //     name: 'Create New Task',
+            //     res_model: 'cpm_odoo.planning_task',
+            //     view_mode: 'form',
+            //     views: [[false, 'form']],
+            //     target: 'new',
+            //     context: { 'default_workflow_id': this.pageInfo.workflow_id },
+            // });
+        }
 
-            window.location.href=result
+        async act_submit_workflow(){
+            if(!confirm("Submit workflow?")){
+                return
+            }
+            const result = await this.props.context_data.orm.call(
+                "cpm_odoo.planning_workflow",
+                "mark_active",
+                [this.pageInfo.workflow_id]
+            )
         }
     }
 
@@ -393,151 +503,88 @@ odoo.define(
     //=============================================================
     // Manage Task Component
     //=============================================================
-    class ItemListManager{
-        filter_options={
-            search_bar:{
-                el:undefined,
-                search_cols:[]
-            }
-        }
-        filter_cols=[]
-
-        disp_item_list = []
-        org_item_list = []
-
-        //called on mounted
-        bind_keys(){
-            if(this.filter_options.search_bar.el){
-                this.filter_options.search_bar.el.el.addEventListener("keydown", 
-                    (event) => {
-                        if (event.key === "Enter") {
-                            this.act_search();
-                        }
-                    }
-                );
-            }
-        }
-        async act_load(){
-            let item_list = this.org_item_list
-            //filter by search keyword
-            if(this.search_kw){
-                let keywords = kw.split(" ")
-
-                this.item_list = this.org_item_list.filter((item) =>
-                    keywords.some((keyword) =>{
-                            is_avail = false
-                            this.filter_options.search_bar.search_cols.forEach((col)=>{
-                                is_avail|=item[col].includes(keyword)
-                            })
-                            return is_avail
-                        }
-                    )
-                );
-            }
-
-            //filter by others
-            this.disp_item_list = item_list
-        }
-        //called on buttons
-        async act_search(){
-            this.search_kw = this.search_bar.el.el.value
-            this.act_load()
-        }
-
-        async act_filter(){
-
-        }
-    }
-
-    class PlanningStaffList extends Component{
+    class PlanningStaffList extends ItemList{
         static template = "cpm_odoo.PlanningStaffList"
-        itemList = new ItemListManager()
+        static components = {
+            SearchBar
+        }
+
         
 
         setup(){
-            this.state_data = useState({
-                staff_list:[]
-            })
-            this.itemList.filter_options={
-                search_bar:{
-                    el:useRef('search-bar'),
-                    search_cols:['first_name','last_name']
-                }
-            }
-            useEffect(
-                () => {
-                    this.itemList.org_item_list = this.props.staff_list
-                    this.itemList.act_load()
-                    this.state_data.staff_list = this.itemList.disp_item_list
-                }, () => [this.props.staff_list]
-            )
-            onMounted(()=>{
-                // this.itemList.bind_keys()
-            })
+            super.init()
+
+            this.page_data.model_name = "cpm_odoo.human_res_staff"
+            this.page_data.column_list = []//columns to get from model
+            this.page_data.order_by_str = "department_id asc,first_name asc,last_name asc"
+            this.page_data.item_display_count=24
+            this.page_data.page_display_count=7
+            
+            this.search_filter.search_bar.cols=["full_name"]
+            
+            super.setup()
+
+            useEffect(()=>{
+                this.page_data.extra_domain = [["id","in",Array.from(this.props.task_info.assigned_staff_ids)]]
+                this.act_setup_list()
+            },()=>[this.props.task_info.assigned_staff_ids])
         }
     }
 
-    class PlanningContractorList extends Component{
+    class PlanningContractorList extends ItemList{
         static template = "cpm_odoo.PlanningContractorList"
-        itemList = new ItemListManager()
-        
+        static components = {
+            SearchBar
+        }
+
 
         setup(){
-            this.state_data = useState({
-                contractor_list:[]
-            })
-            this.itemList.filter_options={
-                search_bar:{
-                    el:useRef('search-bar'),
-                    search_cols:['first_name','last_name']
-                }
-            }
-            useEffect(
-                () => {
-                    this.itemList.org_item_list = this.props.contractor_list
-                    this.itemList.act_load()
-                    this.state_data.contractor_list = this.itemList.disp_item_list
-                }, () => [this.props.contractor_list]
-            )
-            onMounted(()=>{
-                // this.itemList.bind_keys()
-            })
+            super.init()
+
+            this.page_data.model_name = "cpm_odoo.stakeholders_contractor"
+            this.page_data.column_list = []//columns to get from model
+            this.page_data.order_by_str = "category_id asc, name asc"
+            this.page_data.item_display_count=24
+            this.page_data.page_display_count=7
+            
+            this.search_filter.search_bar.cols=["name"]
+            
+            super.setup()
+
+            useEffect(()=>{
+                this.page_data.extra_domain = [["id","in",Array.from(this.props.task_info.assigned_contractor_ids)]]
+                this.act_setup_list()
+            },()=>[this.props.task_info.assigned_contractor_ids])
         }
     }
     
-    class PlanningStaffAssignPanel extends Component{
+    class PlanningStaffAssignPanel extends ItemList{
         static template = "cpm_odoo.PlanningStaffAssignPanel";
+        static components = {
+            SearchBar
+        }
+
         
         setup(){
-            this.state_data = useState({
-                staff_list:[]
-            })
-
-            this.assigned_staff_ids = this.props.task_info
-
-            this.loadData(this)
-            this.cmp_root = useRef('cmp-root')
+            super.init()
 
 
-            this.props.asgn_act.load = this.loadData
+            this.page_data.model_name = "cpm_odoo.human_res_staff"
+            this.page_data.column_list = []//columns to get from model
+            this.page_data.order_by_str = "department_id asc,first_name asc,last_name asc"
+            this.page_data.item_display_count=24
+            this.page_data.page_display_count=7
+            this.search_filter.search_bar.cols=["full_name"]
+
+
+            this.props.asgn_act.load = null
             this.props.asgn_act.save = this.act_save
             this.props.asgn_act.cancel = this.act_cancel_all
             this.props.asgn_act.inst = this
-        }
-
-        async loadData(inst){
-            inst.state_data.staff_list = await inst.props.context_data.orm.call(
-                'cpm_odoo.human_res_staff',
-                'search_read',
-                [
-                    [
-                        
-                    ],
-                    [],
-                    // ["id","first_name","last_name","department_id"],
-                    0,21,null
-                ]
-            )
+            
+            this.cmp_root = useRef('cmp-root')
+            
+            super.setup()
         }
 
         assign_actions = []
@@ -553,13 +600,8 @@ odoo.define(
             }
 
             let card_el = this.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${staff_id}`)
-
-            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
-            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
-            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
-            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
-            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
-            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+            
+            this.act_flip_btn_state(card_el)
         }
 
         async act_cancel(staff_id){
@@ -572,13 +614,8 @@ odoo.define(
             }
             
             let card_el = this.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${staff_id}`)
-
-            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
-            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
-            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
-            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
-            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
-            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+            
+            this.act_flip_btn_state(card_el)
         }
 
         async act_save(inst){
@@ -611,24 +648,14 @@ odoo.define(
         async act_cancel_all(inst){
             inst.assign_actions.forEach((id)=>{
                 let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
-
-                card_el.querySelector(".options .assign-act").classList.toggle('d-none')
-                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
-                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
-                card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
-                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
-                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+            
+                inst.act_flip_btn_state(card_el)
             })
 
             inst.cancel_actions.forEach((id)=>{
                 let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
-
-                card_el.querySelector(".options .assign-act").classList.toggle('d-none')
-                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
-                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
-                card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
-                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
-                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+            
+                inst.act_flip_btn_state(card_el)
             })
 
             inst.act_reset(inst)
@@ -639,41 +666,43 @@ odoo.define(
             inst.assign_actions = []
             inst.cancel_actions = []
         }
+
+        act_flip_btn_state(card_el){
+            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+        }
     }
 
     
-    class PlanningContractorAssignPanel extends Component{
+    class PlanningContractorAssignPanel extends ItemList{
         static template = "cpm_odoo.PlanningContractorAssignPanel";
-        
+        static components = {
+            SearchBar
+        }
+
         setup(){
-            this.state_data = useState({
-                contractor_list:[]
-            })
+            super.init()
 
-            this.assigned_contractor_ids = this.props.task_info
+            this.page_data.model_name = "cpm_odoo.stakeholders_contractor"
+            this.page_data.column_list = []//columns to get from model
+            this.page_data.order_by_str = "category_id asc,name asc"
+            this.page_data.item_display_count=24
+            this.page_data.page_display_count=7
+            
+            this.search_filter.search_bar.cols=["name"]
 
-            this.loadData(this)
-            this.cmp_root = useRef('cmp-root')
 
-            this.props.asgn_act.load = this.loadData
+            this.props.asgn_act.load = null
             this.props.asgn_act.save = this.act_save
             this.props.asgn_act.cancel = this.act_cancel_all
             this.props.asgn_act.inst = this
-        }
-
-        async loadData(inst){
-            inst.state_data.contractor_list = await inst.props.context_data.orm.call(
-                'cpm_odoo.stakeholders_contractor',
-                'search_read',
-                [
-                    [
-                        
-                    ],
-                    [],
-                    // ["id","first_name","last_name","department_id"],
-                    0,21,null
-                ]
-            )
+            
+            this.cmp_root = useRef('cmp-root')
+            super.setup()
         }
 
         assign_actions = []
@@ -690,12 +719,7 @@ odoo.define(
 
             let card_el = this.cmp_root.el.querySelector(`.contractor-card-list#assign-list #contractor-${contractor_id}`)
             
-            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
-            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
-            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
-            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
-            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
-            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+            this.act_flip_btn_state(card_el)
         }
 
         async act_cancel(contractor_id){
@@ -708,13 +732,8 @@ odoo.define(
             }
             
             let card_el = this.cmp_root.el.querySelector(`.contractor-card-list#assign-list #contractor-${contractor_id}`)
-
-            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
-            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
-            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
-            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
-            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
-            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+                
+            this.act_flip_btn_state(card_el)
         }
 
         async act_save(inst){
@@ -747,27 +766,26 @@ odoo.define(
         async act_cancel_all(inst){
             inst.assign_actions.forEach((id)=>{
                 let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
-
-                card_el.querySelector(".options .assign-act").classList.toggle('d-none')
-                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
-                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
-                card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
-                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
-                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+                
+                inst.act_flip_btn_state(card_el)
             })
 
             inst.cancel_actions.forEach((id)=>{
                 let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
-
-                card_el.querySelector(".options .assign-act").classList.toggle('d-none')
-                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
-                card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
-                card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
-                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
-                card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
+                
+                inst.act_flip_btn_state(card_el)
             })
 
             inst.act_reset(inst)
+        }
+
+        act_flip_btn_state(card_el){
+            card_el.querySelector(".options .assign-act").classList.toggle('d-none')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .assign-act").classList.toggle('animate__fadeOut')
+            card_el.querySelector(".options .cancel-act").classList.toggle('d-none')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .cancel-act").classList.toggle('animate__fadeOut')
         }
 
         async act_reset(inst){
@@ -776,11 +794,171 @@ odoo.define(
         }
     }
 
-    class PlanningAttachedDocumentsPanel extends Component{
-        static template = "cpm_odoo.PlanningAttachedDocumentsPanel";
+    class PlanningTaskAttachedDocumentsPanel extends Component{
+        static template = "cpm_odoo.PlanningTaskAttachedDocumentsPanel";
+        static components={
+            DocumentSetItemList
+        }
+        
 
         setup(){
+            this.doc_set_item_list = useState({
+                extra_domain : []
+            })
 
+            this.orm = useService("orm")
+
+            this.cmp_root = useRef('cmp-root')
+
+            useEffect(()=>{
+                if(this.props.task_info.attached_document_ids){
+                    if(this.props.task_info.attached_document_ids.length>0){
+                        this.doc_set_item_list.extra_domain = [["id","in",Array.from(this.props.task_info.attached_document_ids)]]
+                    }
+                }
+            },()=>[this.props.task_info])
+        }
+
+        attached_doc_ids = []
+
+        async act_attach_document(doc_id){
+            let card_el = this.cmp_root.el.querySelector(`.attach-card-list #doc-${doc_id}`)
+            this.act_flip_btn_state(card_el)
+
+            this.attached_doc_ids.push(doc_id)
+            if(this.removed_doc_ids.includes(doc_id)){
+                let index = this.removed_doc_ids.indexOf(doc_id);
+                if (index !== -1) {
+                    this.removed_doc_ids.splice(index, 1);
+                }                
+            }
+
+        }
+
+        removed_doc_ids = []
+
+        async act_remove_document(doc_id){
+            let card_el = this.cmp_root.el.querySelector(`.attach-card-list #doc-${doc_id}`)
+            this.act_flip_btn_state(card_el)
+
+            this.removed_doc_ids.push(doc_id)
+            if(this.attached_doc_ids.includes(doc_id)){
+                let index = this.attached_doc_ids.indexOf(doc_id);
+                if (index !== -1) {
+                    this.attached_doc_ids.splice(index, 1);
+                }                
+            }
+        }
+
+        async act_save(){
+            if(this.removed_doc_ids.length>0 || this.attached_doc_ids.length > 0){``
+                let actions = []
+                this.attached_doc_ids.forEach((id)=>{
+                    actions.push([4,id])
+                })
+    
+                this.removed_doc_ids.forEach((id)=>{
+                    actions.push([3,id])
+                })
+
+                const result = await (this.orm.call(
+                    'cpm_odoo.planning_task',
+                    'write',
+                    [
+                        [this.props.task_info.id],
+                        {
+                            "attached_document_ids":actions
+                        }
+                    ]
+                ))
+    
+                this.act_cancel()
+                window.location.reload()
+            }
+        }
+
+        async act_cancel(){
+            this.attached_doc_ids = []
+            this.removed_doc_ids = []
+
+            this.act_reset_btns()
+        }
+
+        act_reset_btns(){
+            this.attached_doc_ids.forEach((id)=>{
+                let card_el = this.cmp_root.querySelector(`.attach-card-list #doc-${id}`)
+                this.act_flip_btn_state(card_el)
+            })
+
+            this.removed_doc_ids.forEach((id)=>{
+                let card_el = this.cmp_root.querySelector(`.attach-card-list #doc-${id}`)
+                this.act_flip_btn_state(card_el)
+            })
+        }
+
+        act_flip_btn_state(card_el){
+            card_el.querySelector(".options .attach-act").classList.toggle('d-none')
+            card_el.querySelector(".options .attach-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .attach-act").classList.toggle('animate__fadeOut')
+            card_el.querySelector(".options .remove-act").classList.toggle('d-none')
+            card_el.querySelector(".options .remove-act").classList.toggle('animate__fadeIn')
+            card_el.querySelector(".options .remove-act").classList.toggle('animate__fadeOut')
+        }
+    }
+
+    class PlanningTaskExpenseList extends ItemList{
+        static template = "cpm_odoo.PlanningTaskExpenseList"
+        static components = {
+            SearchBar
+        }
+
+        static formatDateTime=formatDateTime
+        
+    
+        setup(){
+            super.init()
+    
+            this.page_data.model_name = "cpm_odoo.planning_task_expense"
+            this.page_data.column_list = ["id","title","description","amount","category_id","date_created","created_by","expense_type","expense_status"]
+            this.page_data.order_by_str = "date_created desc, title asc"
+            this.page_data.json_cols = ['category_id']
+            this.search_filter.search_bar.cols=['name']
+            
+            useEffect(()=>{
+                this.page_data.extra_domain = this.props.extra_domain
+            },
+            ()=>[this.props.extra_domain])
+            this.state_info = useState({
+                can_delete:true
+            })
+            super.setup()
+        }
+    }
+    
+    class PlanningTaskExpensePanel extends Component{
+        static template = "cpm_odoo.PlanningTaskExpensePanel";
+        static components = {
+            PlanningTaskExpenseList
+        }
+
+        setup(){
+            this.orm=useService('orm')
+            this.action= useService('action')
+
+            this.state_data = useState({
+                extra_domain:[]
+            })
+        }
+
+        async act_add_task_expense(){
+            const result = await this.orm.call(
+                "cpm_odoo.planning_task",
+                "create_new_expense",
+                [
+                    this.props.task_info.id
+                ]
+            )
+            this.action.doAction(result)
         }
     }
 
@@ -792,7 +970,8 @@ odoo.define(
             PlanningContractorList,
             PlanningStaffAssignPanel,
             PlanningContractorAssignPanel,
-            PlanningAttachedDocumentsPanel
+            PlanningTaskAttachedDocumentsPanel,
+            PlanningTaskExpensePanel
         }
 
         formatDate = formatDate
@@ -807,25 +986,12 @@ odoo.define(
 
             this.page_data = useState({
                 task_info:{
-
-                },
-                assigned_staff_list:[],
-                assigned_contractor_list:[]
+                    assigned_staff_ids:[],
+                    assigned_contractor_ids:[]
+                }
             })
             
             this.loadData()
-
-            this.actionList = [
-                {
-                    id:"act_edit_task_general_info",
-                    name:"Edit General Info",
-                    action:'/action/get/cpm_odoo.edit_task_general_info_action_server',
-                    params:{
-                        'default_workflow_id':this.pageInfo.task_id,
-                        'client_action':this.props.context_data.client_action
-                    }
-                }
-            ]
 
             this.staff_asgn_act = useState({
                 load:undefined,
@@ -859,43 +1025,37 @@ odoo.define(
                     [
                         ['id','=',this.pageInfo.task_id]
                     ],
-                    ["id","name","start_date","exp_end","task_status","assigned_staff_ids","assigned_contractor_ids"],
+                    ["id","name","start_date","exp_end","task_status","assigned_staff_ids","assigned_contractor_ids","attached_document_ids"],
                     0,1,null
                 ]
             ))[0]
             if(!this.page_data.task_info){
                 moveToPage(false,"workflow")
             }
+        }
 
-            
-            this.page_data.assigned_staff_list = await this.props.context_data.orm.call(
-                'cpm_odoo.human_res_staff',
-                'read',
-                [
-                    this.page_data.task_info.assigned_staff_ids  
-                ]
-            )
-
-            
-            this.page_data.assigned_contractor_list = await this.props.context_data.orm.call(
-                'cpm_odoo.stakeholders_contractor',
-                'read',
-                [
-                    this.page_data.task_info.assigned_contractor_ids  
-                ]
-            )
-
-            // this.page_data.assigned_contractor_list = await this.props.context_data.orm.call(
-            //     'cpm_odoo.planning_task',
-            //     'search_read',
-            //     [
-            //         [
-            //             ['id','=',this.pageInfo.task_id]
-            //         ],
-            //         ["id","name","start_date","exp_end","task_status"],
-            //         0,1,null
-            //     ]
-            // )
+        async act_edit_task_info(){
+            // this.action.doAction({
+            //     type: 'ir.actions.act_window',
+            //     name: 'Document Set - Info',
+            //     res_model: 'cpm_odoo.documents_document_set',  // Replace with the model name, e.g., 'res.partner'
+            //     res_id: this.context.document_set_id,  // ID of the record you want to edit
+            //     views: [[false, 'form']],  // Open the form view for editing
+            //     target: 'new',  // Open in a new window, you can also use 'current' to open in the same window
+            //     context:{
+            //         action_name:"Edit Info"
+            //     }
+            // })
+            await this.props.context_data.action.doAction({
+                type: 'ir.actions.act_window',
+                name: 'Task - Edit Info',
+                res_model: 'cpm_odoo.planning_task',
+                view_mode: 'form',
+                res_id:this.page_data.task_info.id,
+                views: [[false, 'form']],
+                target: 'new',
+                context: { 'default_workflow_id': this.page_data.task_info.workflow_id },
+            });
         }
 
         async _do_action(action,params){
@@ -917,8 +1077,6 @@ odoo.define(
         }
     }
 
-    
-
 
 
     //=============================================================
@@ -932,7 +1090,7 @@ odoo.define(
             PlanningWorkflows,
             PlanningDrafts,
             PlanningUnassignedTasks,
-            DocumentManagementTab
+            PlanningDocumentManagementTab
         }
         
         get subpageComponent() {
@@ -956,7 +1114,7 @@ odoo.define(
             {
                 id: "documents",
                 name:"Project Documents",
-                page:DocumentManagementTab,
+                page:PlanningDocumentManagementTab,
                 group_id:"cpm_manage_project_plans"
             },
             {

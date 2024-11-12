@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================== -->
+        <!-- ======== warehouses root menu -->
+        <!-- ============================================== -->
+        <record id="cpm_odoo.warehouse_overview_act" model="ir.actions.act_window">
+          <field name="name">Resources Management</field>
+          <field name="res_model">cpm_odoo.planning_workflow</field>
+          <field name="view_mode">form</field>
+        </record>
+    
+        <menuitem name="Resources Management" id="cpm_odoo.warehouse_root" action="cpm_odoo.warehouse_overview_act"/>
+    </data>
+</odoo>

@@ -16,6 +16,18 @@ class Staff(models.Model):
         size = 64
     )
     
+    full_name = fields.Char(
+        compute='_compute_full_name', 
+        string='full_name',
+        store=True
+    )
+    
+    @api.depends('first_name','last_name')
+    def _compute_full_name(self):
+        for record in self:
+            record.full_name = record.first_name + " " + record.last_name
+        pass
+    
     employed_on = fields.Date(
         string = 'Employed On',
         default = fields.Date.today()    

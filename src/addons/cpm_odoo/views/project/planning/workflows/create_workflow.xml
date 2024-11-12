@@ -8,9 +8,9 @@
             <field name="arch" type="xml">
                 <form string="Create New Workflow">
                     <header>
-                        <button class="btn btn-secondary" special="cancel" onclick="window.history.back()">
+                        <!-- <button class="btn btn-secondary" special="cancel" onclick="window.history.back()">
                             Back
-                        </button>
+                        </button> -->
                     </header>
                     <sheet>
                         <group col="3">

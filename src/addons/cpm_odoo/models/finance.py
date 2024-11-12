@@ -52,6 +52,12 @@ class ExpenseRecord(models.Model):
         ondelete = 'cascade'
     )
     
+    category_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.finance_expense_category', 
+        string='category',
+        readonly=True
+    )
+    
     title = fields.Char(
         string = 'Title',
         required=True,
@@ -84,3 +90,47 @@ class ExpenseRecord(models.Model):
         string = 'Created By',
         required = True
     )
+    
+    
+class ExpenseCategory(models.Model):
+    _name = 'cpm_odoo.finance_expense_category'
+    _description = "Expense Category"
+    _rec_name = "encoded_name"
+    
+    name = fields.Char(
+        string = 'Name',
+        required=True,
+        size = 256
+    )
+    
+    description = fields.Text(
+        string = 'Description'
+    )
+    
+    color = fields.Char(
+        string = 'Category Color',
+        required=True,
+        size=24,
+        default = "#FF5733"
+    )
+    
+    display = fields.Boolean(
+        string = 'Display',
+        required=True,
+        default=False
+    )
+    
+    encoded_name = fields.Char(
+        compute='_compute_encoded_name', 
+        string='encoded_name',
+        store=True
+    )
+    
+    @api.depends('name','color')
+    def _compute_encoded_name(self):
+        for record in self:    
+            record.encoded_name = json.dumps({
+                "name":record.name,
+                "color":record.color
+            })
+        pass

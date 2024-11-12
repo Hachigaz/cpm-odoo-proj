@@ -2,9 +2,48 @@
 import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 import { registry } from "@web/core/registry";
+import { ItemList, SearchBar } from "../components";
+import { formatDateTime } from "../component_utils"
 
-export class DocumentManagementTab extends Component{
+export class DocumentCategoryCard extends Component{
+    static template = "cpm_odoo.DocumentCategoryCard"
+
+    setup(){
+        this.action=useService("action")
+    }
+
+    async act_show_more_document_sets(context_data){
+        await this.action.doAction({
+            type: 'ir.actions.client',
+            tag: 'cpm_odoo.document_set_item_list',
+            context: context_data
+        });
+    }
+}
+
+export class DocumentSetCard extends Component{
+    static template = "cpm_odoo.DocumentSetCard"
+    
+
+    setup(){
+        this.action=useService("action")
+    }
+
+    async act_document_set_detail(document_set_id){
+        await this.action.doAction({
+            type: 'ir.actions.client',
+            tag: 'cpm_odoo.document_set_detail',
+            context: {document_set_id:document_set_id}
+        });
+    }
+}
+
+export class PlanningDocumentManagementTab extends Component{
     static template = "cpm_odoo.PlanningDocumentManagementTab"
+    static components = {
+        DocumentSetCard,
+        DocumentCategoryCard
+    }
     
     setup(){
         this.page_data = useState({
@@ -61,7 +100,7 @@ export class DocumentManagementTab extends Component{
             res_model: 'cpm_odoo.documents_document_set',  // Model name
             view_mode: 'form',
             views: [[false, 'form']],
-            target: 'current',
+            target: 'new',
             context: { 'default_field': 'value' },  // Optional: default values for fields
         });
     }
@@ -73,20 +112,8 @@ export class DocumentManagementTab extends Component{
             res_model: 'cpm_odoo.documents_document_category',  // Model name
             view_mode: 'form',
             views: [[false, 'form']],
-            target: 'current',
+            target: 'new',
             context: { 'default_field': 'value' },  // Optional: default values for fields
-        });
-    }
-
-    async act_add_document_to_set(set_id){
-        await this.props.context_data.action.doAction({
-            type: 'ir.actions.act_window',
-            name: 'Add New Document',
-            res_model: 'cpm_odoo.documents_document',  // Model name
-            view_mode: 'form',
-            views: [[false, 'form']],
-            target: 'current',
-            context: { 'default_set_id': set_id },  // Optional: default values for fields
         });
     }
 
@@ -105,198 +132,163 @@ export class DocumentManagementTab extends Component{
             context: context_data
         });
     }
+}
 
-    async act_document_set_detail(document_set_id){
-        await this.props.context_data.action.doAction({
-            type: 'ir.actions.client',
-            tag: 'cpm_odoo.document_set_item_list',
-            context: {document_set_id:document_set_id}
-        });
+class DocumentSetDownloadLatestDocBtn extends Component{
+    static template = "cpm_odoo.DocumentSetDownloadLatestDocBtn"
+    
+    
+}
+
+
+class DocumentSetDetailDocumentList extends ItemList{
+    static template = "cpm_odoo.DocumentSetDetailDocumentList"
+    static formatDateTime = formatDateTime
+    setup(){
+        super.init()
+
+        this.page_data.model_name = "cpm_odoo.documents_document"
+        this.page_data.column_list = ['file_name','uploaded_by','date_uploaded','file_size','id','document_set_id']//columns to get from model
+        this.page_data.order_by_str = "date_uploaded desc"
+        
+        useEffect(()=>{
+            this.page_data.extra_domain = this.props.extra_domain
+        },
+        ()=>[this.props.extra_domain])
+        this.state_info = useState({
+            can_delete : true
+        })
+
+        this.action = useService("action")
+        
+        super.setup()
+    }
+
+    async act_download_doc(doc){
+        if(!confirm(`Download ${doc.file_name?doc.file_name:'document'}?`)){
+            return
+        }
+        
+        let result = await this.orm.call(
+            'cpm_odoo.documents_document',
+            'act_download_file',
+            [
+                doc.id
+            ]
+        )
+        this.action.doAction(
+            result
+        )
+    }
+
+    async act_delete_doc(doc){
+        if(!confirm(`Delete ${doc.file_name?doc.file_name:'document'}?`)){
+            return
+        }
+
+
+        this.orm.call(
+            "cpm_odoo.documents_document",
+            "unlink",
+            [
+                doc.id
+            ]
+        )
+        window.location.reload()
     }
 }
 
-class DocumentSetDetail extends Component{
-    static template = "cpm_odoo.DocumentSetDetail"
-}
-
-registry.category("actions").add("cpm_odoo.document_set_detail", DocumentSetDetail);
-
-class ItemList extends Component{
-    static template = ""
+class DocumentSetDetailPage extends Component{
+    static template = "cpm_odoo.DocumentSetDetailPage"
+    
+    static components = {
+        DocumentSetDetailDocumentList
+    }
+    static clientActionName = "cpm_odoo.document_set_detail"
 
     setup(){
-        this.page_data = useState({
-            item_list:[],
-            item_count:0,
-            item_display_count:2,
-            current_page: 0,
-            page_count:0,
-            page_display_count:7,
-            page_arr:[],
-            model_name:"",
-            column_list:[],//columns to get from model
-            domain:[],
-            order_by_str:""
+        if(Object.keys(this.props.action.context).length !== 0){
+            let context = this.props.action.context
+            sessionStorage.setItem("page_context",JSON.stringify({
+                action_name:this.clientActionName,
+                context:context
+            }))
+        }
+        this.context = JSON.parse(sessionStorage.getItem("page_context"))
+        if(this.context && this.context.action_name === this.clientActionName){
+            this.context = this.context.context
+            this.extra_domain = [['document_set_id','=',this.context.document_set_id]]
+        }
+        else{
+            window.history.back()
+        }
+        this.state_info= useState({
+            doc_set_info:{}
         })
-
-        this.orm = useService('orm')
+        this.action=useService('action')
+        this.orm=useService('orm')
 
         this.loadData()
     }
 
     async loadData(){
-        let item_display_count = this.page_data.item_display_count
-        let item_count = await this.orm.call(
-            this.page_data.model_name,
-            'search_count',
+        this.state_info.doc_set_info = (await this.orm.call(
+            "cpm_odoo.documents_document_set",
+            "read",
             [
-                this.page_data.domain
+                this.context.document_set_id
+            ]
+        ))[0]
+    }
+
+    async act_add_doc_to_set(){
+        let result = await this.orm.call(
+            'cpm_odoo.documents_document_set',
+            'act_add_doc_to_set',
+            [
+                this.context.document_set_id
             ]
         )
-
-        this.page_data.item_count = item_count
-
-        let page_count = Math.floor(item_count/item_display_count)
-        if(item_count%item_display_count>0){
-            page_count+=1
-        }
-        this.page_data.page_count = page_count
-        this.act_load_page(0)
+        this.action.doAction(
+            result
+        )
     }
 
-    async act_load_page(page){
-        if(this.page_data.page_count > page && page >= 0){
-            this.page_data.current_page = page
-            let item_list = await this.orm.call(
-                this.page_data.model_name,
-                'search_read',
-                [
-                    this.page_data.column_list,
-                    this.page_data.domain,
-                    this.page_data.current_page*this.page_data.item_display_count,this.page_data.item_display_count,this.page_data.order_by_str
-                ]
-            )
-            
-            this.get_page_list()
-            
-            this.page_data.item_list = item_list
-        }
-    }
-
-    get_page_list(){
-        let page_arr = Array.from({ length: this.page_data.page_display_count }, (_, i) => {
-            const value = this.page_data.current_page - Math.floor(this.page_data.page_display_count/2) + i;
-            return value
-        });
-        const lowerBound = 0;
-        const upperBound = this.page_data.page_count-1;
-        
-        const belowZeroCount = page_arr.filter(value => value < 0).length;
-        
-        page_arr.forEach((val,idx)=>{
-            page_arr[idx]+=belowZeroCount
+    async act_edit_doc_set_info(){
+        this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Document Set - Info',
+            res_model: 'cpm_odoo.documents_document_set',  // Replace with the model name, e.g., 'res.partner'
+            res_id: this.context.document_set_id,  // ID of the record you want to edit
+            views: [[false, 'form']],  // Open the form view for editing
+            target: 'new',  // Open in a new window, you can also use 'current' to open in the same window
+            context:{
+                action_name:"Edit Info"
+            }
         })
-
-        page_arr = page_arr.filter(value => value <= upperBound);
-        
-        const aboveTenCount = page_arr.filter(value => value > upperBound).length;
-        
-        page_arr.forEach((val,idx)=>{
-            page_arr[idx]-=aboveTenCount
-        })
-        
-        page_arr = page_arr.filter(value => value >= lowerBound);
-            
-        this.page_data.page_arr = page_arr
     }
 }
 
-class DocumentCategoryItemList extends Component{
+registry.category("actions").add(DocumentSetDetailPage.clientActionName, DocumentSetDetailPage);
+
+class DocumentCategoryItemList extends ItemList{
     static template = "cpm_odoo.DocumentCategoryItemList"
+    static components={
+        SearchBar,
+        DocumentCategoryCard
+    }
+    
 
     setup(){
-        this.page_data = useState({
-            item_list:[],
-            item_count:0,
-            item_display_count:2,
-            current_page: 0,
-            page_count:0,
-            page_display_count:7,
-            page_arr:[]
-        })
+        super.init()
 
-        this.orm = useService('orm')
-        this.action = useService('action')
+        this.page_data.model_name = "cpm_odoo.documents_document_category"
+        this.page_data.column_list = []//columns to get from model
+        this.page_data.order_by_str = "name asc"
 
-        this.loadData()
-    }
-
-    async act_load_page(page){
-        if(this.page_data.page_count > page && page >= 0){
-            this.page_data.current_page = page
-            let item_list = await this.orm.call(
-                'cpm_odoo.documents_document_category',
-                'search_read',
-                [
-                    [
-                        
-                    ],
-                    [],
-                    this.page_data.current_page*this.page_data.item_display_count,this.page_data.item_display_count,"name asc"
-                ]
-            )
-            
-            this.get_page_list()
-            
-            this.page_data.item_list = item_list
-        }
-    }
-
-    get_page_list(){
-        let page_arr = Array.from({ length: this.page_data.page_display_count }, (_, i) => {
-            const value = this.page_data.current_page - Math.floor(this.page_data.page_display_count/2) + i;
-            return value
-        });
-        const lowerBound = 0;
-        const upperBound = this.page_data.page_count-1;
+        this.action = useService("action")
         
-        const belowZeroCount = page_arr.filter(value => value < 0).length;
-        
-        page_arr.forEach((val,idx)=>{
-            page_arr[idx]+=belowZeroCount
-        })
-
-        page_arr = page_arr.filter(value => value <= upperBound);
-        
-        const aboveTenCount = page_arr.filter(value => value > upperBound).length;
-        
-        page_arr.forEach((val,idx)=>{
-            page_arr[idx]-=aboveTenCount
-        })
-        
-        page_arr = page_arr.filter(value => value >= lowerBound);
-            
-        this.page_data.page_arr = page_arr
-    }
-
-    async loadData(){
-        let item_display_count = this.page_data.item_display_count
-        let item_count = await this.orm.call(
-            'cpm_odoo.documents_document_category',
-            'search_count',
-            [
-                []
-            ]
-        )
-
-        this.page_data.item_count = item_count
-
-        let page_count = Math.floor(item_count/item_display_count)
-        if(item_count%item_display_count>0){
-            page_count+=1
-        }
-        this.page_data.page_count = page_count
-        this.act_load_page(0)
+        super.setup()
     }
 
     async act_show_more_document_sets(context_data){
@@ -308,20 +300,88 @@ class DocumentCategoryItemList extends Component{
     }
 }
 
-registry.category("actions").add("cpm_odoo.document_category_item_list", DocumentCategoryItemList);
-
-class DocumentSetItemList extends ItemList{
-    static template = "cpm_odoo.DocumentSetItemList"
+class DocumentCategoryListPage extends Component{
+    static template = "cpm_odoo.DocumentCategoryListPage"
+    static components = {
+        DocumentCategoryItemList
+    }
+    
+    static clientActionName = "cpm_odoo.document_category_item_list"
 
     setup(){
-        this.page_data.model_name:"",
-        this.page_data.column_list:[],//columns to get from model
-        this.page_data.domain:[],
-        this.page_data.order_by_str:""
+        if(Object.keys(this.props.action.context).length !== 0){
+            let context = this.props.action.context
+            sessionStorage.setItem("page_context",JSON.stringify({
+                action_name:this.clientActionName,
+                context:context
+            }))
+        }
+        this.context = JSON.parse(sessionStorage.getItem("page_context"))
+        if(this.context && this.context.action_name === this.clientActionName){
+            this.context=this.context.context
+        }
+        else{
+            window.history.back()
+        }
+    }
+}
 
+registry.category("actions").add(DocumentCategoryListPage.clientActionName, DocumentCategoryListPage);
+
+export class DocumentSetItemList extends ItemList{
+    static template = "cpm_odoo.DocumentSetItemList"
+    static components = {
+        SearchBar,
+        DocumentSetCard
+    }
+    
+
+    setup(){
+        super.init()
+
+        this.page_data.model_name = "cpm_odoo.documents_document_set"
+        this.page_data.column_list = []
+        this.page_data.order_by_str = "category_id asc, updated_at desc, name asc"
+        this.page_data.json_cols = ['category_id']
+
+        this.search_filter.search_bar.cols=['name']
+        
+        useEffect(()=>{
+            this.page_data.extra_domain = this.props.extra_domain
+        },
+        ()=>[this.props.extra_domain])
 
         super.setup()
     }
 }
 
-registry.category("actions").add("cpm_odoo.document_set_item_list", DocumentSetItemList);
+class DocumentSetListPage extends Component{
+    static template = "cpm_odoo.DocumentSetListPage"
+    static components = {
+        DocumentSetItemList
+    }
+    
+    static clientActionName = "cpm_odoo.document_set_item_list"
+
+    setup(){
+        if(Object.keys(this.props.action.context).length !== 0){
+            let context = this.props.action.context
+            sessionStorage.setItem("page_context",JSON.stringify({
+                action_name:this.clientActionName,
+                context:context
+            }))
+        }
+        this.context = JSON.parse(sessionStorage.getItem("page_context"))
+        if(this.context && this.context.action_name === this.clientActionName){
+            this.context=this.context.context
+            if(this.context.category_id){
+                this.extra_domain = [["category_id","=",this.context.category_id]]
+            }
+        }
+        else{
+            window.history.back()
+        }
+    }
+}
+
+registry.category("actions").add(DocumentSetListPage.clientActionName, DocumentSetListPage);
