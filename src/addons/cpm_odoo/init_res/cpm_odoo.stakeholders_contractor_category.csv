@@ -1,6 +1,6 @@
 id,name,color,display
-cpm_builder,"Builders",#4ECDC4,True
-cpm_foundation,"Foundation",#FFD93D,True
-cpm_design,"Design",#1A535C,False
-cpm_furnish,"Furnish",#FF7F50,True
-cpm_utility,"Utilities",##0B3D91,True
+cpm_cntr_cat_builder,"Builders",#4ECDC4,True
+cpm_cntr_cat_foundation,"Foundation",#FFD93D,True
+cpm_cntr_cat_design,"Design",#1A535C,False
+cpm_cntr_cat_furnish,"Furnish",#FF7F50,True
+cpm_cntr_cat_utility,"Utilities",##0B3D91,True

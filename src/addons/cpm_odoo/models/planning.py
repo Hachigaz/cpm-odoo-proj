@@ -364,6 +364,7 @@ class Task(models.Model):
             'views':[(False,'form')],
             'context': {
                 'default_task_id':task.id,
+                'default_project_finance_id':task.workflow_id.planning_id.project_id.proj_finance_id.id,
                 'default_expense_type':expense_type
             },
             'target': 'new'
@@ -409,6 +410,23 @@ class Task(models.Model):
             }
         else:
             raise ValidationError(f"Cannot create task - The workflow {workflow.name} status is not in draft.")
+
+    #task actions
+    @api.model
+    def act_get_active_tasks(self,staff_id):
+        active_tasks = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ('start_date','<',fields.Date.today()),
+                ('task_status','=','active'),
+                ('workflow_id.workflow_status','=','active'),
+                ('assigned_staff_ids','in',[staff_id])
+            ],
+            [],
+            0,0,
+            "exp_end desc"
+        )
+        return active_tasks
+
 
     @api.model_create_multi
     def create(self, vals):
@@ -479,6 +497,11 @@ class TaskExpense(models.Model):
     _name = 'cpm_odoo.planning_task_expense'
     _description = "Model"
     
+    
+    _inherits = {
+        "cpm_odoo.finance_expense_record":"expense_id"
+    }
+    
     task_id = fields.Many2one(
         comodel_name = 'cpm_odoo.planning_task',
         string='Task',
@@ -486,48 +509,11 @@ class TaskExpense(models.Model):
         ondelete = 'cascade'
     )
     
-    title = fields.Char(
-        string = 'Title',
-        required=True,
-        size = 256
-    )
-    
-    description = fields.Text(
-        string = 'Description'
-    )
-    
-    category_id = fields.Many2one(
-        comodel_name = 'cpm_odoo.finance_expense_category', 
-        string='category',
-        readonly=True
-    )
-    
-    date_created = fields.Datetime(
-        'Date Created',
-        default = fields.Datetime.now(),
-        required=True
-    )
-    
     expense_id = fields.Many2one(
         comodel_name = 'cpm_odoo.finance_expense_record', 
-        string='expense')
-    
-    created_by = fields.Many2one(
-        comodel_name ='cpm_odoo.human_res_staff', 
-        string='Created By',
-        # required=True,
-        ondelete='restrict'
-    )
-    
-    amount_cur_id = fields.Many2one(
-    
-        comodel_name = 'res.currency', 
-        string='Currency'
-    )
-    
-    amount = fields.Monetary(
-        string = 'Amount',
-        currency_field = 'amount_cur_id'
+        string='expense',
+        required=True,
+        ondelete = "restrict"
     )
     
     expense_type = fields.Selection([
@@ -535,18 +521,15 @@ class TaskExpense(models.Model):
         ('additional', 'Additional Expense')
     ], string='expense_type')
     
-    expense_status = fields.Selection([
-            ('not_paid', 'Not Paid'),
-            ('paid', 'Paid')
-        ], 
-        string='expense_status',
-        default="not_paid"
-    )
-    
     @api.model_create_multi
     def create(self, vals):
         for val in vals:
-            staff = self.env["cpm_odoo.human_res_staff"].search([('user_id', '=', self.env.user.id)], limit=1)
-            if(len(staff)>0):
-                val["created_by"] = staff.id
+            task_id = self.env.context.get("default_task_id")
+            if not task_id:          
+                task_id = val.task_id  
+                
+            task = self.env['cpm_odoo.planning_task'].browse()
+            
+            val["title"] = "Task Expense: " + val["title"]
+            val["description"] = f"Workflow: {task.workflow_id.name}, Task: {task.name}" + val["description"] if val["description"] else ""
         return super().create(vals)

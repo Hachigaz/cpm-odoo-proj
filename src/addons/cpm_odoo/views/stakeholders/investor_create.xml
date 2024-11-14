@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.stakeholders_contractor_create_view_form" model="ir.ui.view">
+            <field name="name">model_name.view.form</field>
+            <field name="model">cpm_odoo.stakeholders_contractor</field>
+            <field name="arch" type="xml">
+                <form string="New Contractor">
+                    <sheet>
+                        <group string="Contractor Info" col='3'>
+                            <group colspan='2'>
+                                <field name="name">Contractor Name</field>
+                                <field name="description">Description</field>
+                            </group>
+                            <group colspan='1'>
+                                <field name="avatar_128" invisible="1"></field>
+                                <field name="image_1920" class="oe_avatar" widget='image' options="{'preview_image':'avatar_128'}"></field>
+                            </group>
+                        </group>
+                        <group string="Contact Info">
+                            <field name="address">Address</field>
+                            <field name="phone" widget='phone'>Phone Number</field>
+                            <field name="email" widget='email'>Email</field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

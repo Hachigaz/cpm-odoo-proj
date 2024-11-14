@@ -13,7 +13,7 @@
                             <field name="description" string="Description"></field>
                             <field name="start_date" widget='date' string="Start Date"></field>
                             <field name="exp_end" widget='date' string="Expected End Date"></field>
-                            <field name="manager_ids" string="Assigned PMs"></field>
+                            <!-- <field name="manager_ids" string="Assigned PMs"></field> -->
                         </group>
                         <group string="Stakeholders">
                             <field name="investor_ids" string="Investors"></field>

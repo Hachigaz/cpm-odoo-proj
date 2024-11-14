@@ -74,15 +74,35 @@ export function formatDateTime(dt_str){
 
     // Split the date string (DD-MM-YYYY)
     const [year, month, day] = inputDate.split('-');
-    // Create a new Date object (months are zero-based in JavaScript, so subtract 1)
-    const date = new Date(`${year}-${month}-${day}`);
 
-    // Format the date to 'MMM DD YYYY' (e.g., 'Jun 19 2025')
-    const formattedDate = date.toLocaleDateString('en-US', {
-        month: 'short', // Jun
-        day: 'numeric', // 19
-        year: 'numeric' // 2025
-    });
+    return `${time_str[0]}:${time_str[1]} ${day}/${month}/${year}`
+}
 
-    return time_str[0]+":"+time_str[1] + " - " + formattedDate
+export async function joinDatas(list,orm,cols){
+    let col_recs = []
+    
+    for (const col of cols){
+        const ids = [...new Set(list.map(rec => rec[col[0]][0]))]
+    
+        const recs = await orm.call(
+            col[1],
+            "search_read",
+            [
+                [
+                    ['id','in',ids]
+                ],
+                col[2]?col[2]:[],
+                0,0,
+                ""
+            ]
+        )
+
+        col_recs.push(recs)
+    }
+
+    list.forEach((rec,idx)=>{
+        for(let i=0;i<cols.length;i++){
+            list[idx][cols[i][0]] = col_recs[i].find(col_rec=>col_rec.id===rec[cols[i][0]][0])
+        }
+    })
 }

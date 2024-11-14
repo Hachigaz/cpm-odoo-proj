@@ -172,7 +172,7 @@ export class ItemList extends Component{
                 domain:[],
                 extra_domain:[],
                 order_by_str:"",
-                json_cols:[]
+                join_cols:[]
             })
     
     
@@ -259,15 +259,40 @@ export class ItemList extends Component{
                 ]
             )
 
-            if(this.page_data.json_cols.length>0){
-                item_list.forEach((item,idx)=>{
-                    this.page_data.json_cols.forEach((col_name)=>{
-                        if(item_list[idx][col_name]){
-                            item_list[idx][col_name]=JSON.parse(item_list[idx][col_name][1])
-                        }
-                        // console.log(item_list[idx][col_name])
+            if(this.page_data.join_cols.length>0){
+                // item_list.forEach((item,idx)=>{
+                //     this.page_data.join_cols.forEach((col_name)=>{
+                //         if(item_list[idx][col_name]){
+                //             item_list[idx][col_name]=JSON.parse(item_list[idx][col_name][1])
+                //         }
+                //         // console.log(item_list[idx][col_name])
+                //     })
+                // })
+
+                for (let col of this.page_data.join_cols){
+                    //col[0]:id, col[1]:model name
+                    const ids = [...new Set(item_list.map(rec => rec[col[0]][0]))]
+    
+                    const recs = await this.orm.call(
+                        col[1],
+                        "search_read",
+                        [
+                            [
+                                ['id','in',ids]
+                            ],
+                            [],
+                            0,0,
+                            ""
+                        ]
+                    )
+
+
+                    item_list.forEach((item,idx)=>{
+                        let col_id = item_list[idx][col[0]][0]
+                        item_list[idx][col[0]] = recs.find(rec=>rec.id===col_id)
                     })
-                })
+                }
+
             }
 
             this.get_page_list()

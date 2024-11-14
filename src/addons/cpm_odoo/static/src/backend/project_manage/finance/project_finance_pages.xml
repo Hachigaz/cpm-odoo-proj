@@ -1,0 +1,304 @@
+<templates>
+    <t t-name="cpm_odoo.ProjectFinancePage" owl="1">
+        <!-- Header -->
+         
+        <div class="row h-100">
+            <div class="col-md-2 pt-2">
+                <div class="page-title mb-3">
+                    <h2 class="px-2">
+                        Project Finances
+                    </h2>
+                </div>
+                <ul class="nav nav-pills flex-column" role="tablist">
+                    <t t-foreach="this.constructor.availablePages" t-as="page" t-key="page.id">
+                        <li class="nav-item user-select-none">
+                            <div t-att-class="`nav-link ${this.currentPage==page.id?'active':''}`" t-att-id="page.id" t-on-click="() => callSubPage(page.id)">
+                                <t t-esc="page.name"></t>
+                            </div>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+            <div class="col-md-10">
+                <div class="tab-content d-flex flex-column h-100">
+                    <div class="tab-pane fade active show flex-grow-1">
+                        <t t-component="pageComponent" context_data="props.context_data"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="header bg-white text-white px-3 py-2 main-header">
+            <ul class="nav nav-tabs" role="tablist">
+                <t t-foreach="this.constructor.availablePages" t-as="page" t-key="page.id">
+                    <li class="nav-item user-select-none bg-light" role="presentation">
+                        <a class="nav-link" t-att-id="page.id" t-on-click="() => callSubPage(page.id)">
+                            <t t-esc="page.name"></t>
+                        </a>
+                    </li>
+                </t>
+            </ul>
+        </div>
+        <div class="body flex-grow-1 bg-light px-3 mt-2 py-2 bg-white" style="overflow-y:scroll">
+            <t t-component="pageComponent" context_data="props.context_data"/>
+        </div> -->
+    </t>
+
+    <t t-name="cpm_odoo.ProjectFinanceDashboardTab">
+        <!-- Overview Section -->
+        <section class="container my-5" id="finance-overview-section">
+            <h2 class="mb-4">Overview</h2>
+            <div class="row">
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-body" id="total-investments-chart">
+                            <h5 class="card-title">Total Investments</h5>
+                            <!-- <p class="card-text">Content goes here</p> -->
+                            <canvas class="chart w-80">
+
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-body" id="total-expenses-chart">
+                            <h5 class="card-title">Total Expenses</h5>
+                            <canvas class="chart w-80">
+
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-body" id="total-chart">
+                            <h5 class="card-title">Net Profit</h5>
+                            <canvas class="chart w-80">
+
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Charts Section -->
+        <section class="container my-5">
+            <h2 class="mb-4">Charts</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Revenue vs Expenses</h5>
+                            <p class="card-text">Chart content goes here</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Growth Over Time</h5>
+                            <p class="card-text">Chart content goes here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Transaction Table Section -->
+        <section class="container my-5">
+            <h2 class="mb-4">Recent Transactions</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Description</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Table rows will go here -->
+                     <t t-if="this.page_data.recent_transactions.length>0">
+                        <t t-foreach="this.page_data.recent_transactions" t-as="trans" t-key="trans.id">
+                           <tr>
+                               <td><t t-esc="trans.title"/></td>
+                               <td><t t-esc="trans.d_amount"/></td>
+                               <td><t t-esc="this.constructor.formatDateTime(trans.date_created)"/></td>
+                               <td>
+                                   <t t-if="trans.category_id">
+                                       <t t-esc="trans.category_id.name"/>
+                                   </t>
+                                   <t t-else="">
+                                       No Category
+                                   </t>
+                               </td>
+                               <td><t t-esc="trans.status[1]"/></td>
+                           </tr>
+                        </t>
+                     </t>
+                     <t t-else="">
+                        <tr class="text-center">
+                            <td colspan="5">
+                                No Recent Transaction
+                            </td>
+                        </tr>
+                     </t>
+                </tbody>
+            </table>
+        </section>
+        
+        <section class="container my-5">
+            <h2 class="mb-4">Pending Transactions</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Description</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     <t t-if="this.page_data.pending_transactions.length>0">
+                        <t t-foreach="this.page_data.pending_transactions" t-as="trans" t-key="trans.id">
+                        <tr>
+                            <td><t t-esc="trans.title"/></td>
+                            <td><t t-esc="trans.d_amount"/></td>
+                            <td><t t-esc="this.constructor.formatDateTime(trans.date_created)"/></td>
+                            <td>
+                                <t t-if="trans.category_id">
+                                    <t t-esc="trans.category_id.name"/>
+                                </t>
+                                <t t-else="">
+                                    No Category
+                                </t>
+                            </td>
+                            <td><t t-esc="trans.status[1]"/></td>
+                        </tr>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <tr class="text-center">
+                            <td colspan="5">
+                                No Recent Transaction
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </section>
+    </t>
+
+    <t t-name="cpm_odoo.FinanceBudgetsTab">
+        <!-- Project Overview Section -->
+        <section class="container my-5">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="m-0">Budgets</h2>
+                <div class="btn-list">
+                    <div class="btn btn-secondary me-2" t-on-click="()=>{this.act_add_investment_record()}">
+                        New Investment Record
+                    </div>
+                    <div class="btn btn-secondary" t-on-click="()=>{this.act_add_expense_record()}">
+                        New Expense Record
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Investments</h5>
+                            <p class="card-text">$50,000</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Expenses</h5>
+                            <p class="card-text">$20,000</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Remaining Budget</h5>
+                            <p class="card-text">$30,000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expenses Table Section -->
+        <section class="container my-5">
+            <h2 class="mb-4">Expense Details</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example Expenses -->
+                    <tr>
+                        <td>2024-11-01</td>
+                        <td>Project Supplies</td>
+                        <td>$2,000</td>
+                        <td>Material</td>
+                        <td>Paid</td>
+                    </tr>
+                    <tr>
+                        <td>2024-11-05</td>
+                        <td>Consulting Fees</td>
+                        <td>$5,000</td>
+                        <td>Services</td>
+                        <td>Paid</td>
+                    </tr>
+                    <tr>
+                        <td>2024-11-10</td>
+                        <td>Software Licenses</td>
+                        <td>$3,000</td>
+                        <td>Tools</td>
+                        <td>Pending</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Expense Summary Section -->
+        <section class="container my-5">
+            <h2 class="mb-4">Expense Summary</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Expenses</h5>
+                            <p class="card-text">$20,000</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Remaining Budget</h5>
+                            <p class="card-text">$30,000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </t>
+
+    <t t-name="cpm_odoo.FinanceInvestorsTab">
+
+    </t>
+</templates>

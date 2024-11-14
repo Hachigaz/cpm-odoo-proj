@@ -152,7 +152,7 @@ class Document(models.Model):
 class DocumentCategory(models.Model):
     _name = "cpm_odoo.documents_document_category"
     _description = "Document Category"
-    _rec_name = "encoded_name"
+    # _rec_name = "encoded_name"
     
     name = fields.Char(
         string = 'Name',
@@ -177,17 +177,17 @@ class DocumentCategory(models.Model):
         default=False
     )
     
-    encoded_name = fields.Char(
-        compute='_compute_encoded_name', 
-        string='encoded_name',
-        store=True
-    )
+    # encoded_name = fields.Char(
+    #     compute='_compute_encoded_name', 
+    #     string='encoded_name',
+    #     store=True
+    # )
     
-    @api.depends('name','color')
-    def _compute_encoded_name(self):
-        for record in self:    
-            record.encoded_name = json.dumps({
-                "name":record.name,
-                "color":record.color
-            })
-        pass
+    # @api.depends('name','color')
+    # def _compute_encoded_name(self):
+    #     for record in self:    
+    #         record.encoded_name = json.dumps({
+    #             "name":record.name,
+    #             "color":record.color
+    #         })
+    #     pass

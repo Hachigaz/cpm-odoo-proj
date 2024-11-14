@@ -25,18 +25,24 @@ Long description of module's purpose
     'data': [
         'security/res.groups.csv',
         # 'security/ir.rule.csv',
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         
         'views/views.xml',
-        'views/project/project_actions.xml',
-        'views/templates.xml',
+        'views/project/project_acts.xml',
+        'views/project/project_mgmt_acts.xml',
+        'views/project/project_works_acts.xml',
         
         'views/project/project_select_overview.xml',
         'views/project/project_create.xml',
         'views/project/project_overview.xml',
+        
         'views/project/planning/tasks/create_task.xml',
         'views/project/planning/tasks/create_task_expense.xml',
         'views/project/planning/workflows/create_workflow.xml',
+        
+        'views/project/finance/expense_category_create.xml',
+        'views/project/finance/expense_record_create.xml',
+        'views/project/finance/investment_record_create.xml',
         
         'views/doc_mgmt/document_category_create.xml',
         'views/doc_mgmt/document_set_create.xml',
@@ -50,13 +56,14 @@ Long description of module's purpose
         'views/res_mgmt/res_mgmt_acts.xml',
         
         
-        # 'init_res/cpm_odoo.root_project_hrm.csv',
-        # 'init_res/cpm_odoo.root_project_planning.csv',
-        # 'init_res/cpm_odoo.root_project_finance.csv',
-        # 'init_res/cpm_odoo.root_project_doc_mgmt.csv',
-        # 'init_res/cpm_odoo.root_project.csv',
+        # 'init_res/dump/cpm_odoo.root_project_hrm.csv',
+        # 'init_res/dump/cpm_odoo.root_project_planning.csv',
+        # 'init_res/dump/cpm_odoo.root_project_finance.csv',
+        # 'init_res/dump/cpm_odoo.root_project_doc_mgmt.csv',
+        # 'init_res/dump/cpm_odoo.root_project.csv',
         'init_res/cpm_odoo.stakeholders_contractor_category.csv',
         'init_res/cpm_odoo.stakeholders_contractor.csv',
+        'init_res/cpm_odoo.stakeholders_investor.csv',
         'init_res/cpm_odoo.human_res_department.csv',
         'init_res/cpm_odoo.human_res_staff.csv',
         'init_res/cpm_odoo.documents_document_category.csv',

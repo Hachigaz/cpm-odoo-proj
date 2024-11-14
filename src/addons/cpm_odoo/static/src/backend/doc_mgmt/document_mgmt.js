@@ -2,8 +2,8 @@
 import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 import { registry } from "@web/core/registry";
-import { ItemList, SearchBar } from "../components";
-import { formatDateTime } from "../component_utils"
+import { ItemList, SearchBar } from "../components/components";
+import { formatDateTime } from "../components/component_utils"
 
 export class DocumentCategoryCard extends Component{
     static template = "cpm_odoo.DocumentCategoryCard"
@@ -342,7 +342,9 @@ export class DocumentSetItemList extends ItemList{
         this.page_data.model_name = "cpm_odoo.documents_document_set"
         this.page_data.column_list = []
         this.page_data.order_by_str = "category_id asc, updated_at desc, name asc"
-        this.page_data.json_cols = ['category_id']
+        this.page_data.join_cols = [
+            ['category_id','cpm_odoo.documents_document_category']
+        ]
 
         this.search_filter.search_bar.cols=['name']
         

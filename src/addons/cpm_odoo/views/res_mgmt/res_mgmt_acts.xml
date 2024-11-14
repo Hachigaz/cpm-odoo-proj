@@ -11,5 +11,14 @@
         </record>
     
         <menuitem name="Resources Management" id="cpm_odoo.warehouse_root" action="cpm_odoo.warehouse_overview_act"/>
+
+        
+        <record id="cpm_odoo.assigned_warehouse_list_act" model="ir.actions.act_window">
+          <field name="name">Assigned Warehouses</field>
+          <field name="res_model">cpm_odoo.res_mgmt_warehouse_info</field>
+          <field name="view_mode">kanban</field>
+        </record>
+
+        <menuitem name="Warehouses" parent="cpm_odoo.warehouse_root" id="cpm_odoo.assigned_warehouse_menuitem" action="cpm_odoo.assigned_warehouse_list_act"/>
     </data>
 </odoo>

@@ -7,15 +7,7 @@
             <field name="model">cpm_odoo.documents_document_set</field>
             <field name="arch" type="xml">
                 <form string="context.get('action_name')">
-                    <header>
-                        <!-- <button class="btn btn-secondary" special="save" onclick="window.history.back()">
-                            Save
-                        </button>
-                        <button class="btn btn-secondary" special="cancel" onclick="window.history.back()">
-                            Back
-                        </button> -->
-                    </header>
-                    <sheet>
+                    <sheet string="Document Set Info">
                         <group col="3">
                             <group colspan="2">
                                 <field name="name" string="Document Name"></field>

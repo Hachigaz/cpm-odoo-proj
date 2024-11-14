@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="web_widget_colorpicker.FieldColorPicker">
+        <div t-ref="el">
+            <span t-if="props.readonly" t-esc="formattedValue"/>
+            <div t-else="" class="input-group colorpicker-component">
+                <input
+
+                        t-att-id="props.id"
+                        t-ref="ColorChar"
+                        t-att-value="value"
+
+                        class="form-control o_input"
+                        autocomplete="off"/>
+                <span class="input-group-addon"><i></i></span>
+            </div>
+        </div>
+    </t>
+
+</templates>

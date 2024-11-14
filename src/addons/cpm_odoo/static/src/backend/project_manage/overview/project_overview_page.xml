@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <templates>
+
     <t t-name="cpm_odoo.ProjectOverviewPage" owl="1">
         <div class="">
             <div>
@@ -18,9 +20,4 @@
         </div>
     </t>
 
-    <t t-name="cpm_odoo.ProjectFinancePage" owl="1">
-        <div class="">
-            Finance
-        </div>
-    </t>
 </templates>

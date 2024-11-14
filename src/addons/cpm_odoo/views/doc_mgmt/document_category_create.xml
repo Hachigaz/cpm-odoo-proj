@@ -5,7 +5,7 @@
             <field name="name">cpm_odoo.document_category_create_form_view</field>
             <field name="model">cpm_odoo.documents_document_category</field>
             <field name="arch" type="xml">
-                <form string="Create Document Category">
+                <form>
                     <header>
                         <!-- <button class="btn btn-secondary" special="save" onclick="window.history.back()">
                             Save
@@ -14,7 +14,7 @@
                             Back
                         </button> -->
                     </header>
-                    <sheet>
+                    <sheet string="Category Info">
                         <group col="3">
                             <group colspan="2">
                                 <field name="name" string="Category Name"></field>
