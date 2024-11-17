@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <t t-name="cpm_odoo.DocumentCategoryCard">
+        <div class="card" t-att-style="`background-color:${props.category.color}`">
+            <div class="card-img-top text-white p-2">
+                <h4 class="card-title text-white m-0"><t t-esc="props.category.name"/></h4>
+            </div>
+            <div class="card-body">
+                <p class="card-text mt-2" style="min-height: 2rem">
+                    <t t-if="props.category.description">
+                        <t t-esc="props.category.description"/>
+                    </t>
+                    <t t-else="">
+                        No Description
+                    </t>
+                </p>
+                <div class="row align-items-center">
+                    <div class="col btn-list d-flex justify-content-end">
+                        <div class="btn btn-outline-dark" t-on-click="()=>{this.act_show_more_document_sets({category_id:props.category.id})}">
+                            View Documents
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.DocumentSetCard">
+        <div class="card" t-att-style="`background-color:#bedee2`">
+            <div class="card-img-top p-2 d-flex align-items-center text-center">
+                <t t-if="this.props.doc_set.category_id.color">
+                    <i class="fas fa-circle fa-sm " t-att-style="`color: ${this.props.doc_set.category_id.color}; font-size:0.8rem; margin-right: 8px;`"></i>
+                </t>
+                <t t-else="">
+                    <i class="fas fa-circle fa-sm " t-att-style="`color: ${'grey'}; font-size:0.8rem; margin-right: 8px;`"></i>
+                </t>
+                <h4 class="card-title m-0"><t t-esc="props.doc_set.name"/></h4>
+            </div>
+            <div class="card-body">
+                <p class="card-text d-flex justify-content-between">
+                    <span class="me-3">
+                        <t t-if="this.props.doc_set.category_id.name">
+                            <t t-esc="this.props.doc_set.category_id.name"/>
+                        </t>
+                        <t t-else="">
+                            No Category
+                        </t>
+                    </span>
+                    <span class="me-3">
+                        <span class="document-count me-1">
+                            <t t-esc="props.doc_set.document_count"/>
+                        </span>
+                        <i class="fa-regular fa-file-lines"></i>
+                    </span>
+                </p>
+                <p class="card-text mt-2" style="min-height: 2rem">
+                    <t t-if="props.doc_set.description">
+                        <t t-esc="props.doc_set.description"/>
+                    </t>
+                    <t t-else="">
+                        No Description
+                    </t>
+                </p>
+                <div class="row align-items-center mt-2">
+                    <div class="col d-flex align-items-center">
+                        <span class="">
+                            Last Updated:
+                            <t t-if="props.doc_set.updated_at">
+                                <t t-esc="props.doc_set.updated_at"/>
+                            </t>
+                            <t t-else="">
+                                Never
+                            </t>
+                        </span>
+                    </div>
+                    <div class="col btn-list d-flex justify-content-end">
+                        <div class="btn btn-outline-dark" t-on-click="()=>{this.act_document_set_detail(props.doc_set.id)}">
+                            View Details
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+
+    <t t-name="cpm_odoo.PlanningDocumentManagementTab">
+        <!-- document main tab -->
+        <div class="container-fluid tab-title d-flex align-items-center">
+            <div class="me-3">
+                <h2 class="m-0">
+                    Project Documents
+                </h2>
+            </div>
+            <div class="btn-list">
+                <button type="button" class="btn btn-outline-secondary me-2" t-on-click="()=>{this.act_add_document()}">
+                    New Document Set
+                </button>
+                <button type="button" class="btn btn-outline-secondary me-2" t-on-click="()=>{this.act_add_category()}">
+                    New Category
+                </button>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="display-row mt-3">
+                <!-- some document categories -->
+                <div class="row-title d-flex align-items-center">
+                    <div class="me-3">
+                        <h3 class="m-0">
+                            Categories
+                        </h3>
+                    </div>
+                    <div class="btn-list">
+                        <button type="button" class="btn btn-outline-secondary" t-on-click="()=>{this.act_show_more_document_categories()}">
+                            More
+                        </button>
+                    </div>
+                </div>
+                <div class="row align-items-center mt-2 g-3">
+                    <t t-foreach="page_data.display_document_category_list" t-as="category" t-key="category.id">
+                        <div class="col-3">
+                            <DocumentCategoryCard category="category">
+
+                            </DocumentCategoryCard>
+                        </div>
+                    </t>
+                </div>
+            </div>
+            <div class="display-row mt-3">
+                <!-- recently added docs -->
+                <div class="row-title d-flex align-items-center">
+                    <div class="me-3">
+                        <h3 class="m-0">
+                            Recently Uploaded
+                        </h3>
+                    </div>
+                    <div class="btn-list">
+                        <button type="button" class="btn btn-outline-secondary"  t-on-click="()=>{this.act_show_more_document_sets()}">
+                            More
+                        </button>
+                    </div>
+                </div>
+                <div class="row align-items-center mt-2 g-3">
+                    <t t-foreach="page_data.document_set_list" t-as="doc_set" t-key="doc_set.id">
+                        <t t-set="card_category" t-value="page_data.display_document_category_list.find((cat)=>cat.id === doc_set.category_id[0])"/>
+                        <t t-if="card_category">
+                            <t t-set="card_color" t-value="card_category.color"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="card_color" t-value="'grey'"/>
+                        </t>
+                        <div class="col-3">
+                            <DocumentSetCard doc_set="doc_set">
+
+                            </DocumentSetCard>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.DocumentSetDownloadLatestDocBtn">
+
+    </t>
+
+    <t t-name="cpm_odoo.DocumentSetDetailDocumentList">
+        <t t-if="page_data.page_arr.length > 0">
+            <div class="h-100 d-flex flex-column">
+                <!-- <div class="item-list-header mb-3">        
+                    <SearchBar inst="this" act_search="this.act_search">
+    
+                    </SearchBar>
+                </div> -->
+                <div class="item-list-header mb-3">
+                    <h3>
+                        Document Versions
+                    </h3>
+                </div>
+                <div class="item-list flex-grow-1 list-group">
+                    <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                        <a
+                            href="#"
+                            class="list-group-item list-group-item-action d-flex p-0"
+                            style="border:none"
+                            aria-current="true"
+                        >
+                        <!-- <a
+                            href="#"
+                            class="list-group-item d-flex pe-0 py-0"
+                            aria-current="true"
+                        > -->
+                            <div class="flex-grow-1 px-4 py-2 border d-flex flex-column" t-on-click="()=>{this.act_download_doc(item)}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">
+                                        <t t-if="item.file_name">
+                                            <t t-esc="item.file_name"/>
+                                        </t>
+                                        <t t-else="">
+                                            File
+                                        </t>
+                                    </h5>
+                                    <small class="text-muted"><i class="fa-solid fa-download"></i></small>
+                                </div>
+                                <p class="mb-1">
+                                    Uploaded By: 
+                                    <t t-if="item.uploaded_by">
+                                        <t t-esc="item.uploaded_by"/>
+                                    </t>
+                                    <t t-else="">
+                                        Admin
+                                    </t>
+                                </p>
+                                <small class="text-muted">Size: <t t-esc="item.file_size"/>KB</small>
+                                <small class="text-muted">Uploaded At: <t t-esc="this.constructor.formatDateTime(item.date_uploaded)"/></small>
+                            </div>
+                            <t t-if="this.state_info.can_delete">
+                                <div class="btn-wrapper border d-flex align-items-center justify-content-center">
+                                    <div 
+                                        class="btn btn-outline-danger px-3 rounded-0 h-100 d-flex align-items-center justify-content-center" 
+                                        style="border:none"
+                                        t-on-click="()=>{this.act_delete_doc(item)}"
+                                    >
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </div>
+                                </div>
+                            </t>
+                        </a>
+                    </t>
+                </div>
+                <!-- <t t-if="page_data.page_count > 1">
+                    <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                        <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                            <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                    <t t-esc="page+1"/>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+                </t> -->
+            </div>
+        </t>
+        <t t-else="">
+            <div class="">
+                No record
+            </div>
+        </t>
+    </t>
+
+    <t t-name="cpm_odoo.DocumentSetDetailPage">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/fontawesome/css/all.css"/>
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/animate_css/animate.min.css"/>
+        </xpath>
+        <div class="bg-light container-fluid d-flex flex-column h-100">
+            <div class="bg-white text-white p-3 mb-2 row align-items-center">
+                <div class="col-3 d-flex align-items-center">
+                    <button class="btn btn-outline-secondary px-4 py-2 me-2" onclick="window.history.back()"><i class="oi oi-arrow-left"/></button>
+                    <t t-if="this.state_info.doc_set_info.name">
+                        <h2 class="m-0"><t t-esc="this.state_info.doc_set_info.name"/> - Files</h2>
+                    </t>
+                    <t t-else="">
+                        <h2 class="m-0">Document Set</h2>
+                    </t>
+                </div>
+                <div class="col-9 d-flex justify-content-end">
+                    <button class="btn btn-secondary px-3 py-1 me-2" t-on-click="()=>{this.act_add_doc_to_set()}">Add File</button>
+                    <button class="btn btn-secondary px-3 py-1" t-on-click="()=>{this.act_edit_doc_set_info()}">Edit Document Info</button>
+                </div>
+            </div>
+            <div class="flex-grow-1 bg-white p-3 d-flex flex-column my-2" style="overflow-y:scroll">
+                <DocumentSetDetailDocumentList extra_domain="this.extra_domain">
+        
+                </DocumentSetDetailDocumentList>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.DocumentCategoryItemList">
+        <t t-if="page_data.page_arr.length > 0">
+            <div class="h-100 d-flex flex-column">
+                <div class="item-list-header mb-3">        
+                    <SearchBar inst="this" act_search="this.act_search">
+    
+                    </SearchBar>
+                </div>
+                <div class="item-list flex-grow-1">
+                    <div class="row g-3">
+                        <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                            <div class="col-3">
+                                <t t-slot="card-item">
+                                    <DocumentCategoryCard category="item">
+        
+                                    </DocumentCategoryCard>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <t t-if="page_data.page_count > 1">
+                    <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                        <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                            <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                    <t t-esc="page+1"/>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+        <t t-else="">
+            <div class="">
+                No record
+            </div>
+        </t>
+    </t>
+
+    <t t-name="cpm_odoo.DocumentCategoryListPage">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/fontawesome/css/all.css"/>
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/animate_css/animate.min.css"/>
+        </xpath>
+        <div class="bg-light container-fluid d-flex flex-column h-100">
+            <div class="bg-white text-white p-3 mb-2 row align-items-center">
+                <div class="col-3 d-flex align-items-center">
+                    <button class="btn btn-outline-secondary px-4 py-2 me-2" onclick="window.history.back()"><i class="oi oi-arrow-left"/></button>
+                    <h2 class="m-0">Document Categories</h2>    
+                </div>
+                <div class="col-9 d-flex justify-content-end">
+                    
+                </div>
+            </div>
+            <div class="flex-grow-1 bg-white p-3 d-flex flex-column my-2" style="overflow-y:scroll">
+                <DocumentCategoryItemList>
+
+                </DocumentCategoryItemList>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.DocumentSetListPage">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/fontawesome/css/all.css"/>
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/animate_css/animate.min.css"/>
+        </xpath>
+        <div class="bg-light container-fluid d-flex flex-column h-100">
+            <div class="bg-white text-white p-3 mb-2 row align-items-center">
+                <div class="col-3 d-flex align-items-center">
+                    <button class="btn btn-outline-secondary px-4 py-2 me-2" onclick="window.history.back()"><i class="oi oi-arrow-left"/></button>
+                    <h2 class="m-0">Documents</h2>    
+                </div>
+                <div class="col-9 d-flex justify-content-end">
+                    
+                </div>
+            </div>
+            <div class="flex-grow-1 bg-white p-3 d-flex flex-column my-2" style="overflow-y:scroll">
+                <DocumentSetItemList extra_domain="this.extra_domain">
+
+                </DocumentSetItemList>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.DocumentSetItemList">
+        <t t-if="page_data.page_arr.length > 0">
+            <div class="h-100 d-flex flex-column">
+                <div class="item-list-header mb-3">        
+                    <SearchBar inst="this" act_search="this.act_search">
+
+                    </SearchBar>
+                </div>
+                <div class="item-list flex-grow-1">
+                    <div class="row g-3">
+                        <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                            <div class="col-6">
+                                <t t-slot="card-item" item="item">
+                                    <DocumentSetCard doc_set="item">
+
+                                    </DocumentSetCard>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <t t-if="page_data.page_count > 1">
+                    <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                        <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                            <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                    <t t-esc="page+1"/>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+        <t t-else="">
+            <div class="">
+                No record
+            </div>
+        </t>
+    </t>
+</templates>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.finance_expense_record_create_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.finance_expense_record_create.view.form</field>
+            <field name="model">cpm_odoo.finance_expense_record</field>
+            <field name="arch" type="xml">
+                <form string="Expense Record">
+                    <sheet>
+                        <group col="3" string="Expense Info">
+                            <group colspan="2">
+                                <field name="title" string="Title"></field>
+                                <field name="description" string="Description"></field>
+                                <field name="category_id" string="Category"></field>
+                            </group>
+                            <group colspan="1">
+                                <field name="amount" string="Amount" widget="monetary"></field>
+                                <field name="cur_id" string="Currency"></field>
+                                <field name="created_by" readonly="True" string="Created By"></field>
+                                <field name="date_created" readonly="True" string="Date Created"></field>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

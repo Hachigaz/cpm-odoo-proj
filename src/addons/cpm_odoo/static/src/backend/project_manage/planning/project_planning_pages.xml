@@ -1,0 +1,1159 @@
+<templates>
+    <t t-name="cpm_odoo.ProjectPlanningPage" owl="1">
+        <div class="">
+            <div class="pb-2">
+                <div class="btn-group">
+                    <div class="btn-group">
+                        <t t-foreach="availablePages" t-as="page" t-key="page.id">
+                            <t t-if="page.hidden !== true">
+                                <button type="button" class="btn btn-secondary me-1" t-on-click="() => callSubPage(page.id)"><t t-esc="page.name"/></button>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-2 pb-2" id="subpage-view">
+                <t t-component="subpageComponent" context_data="props.context_data"/>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningOverview" owl="1">
+        <div class="container-fluid">
+            <div class="pt-2 pb-2">
+                <div class="fw-bold fs-1">
+                    Overview
+                </div>
+            </div>
+            <div class="pt-2 pb-2">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="container">
+                            <div class="row">
+                                <!-- To Do Column -->
+                                <div class="col-md-4">
+                                    <h4>In-drafts (<t t-esc="this.page_info.in_draft_count"/>)</h4>
+                                    <t t-foreach="this.page_info.in_drafts" t-as="workflow" t-key="workflow.id">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <t t-esc="workflow.name"/>
+                                                </h5>
+                                                <p class="card-text">
+                                                    <t t-if="workflow.description">
+                                                        <t t-esc="workflow.description"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        No Description
+                                                    </t>
+                                                </p>
+                                                <div class="btn-list d-flex align-items-center justify-content-end">
+                                                    <div class="btn btn-secondary" t-on-click="()=>{act_manage_workflow(workflow.id)}">
+                                                        Manage
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                        
+                                <!-- In Progress Column -->
+                                <div class="col-md-4">
+                                    <h4>Active (<t t-esc="this.page_info.active_workflow_count"/>)</h4>
+                                    <t t-foreach="this.page_info.active_workflows" t-as="workflow" t-key="workflow.id">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <t t-esc="workflow.name"/>
+                                                </h5>
+                                                <p class="card-text">
+                                                    <p class="card-text">
+                                                        <t t-if="workflow.description">
+                                                            <t t-esc="workflow.description"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            No Description
+                                                        </t>
+                                                    </p>
+                                                </p>
+                                                <div class="btn-list d-flex align-items-center justify-content-end">
+                                                    <div class="btn btn-secondary" t-on-click="()=>{act_manage_workflow(workflow.id)}">
+                                                        Manage
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                        
+                                <!-- Done Column -->
+                                <div class="col-md-4">
+                                    <h4>Finished (<t t-esc="this.page_info.finished_workflow_count"/>)</h4>
+                                    <t t-foreach="this.page_info.finished_workflows" t-as="workflow" t-key="workflow.id">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <t t-esc="workflow.name"/>
+                                                </h5>
+                                                <p class="card-text">
+                                                    <p class="card-text">
+                                                        <t t-if="workflow.description">
+                                                            <t t-esc="workflow.description"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            No Description
+                                                        </t>
+                                                    </p>
+                                                </p>
+                                                <div class="btn-list d-flex align-items-center justify-content-end">
+                                                    <div class="btn btn-secondary" t-on-click="()=>{act_manage_workflow(workflow.id)}">
+                                                        Manage
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">Tab 1</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">Tab 2</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                                <h5>Tab 1 Content</h5>
+                                <p>This is the content for tab 1.</p>
+                            </div>
+                            <div class="tab-pane fade p-3" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                                <h5>Tab 2 Content</h5>
+                                <p>This is the content for tab 2.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+    <t t-name="cpm_odoo.PlanningWorkflowList">
+        <table class="table table-bordered">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">Exp. End Date</th>
+              <th scope="col">Status</th>
+              <th scope="col">Options</th>
+            </tr>
+          </thead>
+          <tbody>   
+            <t t-foreach="props.page_data.workflow_list" t-as="workflow" t-key="workflow.id">
+                <tr class="align-middle">
+                    <th scope="row">
+                        <t t-esc="workflow_index + 1"/>
+                    </th>
+                    <td><t t-esc="workflow.name"/></td>
+                    <td><t t-esc="formatDate(workflow.start_date)"/></td>
+                    <td>
+                        <t t-if="workflow.exp_end">
+                            <t t-esc="formatDate(workflow.exp_end)"/>
+                        </t>
+                        <t t-else="">
+                            TBD
+                        </t>
+                    </td>
+                    <td>
+                        <t t-if="workflow.workflow_status">
+                            <t t-esc="workflow.workflow_status"/>
+                        </t>
+                    </td>
+                    <td>
+                        <t t-if="workflow.workflow_status === 'draft'">
+                            <button type="button" class="btn btn-sm btn-secondary mx-1" t-on-click="(event)=>{this.act_edit_general_info(workflow.id)}">
+                                Edit General Info
+                            </button>
+                        </t>
+                        <button type="button" class="btn btn-sm btn-secondary mx-1" t-on-click="(event)=>{act_manage_workflow(workflow.id)}">
+                            Manage
+                        </button>
+                    </td>
+                </tr>
+            </t>
+          </tbody>
+        </table>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningWorkflows" owl="1">
+        <div class="container-fluid">
+            <div class="pt-2 pb-2">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="mb-4">
+                            <div class="fw-bold fs-1">
+                                Workflows
+                            </div>
+                        </div>
+                        <div class="pt-2 pb-2">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target=".workflow-main-tab #workflow-list-tab" type="button" role="tab">List</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target=".workflow-main-tab #workflow-graph-tab" type="button" role="tab">Graph</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content workflow-main-tab">
+                                <div class="tab-pane fade show active p-3" id="workflow-list-tab" role="tabpanel">
+                                    <PlanningWorkflowList page_data="page_data"/>
+                                </div>
+                                <div class="tab-pane fade p-3" id="workflow-graph-tab" role="tabpanel">
+                                    <PlanningWorkflowGraph state_data="{workflow_list: page_data.workflow_list}" context_params="{display_size:{height:'60vh'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="container btn-list pb-2">
+                            <!-- <t t-foreach="this.actionList" t-as="action" t-key="action.id">
+                                <button type="button" class="btn btn-secondary mx-1" t-on-click="(event)=>{this._do_action(action.action,action.params)}">
+                                    <t t-esc="action.name"/>
+                                </button>
+                            </t> -->
+                            <button type="button" class="btn btn-secondary mx-1" t-on-click="(event)=>{this.act_add_new_workflow()}">
+                                Create New Workflow
+                            </button>
+                        </div>
+                        <div class="container pt-2 pb-2" id="info-tab">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#info-tab #in-draft-tab" type="button" role="tab">In-draft Workflows</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#info-tab #active-tab" type="button" role="tab">Active Workflows</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content workflow-info-tab">
+                                <div class="tab-pane fade show active p-3" id="in-draft-tab" role="tabpanel">
+                                    <h5>In-draft Workflows</h5>
+                                </div>
+                                <div class="tab-pane fade p-3" id="active-tab" role="tabpanel">
+                                    <h5>Active Workflows</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningDrafts" owl="1">
+        <div class="">
+            Drafts
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningUnassignedTasks" owl="1">
+        <div class="">
+            Unassigned Tasks
+        </div>
+    </t>
+
+    
+
+
+    <!-- ===================================================== -->
+    <!-- Workflow Manage UI -->
+    <!-- ===================================================== -->
+    <t t-name="cpm_odoo.PlanningTaskList">
+        <div class="">
+            <div class="mb-3">
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" t-ref="search_bar"/>
+                    <button class="btn btn-primary" type="button" t-ref="search_btn" t-on-click="(event)=>{this.act_search()}">Search</button>
+                </form>
+            </div>
+            <div class="grid gap-3">
+                <t t-foreach="state_data.task_list" t-as="task" t-key="task.id">
+                    <div class="card g-col-4">
+                        <div class="card-body">
+                            <h5 class="card-title mt-2">
+                                <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
+                                <t t-esc="task.name"/>
+                            </h5>
+                            <p class="card-text mt-2">
+                                <t t-if="task.description">
+                                    <t t-esc="task.description"/>
+                                </t>
+                                <t t-else="">
+                                    No Description.
+                                </t>
+                            </p>
+                            <div class="mt-2">
+                                <span>
+                                    <t t-esc="formatDate(task.start_date)"/> - <t t-esc="formatDate(task.exp_end)"/>
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <span class="me-2">
+                                    <i class="fa-solid fa-helmet-safety me-2"></i>
+                                    <span class="">
+                                        <t t-esc="task.assigned_staff_count"/>
+                                    </span>
+                                </span>
+                                <span class="me-2">
+                                    <i class="fa-solid fa-building me-2"></i>
+                                    <span class="">
+                                        <t t-esc="task.assigned_contractor_count"/>
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="task-options mt-3">
+                                <button type="button" class="btn btn-secondary mx-1" t-on-click="(event)=>{act_manage_task(task.id)}">
+                                    Manage
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningManageWorkflow" owl="1">
+        <div class="row mt-2">
+            <div class="d-flex align-items-center mb-2">
+                <div class="fw-bold fs-1 me-5 mb-2">
+                    Workflow - <t t-esc="page_data.workflow_info.name"/>
+                </div>
+                <div class="btn-list">
+                    <t t-if="this.page_data.workflow_info.workflow_status === 'draft'">
+                        <button type="button" class="btn btn-outline-secondary ms-2" t-on-click="(event)=>{this.act_create_new_task()}">
+                            Create New Task
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary ms-2" t-on-click="(event)=>{this.act_submit_workflow()}">
+                            Submit Workflow
+                        </button>
+                    </t>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <ul class="nav nav-pills flex-column" role="tablist">
+                        <li class="nav-item user-select-none">
+                            <div class="nav-link active"  data-bs-toggle="tab" data-bs-target=".task-tabs #overview-tab" role="tab">
+                                Overview
+                            </div>
+                        </li>
+                        <li class="nav-item user-select-none">
+                            <div class="nav-link"  data-bs-toggle="tab" data-bs-target=".task-tabs #task-list" role="tab">
+                                Tasks
+                            </div>
+                        </li>
+                        <li class="nav-item user-select-none">
+                            <div class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #workflow-task-schedule" role="tab">
+                                Schedule
+                            </div>
+                        </li>
+                        <li class="nav-item user-select-none">
+                            <div class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #unassigned-task-list" role="tab">
+                                Unassigned Tasks
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="col-md-10">
+                    <div class="tab-content task-tabs">
+                        <div class="tab-pane fade show active overflow-auto" id="overview-tab" role="tabpanel">
+                            
+                        </div>
+                        <div class="tab-pane fade overflow-auto" id="task-list" role="tabpanel">
+                            <PlanningTaskList page_data="{task_list: page_data.task_list}">
+
+                            </PlanningTaskList>
+                        </div>
+                        <div class="tab-pane fade" id="workflow-task-schedule" role="tabpanel">
+                            <h4>Schedule</h4>
+                            <PlanningTaskGraph state_data="{task_list: page_data.task_list}" context_params="{display_size:{height:'60vh'}}"/>
+                        </div>
+                        <div class="tab-pane fade" id="unassigned-task-list" role="tabpanel">
+                            <h4>Unassigned Tasks</h4>
+                            <p>This is the content for the tab.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+
+
+    <!-- ===================================================== -->
+    <!-- Task Manage UI -->
+    <!-- ===================================================== -->
+    <t t-name="cpm_odoo.PlanningStaffList">
+        <t t-if="page_data.item_list">
+            <t t-if="page_data.item_list.length==0">
+                <h4>
+                    No Assigned Staffs
+                </h4>
+            </t>
+            <t t-else="">
+                <div class="bg-white container-fluid d-flex flex-column h-100">
+                    <div class="flex-grow-1 bg-white p-3 d-flex flex-column my-2" style="overflow-y:scroll">
+                        <div class="h-100">
+                            <div class="item-list-header mb-3">
+                                <SearchBar inst="this" act_search="this.act_search">
+
+                                </SearchBar>
+                            </div>
+                            <div class="item-list flex-grow-1">
+                                <div class="grid gap-3 staff-card-list" id="assign-list">
+                                    <t t-foreach="page_data.item_list" t-as="staff" t-key="staff.id">
+                                        <div class="card g-col-6" t-att-id="'staff-'+staff.id">
+                                            <div class="card-body">
+                                                <div class="row mb-3">
+                                                    <div class="col-3 d-flex align-items-center">
+                                                        <div class="img-wrapper w-100 h-100">
+                                                            <img 
+                                                                t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=${staff.id}&amp;field=avatar_256`" alt="Image"
+                                                                style="width: 100%;aspect-ratio:1/1"
+                                                                class="img-fluid rounded-circle"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-9 d-flex align-items-center">
+                                                        <div class="staff-info-wrapper rounded px-2 py-2 w-100 h-100">
+                                                            <h5 class="card-title">
+                                                                <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
+                                                                <t t-esc="staff.first_name + ' ' +staff.last_name"/>
+                                                            </h5>
+                                                            <span class="card-text">
+                                                                <t t-if="staff.department_id">
+                                                                    <t t-esc="staff.department_id[1]"/>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    No Department.
+                                                                </t>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            <t t-if="page_data.page_count > 1">
+                                <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                    <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                        <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                            <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                <t t-esc="page+1"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningContractorList">
+        <t t-if="page_data.item_list">
+            <t t-if="page_data.item_list.length==0">
+                <h4>
+                    No Assigned Contractors
+                </h4>
+            </t>
+            <t t-else="">
+                <div class="bg-white container-fluid d-flex flex-column h-100">
+                    <div class="flex-grow-1 bg-white p-3 d-flex flex-column my-2" style="overflow-y:scroll">
+                        <div class="h-100">
+                            <div class="item-list-header mb-3">
+                                <SearchBar inst="this" act_search="this.act_search">
+
+                                </SearchBar>
+                            </div>
+                            <div class="item-list flex-grow-1">
+                                <div class="grid gap-3 staff-card-list" id="assign-list">
+                                    <t t-foreach="page_data.item_list" t-as="contractor" t-key="contractor.id">
+                                        <div class="card g-col-6" t-att-id="'contractor-'+contractor.id">
+                                            <div class="card-body">
+                                                <div class="row mb-3">
+                                                    <div class="col-3 d-flex align-items-center">
+                                                        <div class="img-wrapper w-100 h-100">
+                                                            <img 
+                                                                t-att-src="`web/image/?model=cpm_odoo.stakeholders_contractor&amp;id=${contractor.id}&amp;field=avatar_512`" alt="Image"
+                                                                style="width: 100%;aspect-ratio:1/1"
+                                                                class="img-fluid rounded-circle"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-9 d-flex align-items-center">
+                                                        <div class="contractor-info-wrapper rounded px-2 py-2 w-100 h-100">
+                                                            <h5 class="card-title">
+                                                                <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
+                                                                <t t-esc="contractor.name"/>
+                                                            </h5>
+                                                            <span class="card-text">
+                                                                <p>
+                                                                    <t t-if="contractor.description">
+                                                                        <t t-esc="contractor.description"/>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        No Description
+                                                                    </t>
+                                                                </p>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            <t t-if="page_data.page_count > 1">
+                                <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                    <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                        <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                            <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                <t t-esc="page+1"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningStaffAssignPanel">
+        <t t-if="page_data.item_list.length==0">
+            <h4>
+                N/A
+            </h4>
+        </t>
+        <t t-else="">
+            <div class="bg-white container-fluid d-flex flex-column h-100" t-ref="cmp-root">
+                <div class="flex-grow-1 bg-white p-3 d-flex flex-column my-2" style="overflow-y:scroll">
+                    <div class="h-100">
+                        <div class="item-list-header mb-3">
+                            <SearchBar inst="this" act_search="this.act_search">
+
+                            </SearchBar>
+                        </div>
+                        <div class="item-list flex-grow-1">
+                            <div class="grid gap-3 staff-card-list" id="assign-list">
+                                <t t-foreach="page_data.item_list" t-as="staff" t-key="staff.id">
+                                    <div class="card g-col-4" t-att-id="'staff-'+staff.id">
+                                        <div class="card-body">
+                                            <div class="row mb-3">
+                                                <div class="col-3 d-flex align-items-center">
+                                                    <div class="img-wrapper w-100 h-100">
+                                                        <img 
+                                                            t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=${staff.id}&amp;field=avatar_256`" alt="Image"
+                                                            style="width: 100%;aspect-ratio:1/1"
+                                                            class="img-fluid rounded-circle"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="col-9 d-flex align-items-center">
+                                                    <div class="staff-info-wrapper bg-light rounded px-2 py-2 w-100 h-100">
+                                                        <h5 class="card-title">
+                                                            <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
+                                                            <t t-esc="staff.first_name + ' ' +staff.last_name"/>
+                                                        </h5>
+                                                        <span class="card-text">
+                                                            <t t-if="staff.department_id">
+                                                                <t t-esc="staff.department_id[1]"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                No Department.
+                                                            </t>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row pt-2 py-2">
+                                                <div class="col-9">
+                                                    
+                                                </div>
+                                                <div class="col-3">
+                                                    <t t-set="assign_button_class" t-value="' btn btn-success rounded-pill px-3 py-1 assign-act animate__animated  '"/>
+                                                    <t t-set="fade_in" t-value="' animate__fadeIn '"/>
+                                                    <t t-set="fade_out" t-value="' d-none animate__fadeOut '"/>
+                                                    <t t-set="cancel_button_class" t-value="'btn btn-danger rounded-pill px-3 py-1 cancel-act animate__animated  '"/>
+                                                    <div class="options d-flex justify-content-end">
+                                                        <t t-if="props.task_info.assigned_staff_ids.length>0">
+                                                            <t t-if="!props.task_info.assigned_staff_ids.includes(staff.id)">
+                                                                <button t-att-class="assign_button_class + fade_in" t-on-click="(event)=>{this.act_assign(staff.id)}">
+                                                                    Assign
+                                                                </button>
+                                                                <button t-att-class="cancel_button_class + fade_out" t-on-click="(event)=>{this.act_cancel(staff.id)}">
+                                                                    Unassign
+                                                                </button>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <button t-att-class="assign_button_class + fade_out" t-on-click="(event)=>{this.act_assign(staff.id)}">
+                                                                    Assign
+                                                                </button>
+                                                                <button t-att-class="cancel_button_class + fade_in" t-on-click="(event)=>{this.act_cancel(staff.id)}">
+                                                                    Unassign
+                                                                </button>
+                                                            </t>
+                                                        </t>
+                                                        <t t-elif="true">
+
+                                                        </t>
+                                                        <t t-else="">
+                                                            <button t-att-class="assign_button_class + fade_in" t-on-click="(event)=>{this.act_assign(staff.id)}">
+                                                                Assign
+                                                            </button>
+                                                            <button t-att-class="cancel_button_class + fade_out" t-on-click="(event)=>{this.act_cancel(staff.id)}">
+                                                                Unassign
+                                                            </button>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                        <t t-if="page_data.page_count > 1">
+                            <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                    <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                        <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                            <t t-esc="page+1"/>
+                                        </button>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningContractorAssignPanel">
+        <t t-if="page_data.item_list.length==0">
+            <h4>
+                N/A
+            </h4>
+        </t>
+        <t t-else="">
+            <div class="bg-white container-fluid d-flex flex-column h-100" t-ref="cmp-root">
+                <div class="flex-grow-1 bg-white p-3 d-flex flex-column my-2" style="overflow-y:scroll">
+                    <div class="h-100">
+                        <div class="item-list-header mb-3">
+                            <SearchBar inst="this" act_search="this.act_search">
+
+                            </SearchBar>
+                        </div>
+                        <div class="item-list flex-grow-1">
+                            <div class="grid gap-3 contractor-card-list" id="assign-list">
+                                <t t-foreach="page_data.item_list" t-as="contractor" t-key="contractor.id">
+                                    <div class="card g-col-4" t-att-id="'contractor-'+contractor.id">
+                                        <div class="card-body">
+                                            <div class="row mb-3">
+                                                <div class="col-3 d-flex align-items-center">
+                                                    <div class="img-wrapper w-100 h-100">
+                                                        <img 
+                                                            t-att-src="`web/image/?model=cpm_odoo.stakeholders_contractor&amp;id=${contractor.id}&amp;field=avatar_256`" alt="Image"
+                                                            style="width: 100%;aspect-ratio:1/1"
+                                                            class="img-fluid rounded-circle"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="col-9 d-flex align-items-center">
+                                                    <div class="contractor-info-wrapper bg-light rounded px-2 py-2 w-100 h-100">
+                                                        <h5 class="card-title">
+                                                            <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
+                                                            <t t-esc="contractor.name"/>
+                                                        </h5>
+                                                        <span class="card-text">
+                                                            
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row pt-2 py-2">
+                                                <div class="col-9">
+                                                    
+                                                </div>
+                                                <div class="col-3">
+                                                    <t t-set="assign_button_class" t-value="' btn btn-success rounded-pill px-3 py-1 assign-act animate__animated  '"/>
+                                                    <t t-set="fade_in" t-value="' animate__fadeIn '"/>
+                                                    <t t-set="fade_out" t-value="' d-none animate__fadeOut '"/>
+                                                    <t t-set="cancel_button_class" t-value="'btn btn-danger rounded-pill px-3 py-1 cancel-act animate__animated  '"/>
+                                                    <div class="options d-flex justify-content-end">
+                                                        <t t-if="props.task_info.assigned_contractor_ids.length>0">
+                                                            <t t-if="!props.task_info.assigned_contractor_ids.includes(contractor.id)">
+                                                                <button t-att-class="assign_button_class + fade_in" t-on-click="(event)=>{this.act_assign(contractor.id)}">
+                                                                    Assign
+                                                                </button>
+                                                                <button t-att-class="cancel_button_class + fade_out" t-on-click="(event)=>{this.act_cancel(contractor.id)}">
+                                                                    Unassign
+                                                                </button>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <button t-att-class="assign_button_class + fade_out" t-on-click="(event)=>{this.act_assign(contractor.id)}">
+                                                                    Assign
+                                                                </button>
+                                                                <button t-att-class="cancel_button_class + fade_in" t-on-click="(event)=>{this.act_cancel(contractor.id)}">
+                                                                    Unassign
+                                                                </button>
+                                                            </t>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <button t-att-class="assign_button_class + fade_in" t-on-click="(event)=>{this.act_assign(contractor.id)}">
+                                                                Assign
+                                                            </button>
+                                                            <button t-att-class="cancel_button_class + fade_out" t-on-click="(event)=>{this.act_cancel(contractor.id)}">
+                                                                Unassign
+                                                            </button>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                        <t t-if="page_data.page_count > 1">
+                            <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                    <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                        <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                            <t t-esc="page+1"/>
+                                        </button>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningTaskAttachedDocumentsPanel">
+        <div class="tab-header py-2 d-inline-flex flex-row align-items-center" id="attached-documents-tab" t-ref="cmp-root">
+            <span class="me-3">
+                <h4 class="m-0">Attached Documents</h4>
+            </span>
+            <span class="btn-list">
+                <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#attached-documents-tab #attach-document-modal">
+                    Attach Existing Document
+                </button>
+                <div class="modal fade" id="attach-document-modal" tabindex="-1">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="attach-documents-modal-label">
+                                    Attach Documents
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{this.act_cancel()}"></button>
+                            </div>
+                            <div class="modal-body attach-card-list">
+                                <DocumentSetItemList>
+                                    <t t-set-slot="card-item" t-slot-scope="scope">
+                                        <div class="card" t-att-style="`background-color:#bedee2`" t-att-id="`doc-${scope.item.id}`">
+                                            <div class="card-img-top p-2 d-flex align-items-center text-center">
+                                                <t t-if="scope.item.category_id.color">
+                                                    <i class="fas fa-circle fa-sm " t-att-style="`color: ${scope.item.category_id.color}; font-size:0.8rem; margin-right: 8px;`"></i>
+                                                </t>
+                                                <t t-else="">
+                                                    <i class="fas fa-circle fa-sm " t-att-style="`color: ${'grey'}; font-size:0.8rem; margin-right: 8px;`"></i>
+                                                </t>
+                                                <h4 class="card-title m-0"><t t-esc="scope.item.name"/></h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text d-flex justify-content-between">
+                                                    <span class="me-3">
+                                                        <t t-if="scope.item.category_id.name">
+                                                            <t t-esc="scope.item.category_id.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            No Category
+                                                        </t>
+                                                    </span>
+                                                    <span class="me-3">
+                                                        <span class="document-count me-1">
+                                                            <t t-esc="scope.item.document_count"/>
+                                                        </span>
+                                                        <i class="fa-regular fa-file-lines"></i>
+                                                    </span>
+                                                </p>
+                                                <p class="card-text mt-2" style="min-height: 2rem">
+                                                    <t t-if="scope.item.description">
+                                                        <t t-esc="scope.item.description"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        No Description
+                                                    </t>
+                                                </p>
+                                                <div class="row align-items-center mt-2">
+                                                    <div class="col d-flex align-items-center">
+                                                        <span class="">
+                                                            Last Updated:
+                                                            <t t-if="scope.item.updated_at">
+                                                                <t t-esc="scope.item.updated_at"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                Never
+                                                            </t>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col btn-list d-flex justify-content-end options">
+                                                        <t t-if="this.props.task_info.attached_document_ids.length>0">
+                                                            <t t-if="this.props.task_info.attached_document_ids.includes(scope.item.id)">
+                                                                <div class="attach-act btn btn-outline-success me-2 d-none animate__fadeOut" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
+                                                                    Attach
+                                                                </div>
+                                                                <div class="remove-act btn btn-outline-danger animate__fadeIn " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
+                                                                    Remove
+                                                                </div>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <t t-if="this.attached_doc_ids.includes(scope.item.id)">
+                                                                    <div class="attach-act btn btn-outline-success me-2 d-none animate__fadeOut" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
+                                                                        Attach
+                                                                    </div>
+                                                                    <div class="remove-act btn btn-outline-danger animate__fadeIn " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
+                                                                        Remove
+                                                                    </div>
+                                                                </t>
+                                                                <t t-elif="this.removed_doc_ids.includes(scope.item.id)">
+                                                                    <div class="attach-act btn btn-outline-success me-2 animate__fadeIn" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
+                                                                        Attach
+                                                                    </div>
+                                                                    <div class="remove-act btn btn-outline-danger d-none animate__fadeOut " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
+                                                                        Remove
+                                                                    </div>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <div class="attach-act btn btn-outline-success me-2 animate__fadeIn" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
+                                                                        Attach
+                                                                    </div>
+                                                                    <div class="remove-act btn btn-outline-danger d-none animate__fadeOut " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
+                                                                        Remove
+                                                                    </div>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </DocumentSetItemList>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.act_cancel()}">Close</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  t-on-click="()=>{this.act_save()}">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#attached-documents-tab #add-new-document-modal">
+                    Add New Document
+                </button>
+                <div class="modal fade" id="add-new-document-modal" tabindex="-1">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="add-new-document-modal-label">
+                                    Add New Document
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{}"></button>
+                            </div>
+                            <div class="modal-body">
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.act_cancel()}">Close</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  t-on-click="()=>{}">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </span>
+        </div>
+        <div class="container-fluid">
+            <DocumentSetItemList extra_domain="this.doc_set_item_list.extra_domain">
+
+            </DocumentSetItemList>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningTaskExpenseList">
+        <t t-if="page_data.page_arr.length > 0">
+            <div class="h-100 d-flex flex-column">
+                <div class="item-list-header mb-3">        
+                    <SearchBar inst="this" act_search="this.act_search">
+
+                    </SearchBar>
+                </div>
+                <div class="item-list flex-grow-1 list-group">
+                    <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                        <a
+                            href="#"
+                            class="list-group-item list-group-item-action d-flex p-0"
+                            style="border:none"
+                            aria-current="true"
+                        >
+                        <!-- <a
+                            href="#"
+                            class="list-group-item d-flex pe-0 py-0"
+                            aria-current="true"
+                        > -->
+                            <div class="flex-grow-1 px-4 py-2 border d-flex flex-column" t-on-click="()=>{}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">
+                                        <t t-if="item.title">
+                                            <t t-esc="item.title"/>
+                                        </t>
+                                        <t t-else="">
+                                            Expense
+                                        </t>
+                                    </h5>
+                                    <!-- <small class="text-muted"><i class="fa-solid fa-download"></i></small> -->
+                                </div>
+                                <p class="mb-1">
+                                    Uploaded By: 
+                                    <t t-if="item.created_by">
+                                        <t t-esc="item.created_by"/>
+                                    </t>
+                                    <t t-else="">
+                                        Admin
+                                    </t>
+                                </p>
+                                <small class="text-muted">Amount: <t t-esc="item.amount"/>đ</small>
+                                <small class="text-muted">Uploaded At: <t t-esc="this.constructor.formatDateTime(item.date_created)"/></small>
+                            </div>
+                            <t t-if="this.state_info.can_delete">
+                                <div class="btn-wrapper border d-flex align-items-center justify-content-center">
+                                    <div 
+                                        class="btn btn-outline-danger px-3 rounded-0 h-100 d-flex align-items-center justify-content-center" 
+                                        style="border:none"
+                                        t-on-click="()=>{}"
+                                    >
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </div>
+                                </div>
+                            </t>
+                        </a>
+                    </t>
+                </div>
+                <t t-if="page_data.page_count > 1">
+                    <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                        <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                            <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                    <t t-esc="page+1"/>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+        <t t-else="">
+            <div class="">
+                No record
+            </div>
+        </t>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningTaskExpensePanel">
+        <div class="tab-header py-2 d-inline-flex flex-row align-items-center">
+            <span class="me-3">
+                <h4 class="m-0">Task Expenses</h4>
+            </span>
+            <span class="btn-list">
+                <button type="button" class="btn btn-secondary me-2" t-on-click="()=>{this.act_add_task_expense()}">
+                    New Expense
+                </button>
+            </span>
+        </div>
+        <div>
+            <div>
+                <PlanningTaskExpenseList extra_domain="this.state_data.extra_domain">
+
+                </PlanningTaskExpenseList>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.PlanningManageTask">
+        <div class="row mt-2">
+            <div class="d-flex align-items-center mb-2">
+                <div class="fw-bold fs-1 me-5 mb-2">
+                    Manage - <t t-esc="page_data.task_info.name"/>
+                </div>
+                <div class="btn-list">
+                    <button type="button" class="btn btn-secondary ms-1" t-on-click="(event)=>{this.act_edit_task_info()}">
+                        Edit General Info
+                    </button>
+                </div>
+            </div>
+            <div class="row task-tabs">
+                <div class="col-md-2">
+                    <ul class="nav nav-pills flex-column" role="tablist">
+                        <li class="nav-item user-select-none">
+                            <div id="assigned-members-tab-btn" class="nav-link active" data-bs-toggle="tab" data-bs-target=".task-tabs #assigned-members-tab" role="tab" t-on-click="()=>{this.act_save_tab('assigned-members-tab')}">
+                                Assigned Members
+                            </div>
+                        </li>
+                        <li class="nav-item user-select-none">
+                            <div id="documents-tab-btn" class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #documents-tab" role="tab" t-on-click="()=>{this.act_save_tab('documents-tab')}">
+                                Attached Documents
+                            </div>
+                        </li>
+                        <li class="nav-item user-select-none">
+                            <div id="task-expenses-tab-btn" class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #task-expenses-tab" role="tab" t-on-click="()=>{this.act_save_tab('task-expenses-tab')}">
+                                Task Expenses
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-10">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="assigned-members-tab" role="tabpanel">
+                            <div class="tab-header py-2 d-inline-flex flex-row align-items-center">
+                                <span class="me-3">
+                                    <h4 class="m-0">Assigned Members</h4>
+                                </span>
+                                <span class="btn-list">
+                                    <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-staff-modal" t-on-click="()=>{}">
+                                    <!-- <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-staff-modal" t-on-click="()=>{this.staff_asgn_act.load(this.staff_asgn_act.inst)}"> -->
+                                        Assign Staffs
+                                    </button>
+                                    
+                                    <div class="modal fade" id="assign-staff-modal" tabindex="-1">
+                                        <div class="modal-dialog modal-xl">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h5 class="modal-title" id="assign-staff-modal-label">Assign Staffs</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <PlanningStaffAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.staff_asgn_act">
+
+                                                    </PlanningStaffAssignPanel>
+                                                </div>
+                                                <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}">Close</button>
+                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  t-on-click="()=>{this.staff_asgn_act.save(this.staff_asgn_act.inst)}">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-contractor-modal" t-on-click="()=>{}">
+                                    <!-- <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-contractor-modal" t-on-click="()=>{this.contractor_asgn_act.load(this.contractor_asgn_act.inst)}"> -->
+                                        Assign Contractors
+                                    </button>
+                                    
+                                    <div class="modal fade" id="assign-contractor-modal" tabindex="-1">
+                                        <div class="modal-dialog modal-xl">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="assign-contractor-modal-label">Assign Contractors</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{this.contractor_asgn_act.cancel(this.contractor_asgn_act.inst)}"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <PlanningContractorAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.contractor_asgn_act">
+                                                        
+                                                    </PlanningContractorAssignPanel>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.contractor_asgn_act.cancel(this.contractor_asgn_act.inst)}">Close</button>
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" t-on-click="()=>{this.contractor_asgn_act.save(this.contractor_asgn_act.inst)}">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <!-- <div class="card">
+                                <div class="card-header fw-bold fs-3 py-2" data-bs-toggle="collapse" data-bs-target=".task-tabs #staff_list_collaspe">
+                                    <span class="">
+                                        Staffs
+                                    </span>
+                                    <t t-if="page_data.task_info.assigned_staff_ids">
+                                        <t t-if="page_data.task_info.assigned_staff_ids.length > 0">
+                                            <span>
+                                                (<t t-esc="page_data.task_info.assigned_staff_ids.length"/> Assigned)
+                                            </span>
+                                        </t>
+                                    </t>
+                                </div>
+                                <div id="staff_list_collaspe" class="collapse show">
+                                    <div class="card-body">
+                                        <PlanningStaffList staff_list="page_data.assigned_staff_list">
+                                            
+                                        </PlanningStaffList>
+                                    </div>
+                                </div>
+                            </div> -->
+                                
+                            <ul class="nav nav-tabs mt-2" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target=".task-tabs  #staff-list-tab" type="button" role="tab">Assigned Staffs</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs  #contractor-list-tab" type="button" role="tab">Assigned Contractors</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active p-3" id="staff-list-tab" role="tabpanel">
+                                    <PlanningStaffList task_info="page_data.task_info">
+                                        
+                                    </PlanningStaffList>
+                                </div>
+                                <div class="tab-pane fade p-3" id="contractor-list-tab" role="tabpanel">
+                                    <PlanningContractorList task_info="page_data.task_info">
+                                        
+                                    </PlanningContractorList>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="documents-tab" role="tabpanel">
+                            <PlanningTaskAttachedDocumentsPanel task_info="page_data.task_info">
+
+                            </PlanningTaskAttachedDocumentsPanel>
+                        </div>
+                        <div class="tab-pane fade" id="task-expenses-tab" role="tabpanel">
+                            <PlanningTaskExpensePanel task_info="page_data.task_info">
+
+                            </PlanningTaskExpensePanel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

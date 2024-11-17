@@ -1,1 +1,13 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+id,name,model_id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+"cpm_ma_overview_project","cpm_ma_overview_project","cpm_odoo.root_project","cpm_gr_overview_project",1,0,0,0
+"cpm_ma_project_edit_info","cpm_ma_project_edit_info","cpm_odoo.root_project","cpm_gr_project_edit_info",1,1,0,0
+"cpm_ma_project_create","cpm_ma_project_create","cpm_odoo.root_project","cpm_gr_project_create",1,1,1,1
+
+"cpm_ma_view_project_planning","cpm_ma_view_project_planning","cpm_odoo.root_project_planning","cpm_gr_view_project_plans",1,0,0,0
+"cpm_ma_edit_project_planning","cpm_ma_edit_project_planning","cpm_odoo.root_project_planning","cpm_gr_manage_project_plans",1,1,0,0
+"cpm_ma_view_workflows","cpm_ma_view_workflows","cpm_odoo.planning_workflow","cpm_gr_view_project_plans",1,0,0,0
+"cpm_ma_edit_workflows","cpm_ma_edit_workflows","cpm_odoo.planning_workflow","cpm_gr_manage_project_plans",1,1,1,1
+"cpm_ma_edit_tasks","cpm_ma_edit_tasks","cpm_odoo.planning_task","cpm_gr_view_project_plans",1,0,0,0
+"cpm_ma_edit_tasks","cpm_ma_edit_tasks","cpm_odoo.planning_task","cpm_gr_manage_project_plans",1,1,1,1
+
+"cpm_ma_view_project_finances","cpm_ma_view_project_finances","cpm_odoo.root_project_finance","cpm_gr_view_project_finances",1,0,0,0

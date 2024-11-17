@@ -2,7 +2,7 @@ from odoo import models, fields, api
 
 class Equipment(models.Model):
     _name = 'cpm_odoo.res_mgmt_equipment'
-    _description = ''
+    _description = "Model"
     
     name  = fields.Char(
         string = 'Name',
@@ -19,7 +19,7 @@ class Equipment(models.Model):
     
 class EquipmentType(models.Model):
     _name = 'cpm_odoo.res_mgmt_eqp_type'
-    _description = ''
+    _description = "Model"
 
     name  = fields.Char(
         string = 'Name',
@@ -30,7 +30,7 @@ class EquipmentType(models.Model):
 
 class Material(models.Model):
     _name = 'cpm_odoo.res_mgmt_material'
-    _description = ''
+    _description = "Model"
     
     name  = fields.Char(
         string = 'Name',
@@ -54,7 +54,7 @@ class Material(models.Model):
     
 class MaterialType(models.Model):
     _name = 'cpm_odoo.res_mgmt_mat_type'
-    _description = ''
+    _description = "Model"
 
     name  = fields.Char(
         string = 'Name',
@@ -64,7 +64,7 @@ class MaterialType(models.Model):
 
 class Mat_Res_Record(models.AbstractModel):
     _name = 'cpm_odoo.res_mgmt_mat_res_rec'
-    _description = ''
+    _description = "Model"
     
     material_id = fields.Many2one(
         comodel_name = 'cpm_odoo.res_mgmt_material', 
@@ -80,7 +80,7 @@ class Mat_Res_Record(models.AbstractModel):
     
 class Eqp_Res_Record(models.AbstractModel):
     _name = 'cpm_odoo.res_mgmt_eqp_res_rec'
-    _description = ''
+    _description = "Model"
     
     equipment_id = fields.Many2one(
         comodel_name = 'cpm_odoo.res_mgmt_equipment', 
@@ -113,7 +113,7 @@ class WarehouseInfo(models.Model):
     
 class Mat_StorageRecord(models.Model):
     _name = 'cpm_odoo.res_mgmt_mat_storage_rec'
-    _description = ''
+    _description = "Model"
     
     warehouse_id = fields.Many2one(
         comodel_name = 'cpm_odoo.res_mgmt_warehouse_info', 
@@ -125,7 +125,7 @@ class Mat_StorageRecord(models.Model):
     
 class Eqp_StorageRecord(models.Model):
     _name = 'cpm_odoo.res_mgmt_eqp_storage_rec'
-    _description = ''
+    _description = "Model"
     
     warehouse_id = fields.Many2one(
         comodel_name = 'cpm_odoo.res_mgmt_warehouse_info', 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.hr_mgmt_staff_create_view_form" model="ir.ui.view">
+            <field name="name">model_name.view.form</field>
+            <field name="model">cpm_odoo.human_res_staff</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group name="staff_info" string="Staff Info" col="3">
+                            <group name="name" colspan="2">
+                                <field name="first_name">First Name</field>
+                                <field name="last_name">Last Name</field>
+                                <field name="date" widget="date">Birth Date</field>
+                                <field name="phone" widget="phone">Phone Number</field>
+                            </group>
+                            <group name="name" colspan="1">
+                                <field name="avatar_128" invisible="1">Avatar</field>
+                                <field name="image_1920" class="oe_avatar" widget='image' options="{'preview_image':'avatar_128'}">Avatar</field>
+                                
+                                <field name="employed_on" widget="date">Date Employed</field>
+                            </group>
+                        </group>
+                        <group name="staff_login_info" string="Login Info">
+                            <field name="email" widget='email'>Email</field>
+                            <field name="login" widget='email'>Login</field>
+                            <field name="password" password='True'>Password</field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

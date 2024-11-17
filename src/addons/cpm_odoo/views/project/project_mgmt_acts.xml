@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <data>
+    <!-- ============================================== -->
+    <!-- ======== Document Actions -->
+    <!-- ============================================== -->
+    <record id="cpm_odoo.document_set_detail" model="ir.actions.client">
+      <field name="name">Document Set Details</field>
+      <field name="tag">cpm_odoo.document_set_detail</field>
+      <field name="target">main</field>
+    </record>
+
+    <record id="cpm_odoo.document_category_item_list" model="ir.actions.client">
+      <field name="name">Documents</field>
+      <field name="tag">cpm_odoo.document_category_item_list</field>
+      <field name="target">main</field>
+    </record>
+
+    <record id="cpm_odoo.document_set_item_list" model="ir.actions.client">
+      <field name="name">Documents</field>
+      <field name="tag">cpm_odoo.document_set_item_list</field>
+      <field name="target">main</field>
+    </record>
+  </data>
+</odoo>

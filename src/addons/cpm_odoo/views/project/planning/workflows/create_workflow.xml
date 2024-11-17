@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="cpm_odoo.planning_workflow_create_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.planning_workflow_create.view.form</field>
+            <field name="model">cpm_odoo.planning_workflow</field>
+            <field name="arch" type="xml">
+                <form string="Create New Workflow">
+                    <header>
+                        <!-- <button class="btn btn-secondary" special="cancel" onclick="window.history.back()">
+                            Back
+                        </button> -->
+                    </header>
+                    <sheet>
+                        <group col="3">
+                            <group colspan="2">
+                                <field name="planning_id" string="Planning ID" style="pointer-events:none;"></field>
+                                <field name="name" string="Name"></field>
+                                <field name="description" string="Description"></field>
+                            </group>
+                            <group colspan="1">
+                                <field name="start_date" string="Start Date" widget="date"></field>
+                                <field name="exp_end" string="Expected End Date" widget="date"></field>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="depends_on" string="Depends On" widget='many2many'>
+                                <tree create="False" edit="False" delete="False" import="False" export_xlsx="False" open_form_view="False" default_order="start_date asc,exp_end asc,name asc" domain="[('planning_id','=',planning_id)]">
+                                    <field name="name" string="Name"></field>
+                                    <field name="start_date" string="Start Date"></field>
+                                    <field name="exp_end" string="Exp. End Date"></field>
+                                </tree>
+                            </field>
+                        </group>
+                        <!-- <group string="Actions">
+                            <button class="btn btn-secondary" invisible="context.get('client_action')=='cpm_odoo.project_manage_ui_act'" special="cancel" onclick="window.location.href='/web#action=170'">
+                                Back
+                            </button>
+                        </group> -->
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+
+    </data>
+    
+
+</odoo>

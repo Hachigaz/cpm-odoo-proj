@@ -1,0 +1,8 @@
+id,name,color,display
+doc_cat_bluprt,Construction Blueprint,#FF5733,False
+doc_cat_design,Design,#33C1FF,False
+doc_cat_qc,Quality Control,#85C441,True
+doc_cat_safety_reg,Safety Regulations,#FFC300,True
+doc_cat_tech_doc,Technical Document, #C70039,True
+doc_cat_contract,Contract,#900C3F,False
+doc_cat_financial_reps,Financial Reports,#581845,True

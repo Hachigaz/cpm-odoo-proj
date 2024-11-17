@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="assigned_warehouse_view_kanban" model="ir.ui.view">
+            <field name="name">assigned_warehouse.view.kanban</field>
+            <field name="model">cpm_odoo.res_mgmt_warehouse_info</field>
+            <field name="arch" type="xml">
+                <kanban string="Assigned Warehouses" create="False" edit="False" delete="False">
+                    <field name="id"></field>
+                    <field name="name">Name</field>
+                    <field name="address">Description</field>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-att-data-id="record.id" class="oe_kanban_card">
+                                <div>
+                                    <span class="project_display_name oe_kanban_title">
+                                        <t t-esc="record.name.value"/>
+                                    </span>
+                                </div>
+                                <div class="project_desc oe_kanban_content">
+                                    <div class="description">
+                                        <t t-if="record.description.value">
+                                            <t t-esc="record.description"/> 
+                                        </t>
+                                        <t t-else="">
+                                            No Description
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="option">
+                                    <button name='cpm_odoo.res_mgmt_manage_warehouse_act' type="action" class="btn btn-secondary mx-1" context="{'warehouse_id':id}">
+                                        Manage
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+    </data>
+    
+
+</odoo>

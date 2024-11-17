@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.document_category_create_form_view" model="ir.ui.view">
+            <field name="name">cpm_odoo.document_category_create_form_view</field>
+            <field name="model">cpm_odoo.documents_document_category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <!-- <button class="btn btn-secondary" special="save" onclick="window.history.back()">
+                            Save
+                        </button>
+                        <button class="btn btn-secondary" special="cancel" onclick="window.history.back()">
+                            Back
+                        </button> -->
+                    </header>
+                    <sheet string="Category Info">
+                        <group col="3">
+                            <group colspan="2">
+                                <field name="name" string="Category Name"></field>
+                                <field name="description" string="Description"></field>
+                            </group>
+                            <group colspan="1">
+                                <field name="color" widget="colorpicker" string="Category Color"/>
+                                <field name="display" string="Display On Top"></field>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>    
+    </data>
+</odoo>

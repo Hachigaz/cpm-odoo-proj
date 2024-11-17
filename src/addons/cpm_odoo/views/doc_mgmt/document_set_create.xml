@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="cpm_odoo.document_set_create_form_view" model="ir.ui.view">
+            <field name="name">cpm_odoo.document_set_create_form_view</field>
+            <field name="model">cpm_odoo.documents_document_set</field>
+            <field name="arch" type="xml">
+                <form string="context.get('action_name')">
+                    <sheet string="Document Set Info">
+                        <group col="3">
+                            <group colspan="2">
+                                <field name="name" string="Document Name"></field>
+                                <field name="category_id" string="Category"></field>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>    
+    </data>
+</odoo>

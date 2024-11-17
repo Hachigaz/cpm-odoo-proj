@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="cpm_odoo.planning_task_create_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.planning_task_create.view.form</field>
+            <field name="model">cpm_odoo.planning_task</field>
+            <field name="arch" type="xml">
+                <form string="Create New Task">
+                    <header>
+                        <!-- <button class="btn btn-secondary" special="cancel" onclick="window.history.back()">
+                            Back
+                        </button> -->
+                    </header>
+                    <sheet>
+                        <group col="3" string="Task Info">
+                            <group colspan="2">
+                                <field name="workflow_id" string="Workflow ID"></field>
+                                <field name="name" string="Name"></field>
+                                <field name="category_id" string="Category"></field>
+                                <field name="description" string="Description"></field>
+                            </group>
+                            <group colspan="1">
+                                <field name="start_date" string="Start Date" widget="date"></field>
+                                <field name="exp_end" string="Expected End Date" widget="date"></field>
+                            </group>
+                        </group>
+                        <group string="Dependencies">
+                            <field name="depends_on" string="Depends On" widget='many2many'>
+                                <tree 
+                                    create="False" edit="False" delete="False" import="False" export_xlsx="False" 
+                                    open_form_view="False" default_order="start_date desc,exp_end desc,name asc" 
+                                    domain="[('workflow_id','=',context.get(workflow_id))]"
+                                >
+                                    <field name="name" string="Name"></field>
+                                    <field name="start_date" string="Start Date"></field>
+                                    <field name="exp_end" string="Exp. End Date"></field>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

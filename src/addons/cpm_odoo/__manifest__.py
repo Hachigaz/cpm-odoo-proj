@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Test module",
+    'name': "asd",
 
     'summary': "Short (1 phrase/line) summary of the module's purpose",
 
@@ -10,6 +10,7 @@ Long description of module's purpose
 
     'author': "My Company",
     'website': "https://www.yourcompany.com",
+    'license': 'AGPL-3',
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -18,17 +19,66 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','web','web_widget_colorpicker'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        # 'security/res.groups.csv',
-        'views/views.xml'
+        'security/res.groups.csv',
+        # 'security/ir.rule.csv',
+        'security/ir.model.access.csv',
+        
+        'views/views.xml',
+        'views/project/project_acts.xml',
+        'views/project/project_mgmt_acts.xml',
+        'views/project/project_works_acts.xml',
+        
+        'views/project/project_select_overview.xml',
+        'views/project/project_create.xml',
+        'views/project/project_overview.xml',
+        
+        'views/project/planning/tasks/create_task.xml',
+        'views/project/planning/tasks/create_task_expense.xml',
+        'views/project/planning/workflows/create_workflow.xml',
+        
+        'views/project/finance/expense_category_create.xml',
+        'views/project/finance/expense_record_create.xml',
+        'views/project/finance/investment_record_create.xml',
+        
+        'views/doc_mgmt/document_category_create.xml',
+        'views/doc_mgmt/document_set_create.xml',
+        'views/doc_mgmt/add_doc_to_set_form.xml',
+        
+        'views/hr_mgmt/hr_acts.xml',
+        'views/hr_mgmt/staff_create.xml',
+        
+        'views/stakeholders/contractor_create.xml',
+        
+        'views/res_mgmt/res_mgmt_acts.xml',
+        
+        
+        # 'init_res/dump/cpm_odoo.root_project_hrm.csv',
+        # 'init_res/dump/cpm_odoo.root_project_planning.csv',
+        # 'init_res/dump/cpm_odoo.root_project_finance.csv',
+        # 'init_res/dump/cpm_odoo.root_project_doc_mgmt.csv',
+        # 'init_res/dump/cpm_odoo.root_project.csv',
+        'init_res/cpm_odoo.stakeholders_contractor_category.csv',
+        'init_res/cpm_odoo.stakeholders_contractor.csv',
+        'init_res/cpm_odoo.stakeholders_investor.csv',
+        'init_res/cpm_odoo.human_res_department.csv',
+        'init_res/cpm_odoo.human_res_staff.csv',
+        'init_res/cpm_odoo.documents_document_category.csv',
+        'init_res/cpm_odoo.documents_document_set.csv',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'cpm_odoo/static/src/backend/**/*',
+        ],
+        'web.assets_frontend': [
+            
+        ],
+    },
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
 }
-

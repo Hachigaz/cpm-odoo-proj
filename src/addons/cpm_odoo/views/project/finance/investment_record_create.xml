@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.finance_investment_record_create_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.finance_investment_record_create.view.form</field>
+            <field name="model">cpm_odoo.finance_investment_record</field>
+            <field name="arch" type="xml">
+                <form string="Investment Record">
+                    <sheet>
+                        <group col="3" string="Investment Info">
+                            <group colspan="2">
+                                <field name="title" string="Title"></field>
+                                <field name="description" string="Description"></field>
+                            </group>
+                            <group colspan="1">
+                                <field name="investor_id" string="Investor"></field>
+                                <field name="amount" string="Amount" widget="monetary"></field>
+                                <field name="cur_id" string="Currency"></field>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,14 @@
+<templates>
+    <t t-name="cpm_odoo.cmp_schedule_display" owl="1">
+        <div t-ref="gantt_graph_display" t-att-style="`width: ${component_context.display_size.width}; height:${component_context.display_size.height}`">
+            
+        </div>
+    </t>
+    
+    <t t-name="cpm_odoo.cmp_search_bar" owl="1">
+        <div class="d-flex">
+            <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" t-ref="search-bar"/>
+            <button class="btn btn-primary" type="button" t-ref="search_btn" t-on-click="(event)=>{this.act_search()}">Search</button>
+        </div>
+    </t>
+</templates>
