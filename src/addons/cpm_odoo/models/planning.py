@@ -194,6 +194,31 @@ class Workflow(models.Model):
             record.unassigned_task_count = unassigned_task_count
         pass
    
+class TaskAssignContractor(models.Model):
+    _name = "cpm_odoo.planning_task_assign_contractor"
+    _description = "TaskAssignContractor"
+    
+    task_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.planning_task', 
+        string='task',
+        ondelete="cascade",
+        required=True
+    )
+    
+    contractor_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.stakeholders_contractor', 
+        string='contractor',
+        ondelete="restrict",
+        required=True
+    )
+    
+    contract_set_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.documents_contract_set', 
+        string='contract_set',
+        ondelete="restrict",
+        default=None
+    )
+   
 class Task(models.Model):
     _name = "cpm_odoo.planning_task"
     _description = "Model"
@@ -251,6 +276,7 @@ class Task(models.Model):
         pass
     
     
+    
     assigned_staff_ids = fields.Many2many(
         comodel_name = 'cpm_odoo.human_res_staff', 
         string='Assigned Staffs',
@@ -269,10 +295,46 @@ class Task(models.Model):
             record.assigned_staff_count = len(record.assigned_staff_ids)
         pass
     
-    assigned_contractor_ids = fields.Many2many(
-        comodel_name = 'cpm_odoo.stakeholders_contractor', 
-        string='Assigned Contractors',
-        relation = 'cpm_odoo_pl_task_stk_contractor'
+    @api.model
+    def act_assign_staffs_to_task(self,task_id,staff_ids):
+        task = self.env["cpm_odoo.planning_task"].browse(task_id)
+        
+        staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
+
+        task.write({
+            "assigned_staff_ids":[[4,id] for id in staff_ids]
+        })
+        
+        for staff in staff_recs:
+            staff.user_id.write({
+                'groups_id':[(4,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
+            })
+
+        pass
+    
+    @api.model
+    def act_unassign_staffs_to_task(self,task_id,staff_ids):
+        task = self.env["cpm_odoo.planning_task"].browse(task_id)
+        
+        staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
+
+        task.write({
+            "assigned_staff_ids":[[3,id] for id in staff_ids]
+        })
+        
+        for staff in staff_recs:
+            staff.user_id.write({
+                'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
+            })
+
+        pass
+    
+    
+    
+    assigned_contractor_ids = fields.One2many(
+        comodel_name = 'cpm_odoo.planning_task_assign_contractor', 
+        inverse_name = 'task_id', 
+        string='assigned_contractor'
     )
     
     assigned_contractor_count = fields.Integer(
@@ -286,6 +348,33 @@ class Task(models.Model):
         for record in self:
             record.assigned_contractor_count = len(record.assigned_contractor_ids)
         pass
+    
+    @api.model
+    def act_assign_contractors_to_task(self,task_id,contractor_ids):
+        task = self.env["cpm_odoo.planning_task"].browse(task_id)
+
+        task.write(
+            {
+                "assigned_contractor_ids":[
+                    (0,0,{
+                        "contractor_id":contractor_id
+                    }) for contractor_id in contractor_ids
+                ]
+            }
+        )
+        pass
+    
+    @api.model
+    def act_unassign_contractors_to_task(self,task_id,contractor_ids):
+        task = self.env["cpm_odoo.planning_task"].browse(task_id)
+
+        task.write({
+            "assigned_contractor_ids":[[2,id] for id in contractor_ids]
+        })
+
+        pass
+    
+    
     
     depends_on = fields.Many2many(
         comodel_name = 'cpm_odoo.planning_task', 
@@ -419,7 +508,7 @@ class Task(models.Model):
                 ('start_date','<',fields.Date.today()),
                 ('task_status','=','active'),
                 ('workflow_id.workflow_status','=','active'),
-                ('assigned_staff_ids','in',[staff_id])
+                # ('assigned_staff_ids','in',[staff_id])
             ],
             [],
             0,0,
@@ -440,7 +529,6 @@ class Task(models.Model):
         
         return super().create(vals)
     
-    
         
 class TaskCategory(models.Model):
     _name = 'cpm_odoo.planning_task_category'
@@ -459,6 +547,57 @@ class TaskCategory(models.Model):
         default = "#FF5733"
     )
     
+class TaskNoteCategory(models.Model):
+    _name = 'cpm_odoo.planning_task_note_category'
+    _description = "Expense Category"
+    # _rec_name = "encoded_name"
+    
+    name = fields.Char(
+        string = 'Name',
+        required=True,
+        size = 256
+    )
+    
+    description = fields.Text(
+        string = 'Description'
+    )
+    
+    color = fields.Char(
+        string = 'Category Color',
+        required=True,
+        size=24,
+        default = "#FF5733"
+    )
+    
+    display = fields.Boolean(
+        string = 'Display',
+        required=True,
+        default=False
+    )
+    
+class TaskChecklistItem(models.Model):
+    _name = 'cpm_odoo.task_checklist_item'
+    _description = "Task Checklist"
+    
+    task_id = fields.Many2one(
+        comodel_name='cpm_odoo.planning_task', 
+        string='task'
+    )
+    
+    title = fields.Char(
+        string = 'title',
+        size=256,
+        required=True
+    )
+    
+    description = fields.Text(
+        string='description'
+    )
+    
+    is_completed = fields.Boolean(
+        string='is_completed',
+        default=False
+    )
 
 class TaskNote(models.Model):
     _name = 'cpm_odoo.planning_task_note'

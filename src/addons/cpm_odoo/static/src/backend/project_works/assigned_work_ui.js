@@ -38,6 +38,13 @@ class AssignedWorkPage extends Component{
             name:"Upcoming Work",
             page:WorkOverviewPage,
             group_id:""
+        },
+        {
+            id:"assigned_task_View",
+            name:"Task Detail",
+            page:WorkOverviewPage,
+            group_id:"",
+            hidden:true
         }
     ]
 

@@ -6,14 +6,7 @@ import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@
 
 
 
-export async function processTransactionList(list,orm){
-
-
-    await joinDatas(list,orm,
-        [
-            ["cur_id","res.currency"]
-        ]
-    )
+export function processTransactionList(list){
     
     list.forEach((trans,idx)=>{
         list[idx].d_amount = formatCurrency(trans.amount,trans.cur_id)

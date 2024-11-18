@@ -11,4 +11,13 @@
             <button class="btn btn-primary" type="button" t-ref="search_btn" t-on-click="(event)=>{this.act_search()}">Search</button>
         </div>
     </t>
+
+    <t t-name="cpm_odoo.cmp_select_filter">
+        <select class="form-select" t-on-change="(event)=>{this.state_data.selected_items=[event.target.value];this.act_filter()}">
+            <option t-att-value="null">No Selection</option>
+            <t t-foreach="this.state_data.item_list" t-as="item" t-key="item.id">
+                <option t-att-value="item.id"><t t-esc="item.name"/></option>
+            </t>
+        </select>
+    </t>
 </templates>

@@ -8,9 +8,13 @@ import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@
 export class WorkOverviewPage extends Component{
     static template="cpm_odoo.WorkOverviewPage"
 
+    static formatDate = formatDate
+
     setup(){
         this.page_data = useState({
-            recent_active_tasks : []
+            recent_active_tasks : [],
+            expiring_tasks: [],
+            expired_tasks: []
         })
 
         this.orm=useService("orm")
@@ -28,11 +32,9 @@ export class WorkOverviewPage extends Component{
                 this.props.context_data.staff_id
             ]
         )
-
-        console.log(started_task_list)
     }
 
-    act_view_assigned_task(task_id){
+    act_view_task(task_id){
 
     }
 }

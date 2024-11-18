@@ -20,5 +20,14 @@
         </record>
 
         <menuitem name="Warehouses" parent="cpm_odoo.warehouse_root" id="cpm_odoo.assigned_warehouse_menuitem" action="cpm_odoo.assigned_warehouse_list_act"/>
+
+
+        <record id="cpm_odoo.test_page" model="ir.actions.client">
+          <field name="name">Test</field>
+          <field name="tag">cpm_odoo.action_test</field>
+          <field name="target">main</field>
+        </record>
+
+        <menuitem name="Test" parent="cpm_odoo.warehouse_root" id="cpm_odoo.warehouse_test" action="cpm_odoo.test_page"/>
     </data>
 </odoo>

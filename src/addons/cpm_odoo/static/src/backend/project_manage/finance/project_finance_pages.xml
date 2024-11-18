@@ -52,7 +52,6 @@
                     <div class="card">
                         <div class="card-body" id="total-investments-chart">
                             <h5 class="card-title">Total Investments</h5>
-                            <!-- <p class="card-text">Content goes here</p> -->
                             <canvas class="chart w-80">
 
                             </canvas>
@@ -72,10 +71,15 @@
                 <div class="col-4">
                     <div class="card">
                         <div class="card-body" id="total-chart">
-                            <h5 class="card-title">Net Profit</h5>
-                            <canvas class="chart w-80">
-
-                            </canvas>
+                            <h5 class="card-title">Transaction Verification Notes</h5>
+                            <div class="note-item me-2">
+                                <t t-set="urgent_pending_trans_msg_note" t-value="`${this.page_data.urgent_pending_transaction_count} ${this.page_data.urgent_pending_transaction_count>1?'urgent transactions need':'urgent transaction needs'} to be verified`"/>
+                                <t t-esc="urgent_pending_trans_msg_note"/>
+                            </div>
+                            <div class="note-item me-2">
+                                <t t-set="pending_trans_msg_note" t-value="`${this.page_data.pending_transaction_count} ${this.page_data.pending_transaction_count>1?'transactions need':'transaction needs'} verification`"/>
+                                <t t-esc="pending_trans_msg_note"/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -83,22 +87,16 @@
         </section>
     
         <!-- Charts Section -->
-        <section class="container my-5">
-            <h2 class="mb-4">Charts</h2>
+        <section class="container my-5" id="rve-section">
+            <h2 class="mb-4">Investment vs Expenses</h2>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md">
                     <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Revenue vs Expenses</h5>
-                            <p class="card-text">Chart content goes here</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Growth Over Time</h5>
-                            <p class="card-text">Chart content goes here</p>
+                        <div class="card-body" id="investment-vs-expense-chart">
+                            <h5 class="card-title">Investment vs Expenses</h5>
+                            <canvas class="chart w-80">
+
+                            </canvas>
                         </div>
                     </div>
                 </div>
@@ -114,7 +112,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Date</th>
-                        <th scope="col">Category</th>
+                        <th scope="col">Category/Investor</th>
                         <th scope="col">Status</th>
                     </tr>
                 </thead>
@@ -126,14 +124,15 @@
                                <td><t t-esc="trans.title"/></td>
                                <td><t t-esc="trans.d_amount"/></td>
                                <td><t t-esc="this.constructor.formatDateTime(trans.date_created)"/></td>
-                               <td>
-                                   <t t-if="trans.category_id">
-                                       <t t-esc="trans.category_id.name"/>
-                                   </t>
-                                   <t t-else="">
-                                       No Category
-                                   </t>
-                               </td>
+                               <t t-if="trans.category_id">
+                                   <t t-esc="trans.category_id.name"/>
+                               </t>
+                               <t t-elif="trans.investor_id">
+                                    <t t-esc="trans.investor_id.name"/>
+                               </t>
+                               <t t-else="">
+                                    No Category
+                               </t>
                                <td><t t-esc="trans.status[1]"/></td>
                            </tr>
                         </t>
@@ -157,7 +156,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Date</th>
-                        <th scope="col">Category</th>
+                        <th scope="col">Category/Investor</th>
                         <th scope="col">Status</th>
                     </tr>
                 </thead>
@@ -168,14 +167,17 @@
                             <td><t t-esc="trans.title"/></td>
                             <td><t t-esc="trans.d_amount"/></td>
                             <td><t t-esc="this.constructor.formatDateTime(trans.date_created)"/></td>
-                            <td>
-                                <t t-if="trans.category_id">
-                                    <t t-esc="trans.category_id.name"/>
-                                </t>
-                                <t t-else="">
-                                    No Category
-                                </t>
-                            </td>
+                               <td>
+                                   <t t-if="trans.category_id">
+                                       <t t-esc="trans.category_id.name"/>
+                                   </t>
+                                   <t t-elif="trans.investor_id">
+                                        <t t-esc="trans.investor_id.name"/>
+                                   </t>
+                                   <t t-else="">
+                                        No Category
+                                   </t>
+                               </td>
                             <td><t t-esc="trans.status[1]"/></td>
                         </tr>
                         </t>
@@ -190,6 +192,102 @@
                 </tbody>
             </table>
         </section>
+    </t>
+
+    <t t-name="cpm_odoo.FinanceExpenseItemList">
+        <div class="">
+            <SearchBar inst="this" act_search="this.act_search">
+    
+            </SearchBar>
+            <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
+    
+            </ListFilter>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                    <tr>
+                        <td scope="col">
+                            <t t-esc="item.title"/>
+                        </td>
+                        <td scope="col">
+                            <t t-esc="this.constructor.formatCurrency(item.amount,item.cur_id)"/>
+                        </td>
+                        <td scope="col">
+                            <t t-esc="this.constructor.formatDateTime(item.date_created)"/>
+                        </td>
+                        <td scope="col">
+                            <t t-if="item.category_id">
+                               <t t-esc="item.category_id.name"/> 
+                            </t>
+                            <t t-else="">
+                                No Category
+                            </t>
+                        </td>
+                        <td scope="col">
+                            <t t-esc="item.status"/>
+                        </td>
+                    </tr>
+                </t>
+            </tbody>
+        </table>
+    </t>
+
+    <t t-name="cpm_odoo.FinanceInvestmentItemList">
+        <div class="">
+            <SearchBar inst="this" act_search="this.act_search">
+    
+            </SearchBar>
+            <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
+    
+            </ListFilter>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                    <tr>
+                        <td scope="col">
+                            <t t-esc="item.title"/>
+                        </td>
+                        <td scope="col">
+                            <t t-esc="this.constructor.formatCurrency(item.amount,item.cur_id)"/>
+                        </td>
+                        <td scope="col">
+                            <t t-esc="this.constructor.formatDateTime(item.date_created)"/>
+                        </td>
+                        <td scope="col">
+                            <t t-if="item.category_id">
+                               <t t-esc="item.category_id.name"/> 
+                            </t>
+                            <t t-else="">
+                                No Category
+                            </t>
+                        </td>
+                        <td scope="col">
+                            <t t-esc="item.status"/>
+                        </td>
+                    </tr>
+                </t>
+            </tbody>
+        </table>
     </t>
 
     <t t-name="cpm_odoo.FinanceBudgetsTab">
@@ -211,7 +309,12 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Investments</h5>
-                            <p class="card-text">$50,000</p>
+                            <t t-if="this.page_data.cur_id">
+                                <p class="card-text"><t t-esc="this.constructor.formatCurrency(this.page_data.total_investments_value,this.page_data.cur_id)"/></p>
+                            </t>
+                            <t t-else="">
+
+                            </t>
                         </div>
                     </div>
                 </div>
@@ -219,7 +322,12 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Expenses</h5>
-                            <p class="card-text">$20,000</p>
+                            <t t-if="this.page_data.cur_id">
+                                <p class="card-text"><t t-esc="this.constructor.formatCurrency(this.page_data.total_expenses_value,this.page_data.cur_id)"/></p>
+                            </t>
+                            <t t-else="">
+
+                            </t>
                         </div>
                     </div>
                 </div>
@@ -227,74 +335,30 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Remaining Budget</h5>
-                            <p class="card-text">$30,000</p>
+                            <t t-if="this.page_data.cur_id">
+                                <p class="card-text"><t t-esc="this.constructor.formatCurrency(this.page_data.total_investments_value - this.page_data.total_expenses_value,this.page_data.cur_id)"/></p>
+                            </t>
+                            <t t-else="">
+
+                            </t>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Expenses Table Section -->
+        <section class="container my-5">
+            <h2 class="mb-4">Investment Details</h2>
+            <FinanceInvestmentItemList finance_id="this.finance_id" extra_domain="[['project_finance_id','=',this.finance_id]]">
+
+            </FinanceInvestmentItemList>
+        </section>
+        
         <section class="container my-5">
             <h2 class="mb-4">Expense Details</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Example Expenses -->
-                    <tr>
-                        <td>2024-11-01</td>
-                        <td>Project Supplies</td>
-                        <td>$2,000</td>
-                        <td>Material</td>
-                        <td>Paid</td>
-                    </tr>
-                    <tr>
-                        <td>2024-11-05</td>
-                        <td>Consulting Fees</td>
-                        <td>$5,000</td>
-                        <td>Services</td>
-                        <td>Paid</td>
-                    </tr>
-                    <tr>
-                        <td>2024-11-10</td>
-                        <td>Software Licenses</td>
-                        <td>$3,000</td>
-                        <td>Tools</td>
-                        <td>Pending</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+            <FinanceExpenseItemList finance_id="this.finance_id" extra_domain="[['project_finance_id','=',this.finance_id]]">
 
-        <!-- Expense Summary Section -->
-        <section class="container my-5">
-            <h2 class="mb-4">Expense Summary</h2>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Expenses</h5>
-                            <p class="card-text">$20,000</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Remaining Budget</h5>
-                            <p class="card-text">$30,000</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </FinanceExpenseItemList>
         </section>
     </t>
 

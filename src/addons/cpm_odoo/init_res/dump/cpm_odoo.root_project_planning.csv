@@ -1,8 +1,8 @@
 id,workflow_ids/id,workflow_ids/name
-proj_1_planning,wf_proj1_se,Project Setup
+cpm_proj_planning.planning_1,wf_proj1_se,Project Setup
 ,wf_proj1_s1,Project Stage 1
 ,wf_proj1_s2,Project Stage 2
 ,wf_proj1_s3,Project Stage 3
 ,wf_proj1_s4,Project Stage 3.5
-proj_2_planning,
-proj_3_planning,
+cpm_proj_planning.planning_2,
+cpm_proj_planning.planning_3,

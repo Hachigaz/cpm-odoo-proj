@@ -610,23 +610,41 @@ class PlanningStaffAssignPanel extends ItemList{
 
     async act_save(inst){
         if(inst.assign_actions.length>0 || inst.cancel_actions.length > 0){``
-            let actions = []
-            inst.assign_actions.forEach((staff_id)=>{
-                actions.push([4,staff_id])
-            })
+            // let actions = []
+            // inst.assign_actions.forEach((staff_id)=>{
+            //     actions.push([4,staff_id])
+            // })
 
-            inst.cancel_actions.forEach((staff_id)=>{
-                actions.push([3,staff_id])
-            })
+            // inst.cancel_actions.forEach((staff_id)=>{
+            //     actions.push([3,staff_id])
+            // })
 
-            const result = await (inst.props.context_data.orm.call(
+            // const result = await (inst.props.context_data.orm.call(
+            //     'cpm_odoo.planning_task',
+            //     'write',
+            //     [
+            //         [inst.props.task_info.id],
+            //         {
+            //             "assigned_staff_ids":actions
+            //         }
+            //     ]
+            // ))
+
+            await (inst.props.context_data.orm.call(
                 'cpm_odoo.planning_task',
-                'write',
+                'act_assign_staffs_to_task',
                 [
-                    [inst.props.task_info.id],
-                    {
-                        "assigned_staff_ids":actions
-                    }
+                    parseInt(inst.props.task_info.id),
+                    inst.assign_actions
+                ]
+            ))
+
+            await (inst.props.context_data.orm.call(
+                'cpm_odoo.planning_task',
+                'act_unassign_staffs_to_task',
+                [
+                    parseInt(inst.props.task_info.id),
+                    inst.cancel_actions
                 ]
             ))
 
@@ -728,23 +746,41 @@ class PlanningContractorAssignPanel extends ItemList{
 
     async act_save(inst){
         if(inst.assign_actions.length>0 || inst.cancel_actions.length > 0){
-            let actions = []
-            inst.assign_actions.forEach((contractor_id)=>{
-                actions.push([4,contractor_id])
-            })
+            // let actions = []
+            // inst.assign_actions.forEach((contractor_id)=>{
+            //     actions.push([4,contractor_id])
+            // })
 
-            inst.cancel_actions.forEach((contractor_id)=>{
-                actions.push([3,contractor_id])
-            })
+            // inst.cancel_actions.forEach((contractor_id)=>{
+            //     actions.push([3,contractor_id])
+            // })
 
-            const result = await (inst.props.context_data.orm.call(
+            // await (inst.props.context_data.orm.call(
+            //     'cpm_odoo.planning_task',
+            //     'write',
+            //     [
+            //         [inst.props.task_info.id],
+            //         {
+            //             "assigned_contractor_ids":actions
+            //         }
+            //     ]
+            // ))
+            
+            await (inst.props.context_data.orm.call(
                 'cpm_odoo.planning_task',
-                'write',
+                'act_assign_contractors_to_task',
                 [
-                    [inst.props.task_info.id],
-                    {
-                        "assigned_contractor_ids":actions
-                    }
+                    parseInt(inst.props.task_info.id),
+                    inst.assign_actions
+                ]
+            ))
+
+            await (inst.props.context_data.orm.call(
+                'cpm_odoo.planning_task',
+                'act_unassign_contractors_to_task',
+                [
+                    parseInt(inst.props.task_info.id),
+                    inst.cancel_actions
                 ]
             ))
 
@@ -802,9 +838,7 @@ class PlanningTaskAttachedDocumentsPanel extends Component{
 
         useEffect(()=>{
             if(this.props.task_info.attached_document_ids){
-                if(this.props.task_info.attached_document_ids.length>0){
-                    this.doc_set_item_list.extra_domain = [["id","in",Array.from(this.props.task_info.attached_document_ids)]]
-                }
+                this.doc_set_item_list.extra_domain = [["id","in",Array.from(this.props.task_info.attached_document_ids)]]
             }
         },()=>[this.props.task_info])
     }

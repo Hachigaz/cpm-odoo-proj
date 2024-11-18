@@ -19,7 +19,8 @@ class DocumentSet(models.Model):
     category_id = fields.Many2one(
         comodel_name = 'cpm_odoo.documents_document_category', 
         string='Category',
-        ondelete = "restrict"
+        ondelete = "restrict",
+        default=None
     )
     
     document_ids = fields.One2many(
@@ -51,6 +52,26 @@ class DocumentSet(models.Model):
         store=True
     )
     
+    is_project_specific = fields.Boolean(
+        string = 'is_project_specific',
+        required=True,
+        default=False
+    )
+    
+    project_doc_mgmt_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.root_project_doc_mgmt', 
+        string='project_doc_mgmt'
+    )
+    
+    @api.constrains('project_doc_mgmt_id')
+    def _constrains_project_doc_mgmt_id(self):
+        for record in self:
+            if self.is_project_specific and not self.project_doc_mgmt_id:
+                raise ValidationError("Project specific documents must relate to a specific project")
+            elif not self.is_project_specific and self.project_doc_mgmt_id:
+                raise ValidationError("Document is not project specific but an id was provided")
+        pass
+    
     @api.depends('document_ids.date_uploaded')
     def _compute_document_count(self):
         
@@ -78,6 +99,13 @@ class DocumentSet(models.Model):
             }
             # "context": { 'default_document_set_id': self.env.context.document_set_id },
         }
+    
+    @api.model_create_multi
+    def create(self, vals):
+        for val in vals:
+            if(not val["is_project_specific"] or not self.env.context["default_is_project_specific"]):
+                val["project_doc_mgmt_id"]=None
+        return super().create(vals)
     
 class Document(models.Model):
     _name = "cpm_odoo.documents_document"
@@ -191,3 +219,13 @@ class DocumentCategory(models.Model):
     #             "color":record.color
     #         })
     #     pass
+    
+class ContractSet(models.Model):
+    _name = "cpm_odoo.documents_contract_set"
+    _description = "Contract Set"
+    
+    _inherit = "cpm_odoo.documents_document_set"
+    contractor_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.stakeholders_contractor', 
+        string='contractor_id'
+    )

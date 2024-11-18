@@ -1,4 +1,4 @@
 id,short_name,name,description,start_date,proj_hrm_id:id,proj_planning_id:id,proj_finance_id:id,proj_doc_id:id
-cpm_proj_1,"Project 1","Project 1","Project Description",2024-09-22,proj_1_hrm,proj_1_planning,proj_1_finance,proj_1_doc
-cpm_proj_2,"Project 2","Project 2","Project Description",2025-05-13,proj_2_hrm,proj_2_planning,proj_2_finance,proj_2_doc
-cpm_proj_1,"Project 1","Project 1","Project Description",2024-03-25,proj_3_hrm,proj_3_planning,proj_3_finance,proj_3_doc
+cpm_proj.proj_1,"Project 1","Project 1","Project Description",2024-09-22,cpm_proj_hrm.hrm_1,cpm_proj_planning.planning_1,cpm_proj_finance.finance_1,cpm_proj_doc.doc_1
+cpm_proj.proj_2,"Project 2","Project 2","Project Description",2025-05-13,cpm_proj_hrm.hrm_2,cpm_proj_planning.planning_2,cpm_proj_finance.finance_2,cpm_proj_doc.doc_2
+cpm_proj.proj_3,"Project 3","Project 3","Project Description",2024-03-25,cpm_proj_hrm.hrm_3,cpm_proj_planning.planning_3,cpm_proj_finance.finance_3,cpm_proj_doc.doc_3

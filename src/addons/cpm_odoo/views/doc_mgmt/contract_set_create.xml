@@ -2,16 +2,16 @@
 <odoo>
 
     <data>
-        <record id="cpm_odoo.document_set_create_form_view" model="ir.ui.view">
-            <field name="name">cpm_odoo.document_set_create_form_view</field>
-            <field name="model">cpm_odoo.documents_document_set</field>
+        <record id="cpm_odoo.contract_set_create_form_view" model="ir.ui.view">
+            <field name="name">cpm_odoo.contract_set_create_form_view</field>
+            <field name="model">cpm_odoo.documents_contract_set</field>
             <field name="arch" type="xml">
                 <form string="context.get('action_name')">
                     <sheet string="Document Set Info">
                         <group col="3">
                             <group colspan="2">
                                 <field name="name" string="Document Name"></field>
-                                <field name="category_id" string="Category"></field>
+                                <field name="contractor_id" string="Contractor"></field>
                             </group>
                             <group colspan="2">
                                 <field name="is_project_specific" string="Is Project Specific"></field>

@@ -15,6 +15,7 @@
                             </group>
                             <group colspan="1">
                                 <field name="amount" string="Amount" widget="monetary"></field>
+                                <field name="is_urgent" string="Is Urgent"></field>
                                 <field name="cur_id" string="Currency"></field>
                                 <field name="created_by" readonly="True" string="Created By"></field>
                                 <field name="date_created" readonly="True" string="Date Created"></field>

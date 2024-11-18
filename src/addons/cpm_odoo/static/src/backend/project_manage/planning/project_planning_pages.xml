@@ -827,8 +827,16 @@
                                                         </span>
                                                     </div>
                                                     <div class="col btn-list d-flex justify-content-end options">
-                                                        <t t-if="this.props.task_info.attached_document_ids.length>0">
-                                                            <t t-if="this.props.task_info.attached_document_ids.includes(scope.item.id)">
+                                                        <t t-if="this.props.task_info.attached_document_ids.includes(scope.item.id)">
+                                                            <div class="attach-act btn btn-outline-success me-2 d-none animate__fadeOut" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
+                                                                Attach
+                                                            </div>
+                                                            <div class="remove-act btn btn-outline-danger animate__fadeIn " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
+                                                                Remove
+                                                            </div>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <t t-if="this.attached_doc_ids.includes(scope.item.id)">
                                                                 <div class="attach-act btn btn-outline-success me-2 d-none animate__fadeOut" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
                                                                     Attach
                                                                 </div>
@@ -836,31 +844,21 @@
                                                                     Remove
                                                                 </div>
                                                             </t>
+                                                            <t t-elif="this.removed_doc_ids.includes(scope.item.id)">
+                                                                <div class="attach-act btn btn-outline-success me-2 animate__fadeIn" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
+                                                                    Attach
+                                                                </div>
+                                                                <div class="remove-act btn btn-outline-danger d-none animate__fadeOut " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
+                                                                    Remove
+                                                                </div>
+                                                            </t>
                                                             <t t-else="">
-                                                                <t t-if="this.attached_doc_ids.includes(scope.item.id)">
-                                                                    <div class="attach-act btn btn-outline-success me-2 d-none animate__fadeOut" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
-                                                                        Attach
-                                                                    </div>
-                                                                    <div class="remove-act btn btn-outline-danger animate__fadeIn " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
-                                                                        Remove
-                                                                    </div>
-                                                                </t>
-                                                                <t t-elif="this.removed_doc_ids.includes(scope.item.id)">
-                                                                    <div class="attach-act btn btn-outline-success me-2 animate__fadeIn" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
-                                                                        Attach
-                                                                    </div>
-                                                                    <div class="remove-act btn btn-outline-danger d-none animate__fadeOut " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
-                                                                        Remove
-                                                                    </div>
-                                                                </t>
-                                                                <t t-else="">
-                                                                    <div class="attach-act btn btn-outline-success me-2 animate__fadeIn" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
-                                                                        Attach
-                                                                    </div>
-                                                                    <div class="remove-act btn btn-outline-danger d-none animate__fadeOut " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
-                                                                        Remove
-                                                                    </div>
-                                                                </t>
+                                                                <div class="attach-act btn btn-outline-success me-2 animate__fadeIn" t-on-click="()=>{this.act_attach_document(scope.item.id)}">
+                                                                    Attach
+                                                                </div>
+                                                                <div class="remove-act btn btn-outline-danger d-none animate__fadeOut " t-on-click="()=>{this.act_remove_document(scope.item.id)}">
+                                                                    Remove
+                                                                </div>
                                                             </t>
                                                         </t>
                                                     </div>

@@ -19,10 +19,11 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','web','web_widget_colorpicker'],
+    'depends': ['base','web','mail','web_widget_colorpicker'],
 
     # always loaded
     'data': [
+        'security/ir.module.category.csv',
         'security/res.groups.csv',
         # 'security/ir.rule.csv',
         'security/ir.model.access.csv',
@@ -81,4 +82,6 @@ Long description of module's purpose
     'demo': [
         'demo/demo.xml',
     ],
+    'pre_init_hook': '_test',
+    'post_init_hook': '_process_install_module',
 }

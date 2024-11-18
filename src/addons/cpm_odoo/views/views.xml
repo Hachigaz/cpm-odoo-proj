@@ -1,19 +1,6 @@
 <odoo>
   <data>
     <!-- ============================================== -->
-    <!-- ======== Message root menu -->
-    <!-- ============================================== -->
-    <record id="cpm_odoo.message_act" model="ir.actions.act_window">
-      <field name="name">Action Name</field>
-      <field name="res_model">cpm_odoo.planning_workflow</field>
-      <field name="view_mode">form</field>
-    </record>
-
-    <menuitem name="Message" id="cpm_odoo.message_root" action="cpm_odoo.message_act"/>
-
-    
-
-    <!-- ============================================== -->
     <!-- ======== stakeholders root menu -->
     <!-- ============================================== -->
     <record id="cpm_odoo.stakeholders_contractor_create_act" model="ir.actions.act_window">

@@ -87,4 +87,3 @@ class Department(models.Model):
 class DepartmentRole(models.Model):
     _name = 'cpm_odoo.human_res_department_role'
     _description = "Model"
-    

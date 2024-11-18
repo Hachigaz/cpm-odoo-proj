@@ -368,7 +368,7 @@
     <t t-name="cpm_odoo.DocumentSetItemList">
         <t t-if="page_data.page_arr.length > 0">
             <div class="h-100 d-flex flex-column">
-                <div class="item-list-header mb-3">        
+                <div class="item-list-header mb-3">
                     <SearchBar inst="this" act_search="this.act_search">
 
                     </SearchBar>

@@ -2,55 +2,55 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 import json
 
-class ProjectHRM(models.Model):
-    _name = "cpm_odoo.root_project_hrm"
-    _description = "Project HRM"
+# class ProjectHRM(models.Model):
+#     _name = "cpm_odoo.root_project_hrm"
+#     _description = "Project HRM"
     
-    project_id = fields.Many2one(
-        comodel_name = 'cpm_odoo.root_project', 
-        string='Project',
-        ondelete="cascade"
-    )
+#     project_id = fields.Many2one(
+#         comodel_name = 'cpm_odoo.root_project', 
+#         string='Project',
+#         ondelete="cascade"
+#     )
     
-    project_staff_ids = fields.Many2many(
-        comodel_name = 'cpm_odoo.human_res_staff', 
-        string='Staffs',
-        relation = "project_assigned_staffs",
-        column1 = "hrm_id",
-        column2 = "staff_id"
-    )
+#     project_staff_ids = fields.Many2many(
+#         comodel_name = 'cpm_odoo.human_res_staff', 
+#         string='Staffs',
+#         relation = "project_assigned_staffs",
+#         column1 = "hrm_id",
+#         column2 = "staff_id"
+#     )
     
-    # @api.onchange("project_staff_ids")
-    # def _onchange_staff_ids(self):
-    #     current_ids = self.project_staff_ids.ids
-    #     previous_ids = self.env['cpm_odoo.human_res_staff'].browse(self.id).project_staff_ids.ids
+#     # @api.onchange("project_staff_ids")
+#     # def _onchange_staff_ids(self):
+#     #     current_ids = self.project_staff_ids.ids
+#     #     previous_ids = self.env['cpm_odoo.human_res_staff'].browse(self.id).project_staff_ids.ids
         
-    #     # added_ids = set(current_ids) - set(previous_ids)
-    #     # if added_ids:
-    #     #     pass
+#     #     # added_ids = set(current_ids) - set(previous_ids)
+#     #     # if added_ids:
+#     #     #     pass
         
         
-    #     removed_ids = set(previous_ids) - set(current_ids)
-    #     if removed_ids:
-    #         for id in removed_ids:
-    #             if(self.env["cpm_odoo.planning_task"].)
-    #         pass
+#     #     removed_ids = set(previous_ids) - set(current_ids)
+#     #     if removed_ids:
+#     #         for id in removed_ids:
+#     #             if(self.env["cpm_odoo.planning_task"].)
+#     #         pass
     
-    # assigned_accountant_ids = fields.Many2many(
-    #     comodel_name = 'cpm_odoo.human_res_staff',
-    #     string='Assigned Accountants'
-    # )
+#     # assigned_accountant_ids = fields.Many2many(
+#     #     comodel_name = 'cpm_odoo.human_res_staff',
+#     #     string='Assigned Accountants'
+#     # )
     
-    # assigned_qcs = fields.Many2many(
-    #     comodel_name = 'cpm_odoo.human_res_staff', 
-    #     string='assigned_qcs'
-    # )
+#     # assigned_qcs = fields.Many2many(
+#     #     comodel_name = 'cpm_odoo.human_res_staff', 
+#     #     string='assigned_qcs'
+#     # )
     
-    def name_get(self, cr, user, ids, context=None):
-        result = []
-        for record in self:
-            result.append((record.project_id.short_name))
-        return result
+#     def name_get(self, cr, user, ids, context=None):
+#         result = []
+#         for record in self:
+#             result.append((record.project_id.short_name))
+#         return result
 
 
 class ProjectPlanning(models.Model):
@@ -407,19 +407,19 @@ class Project(models.Model):
     )
     
     _inherits = {
-        "cpm_odoo.root_project_hrm":"proj_hrm_id",
+        # "cpm_odoo.root_project_hrm":"proj_hrm_id",
         "cpm_odoo.root_project_planning":"proj_planning_id",
         "cpm_odoo.root_project_finance":"proj_finance_id",
         "cpm_odoo.root_project_doc_mgmt":"proj_doc_id"
     }
     
-    proj_hrm_id = fields.Many2one(
-        comodel_name = 'cpm_odoo.root_project_hrm', 
-        string='HRM Management',
-        readonly=True,
-        required = True,
-        ondelete = 'restrict'
-    )
+    # proj_hrm_id = fields.Many2one(
+    #     comodel_name = 'cpm_odoo.root_project_hrm', 
+    #     string='HRM Management',
+    #     readonly=True,
+    #     required = True,
+    #     ondelete = 'restrict'
+    # )
     
     proj_planning_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project_planning', 
@@ -461,39 +461,49 @@ class Project(models.Model):
     
     @api.model_create_multi
     def create(self, vals):
+        # raise ValidationError(json.dumps([group.name for group in self.env.user.groups_id]))
         records = super().create(vals)
         for record in records:
-            record.proj_hrm_id.project_id = record.id
+            # record.proj_hrm_id.project_id = record.id
             record.proj_planning_id.project_id = record.id
             record.proj_finance_id.project_id = record.id
             record.proj_doc_id.project_id = record.id
             
             
             mgmt_gr_rec = self.env["res.groups"].create({
-                "id":f"cpm_gr_proj{record.id}",
+                "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Mgmt Group {record.id}",
-                "implied_ids":[self.env["res.groups"].search([("name","=","cpm_gr_overview_project")],limit=1).id],
+                "implied_ids":[self.env.ref("cpm_gr.project_mgmt_gr").id],
                 "comment":f"Project Management Group {record.short_name}"
             })
             
             record.proj_mgmt_group_id = mgmt_gr_rec.id
             
             mem_gr_rec = self.env["res.groups"].create({
-                "id":f"cpm_gr_proj{record.id}",
+                "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Member Group {record.id}",
-                "implied_ids":[],
+                "implied_ids":[self.env.ref("cpm_gr.project_mem_gr").id],
                 "comment":f"Project Member Group {record.short_name}"
-            })
-            
-            self.env.user.write({
-                'groups_id': [(4,mgmt_gr_rec.id),(4,mem_gr_rec.id)]
             })
             
             record.proj_mem_group_id = mem_gr_rec.id
             
-            self.act_assign_manager(record.id,self.env.user.id)
-            
+            cur_user = self.env.user
+            cur_user.write({
+                'groups_id': [(4,mgmt_gr_rec.id),(4,mem_gr_rec.id)]
+            })
+            mgmt_gr_rec.write({
+                "users":[(4,cur_user.id)]
+            })
+            mem_gr_rec.write({
+                "users":[(4,cur_user.id)]
+            })
         return records
+    
+    rule_ids = fields.Many2many(
+        comodel_name = 'ir.rules', 
+        string='rule'
+    )
     
     def unlink(self):
         for record in self:
@@ -506,7 +516,7 @@ class Project(models.Model):
     
     
     is_manager = fields.Boolean(
-        string="Can View Record",
+        string="Is Manager",
         compute="_compute_is_manager",
         store=False
     )
@@ -515,31 +525,10 @@ class Project(models.Model):
     def _compute_is_manager(self):
         for record in self:
             record.is_manager = self.env.user.has_group(record.proj_mgmt_group_id)
-    
-    @api.model
-    def act_assign_manager(self,proj_id,user_id_list):
-        proj_rec = self.env["cpm_odoo.root_project"].browse(proj_id)
-        user_recs = self.env["res.users"].browse(user_id_list)
-        for user_rec in user_recs:
-            user_rec.write({
-                "groups_id":[(4,proj_rec.proj_mgmt_group_id.id)]
-            })
-        self.act_assign_member(proj_id,user_id_list)
-    
-    @api.model
-    def act_remove_manager(self,proj_id,user_id_list):
-        proj_rec = self.env["cpm_odoo.root_project"].browse(proj_id)
-        user_recs = self.env["res.users"].browse(user_id_list)
-        for user_rec in user_recs:
-            user_rec.write({
-                "groups_id":[(3,proj_rec.proj_mgmt_group_id.id)]
-            })
-        self.act_remove_member(proj_id,user_id_list)
 
 
-            
     is_member = fields.Boolean(
-        string="Can View Record",
+        string="Is Member",
         compute="_compute_is_member",
         store=False
     )
@@ -548,21 +537,3 @@ class Project(models.Model):
     def _compute_is_member(self):
         for record in self:
             record.is_manager = self.env.user.has_group(record.proj_mem_group_id)
-    
-    @api.model
-    def act_assign_member(self,proj_id,user_id_list):
-        proj_rec = self.env["cpm_odoo.root_project"].browse(proj_id)
-        user_recs = self.env["res.users"].browse(user_id_list)
-        for user_rec in user_recs:
-            user_rec.write({
-                "groups_id":[(4,proj_rec.proj_mem_group_id.id)]
-            })
-    
-    @api.model
-    def act_remove_member(self,proj_id,user_id_list):
-        proj_rec = self.env["cpm_odoo.root_project"].browse(proj_id)
-        user_recs = self.env["res.users"].browse(user_id_list)
-        for user_rec in user_recs:
-            user_rec.write({
-                "groups_id":[(3,proj_rec.proj_mem_group_id.id)]
-            })

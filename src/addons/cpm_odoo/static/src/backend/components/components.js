@@ -1,6 +1,7 @@
 /** @odoo-module **/ 
 import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
+import { joinDatas } from "./component_utils";
 
 export class GanttDisplay extends Component{
     static template = "cpm_odoo.cmp_schedule_display"
@@ -181,10 +182,7 @@ export class ItemList extends Component{
                     cols:[],
                     kw:[""]
                 },
-                filter:{
-    
-                },
-                
+                filters:[]
             })
     
             this.orm = useService('orm')
@@ -234,7 +232,7 @@ export class ItemList extends Component{
     }
 
     async act_load_page(page){
-        if(this.page_data.page_count > page && page >= 0){
+        if((this.page_data.page_count > page || this.page_data.page_count === 0) && page >= 0){
             let domain = []
             if (this.page_data.domain){
                 this.page_data.domain.forEach((item)=>{
@@ -260,39 +258,7 @@ export class ItemList extends Component{
             )
 
             if(this.page_data.join_cols.length>0){
-                // item_list.forEach((item,idx)=>{
-                //     this.page_data.join_cols.forEach((col_name)=>{
-                //         if(item_list[idx][col_name]){
-                //             item_list[idx][col_name]=JSON.parse(item_list[idx][col_name][1])
-                //         }
-                //         // console.log(item_list[idx][col_name])
-                //     })
-                // })
-
-                for (let col of this.page_data.join_cols){
-                    //col[0]:id, col[1]:model name
-                    const ids = [...new Set(item_list.map(rec => rec[col[0]][0]))]
-    
-                    const recs = await this.orm.call(
-                        col[1],
-                        "search_read",
-                        [
-                            [
-                                ['id','in',ids]
-                            ],
-                            [],
-                            0,0,
-                            ""
-                        ]
-                    )
-
-
-                    item_list.forEach((item,idx)=>{
-                        let col_id = item_list[idx][col[0]][0]
-                        item_list[idx][col[0]] = recs.find(rec=>rec.id===col_id)
-                    })
-                }
-
+                await joinDatas(item_list,this.orm,this.page_data.join_cols)
             }
 
             this.get_page_list()
@@ -318,10 +284,37 @@ export class ItemList extends Component{
         inst.act_setup_list()
     }
 
+    act_filter(inst,col_name,selected_items){
+        if(selected_items.includes('null') && selected_items.length === 1){
+            inst.search_filter.filters[col_name] = {
+                col_name:col_name,
+                items:null
+            }
+    
+            inst.generate_domain()
+    
+            inst.act_setup_list()
+        }
+        else{
+            inst.search_filter.filters[col_name] = {
+                col_name:col_name,
+                items:selected_items
+            }
+    
+            inst.generate_domain()
+    
+            inst.act_setup_list()
+        }
+    }
+
+    act_order(){
+
+    }
+
     generate_domain(){
         let new_domain = []
 
-        if(this.search_filter.search_bar.kw){        
+        if(!this.search_filter.search_bar.kw.includes('')){        
             this.search_filter.search_bar.cols.forEach((col,col_idx)=>{
                 this.search_filter.search_bar.kw.forEach((kw,kw_idx)=>{
                     if(kw_idx+1<this.search_filter.search_bar.kw.length){
@@ -329,10 +322,21 @@ export class ItemList extends Component{
                     }
                     new_domain.push([col,"ilike",kw])
                 })
-                if(col_idx+1<this.search_filter.search_bar.cols.length){
-                    new_domain.push("&")
-                }
+                // if(col_idx+1<this.search_filter.search_bar.cols.length){
+                //     new_domain.push("&")
+                // }
             })
+        }
+
+        const filters = this.search_filter.filters
+        const keyCount = Object.keys(filters).length
+        for(const [idx,key] of Object.keys(filters).entries()){
+            if(filters[key].items){
+                new_domain.push([filters[key].col_name,'in',filters[key].items])
+                // if(idx<keyCount){
+                //     new_domain.push("&")
+                // }
+            }
         }
         
         this.page_data.domain = new_domain
@@ -363,5 +367,32 @@ export class ItemList extends Component{
         page_arr = page_arr.filter(value => value >= lowerBound);
             
         this.page_data.page_arr = page_arr
+    }
+}
+
+export class ListFilter extends Component{
+    static template = "cpm_odoo.cmp_select_filter"
+    setup(){
+        this.state_data = useState({
+            item_list:[],
+            selected_items:[]
+        })
+
+        useEffect(
+            ()=>{
+                this.state_data.item_list = this.props.item_list
+            },
+            ()=>[this.props.item_list]
+        )
+        this.col_name = this.props.col_name
+    }
+
+    act_filter(){
+        this.state_data.selected_items.forEach((item,idx)=>{
+            if(item!="null"){
+                this.state_data.selected_items[idx]=parseInt(item)
+            }
+        })
+        this.props.act_filter(this.props.inst,this.col_name,this.state_data.selected_items)
     }
 }
