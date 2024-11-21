@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="cpm_odoo.logistics_mat_exp_rec_det_view_tree" model="ir.ui.view">
+            <field name="name">cpm_odoo.logistics_mat_exp_rec_det.view.tree</field>
+            <field name="model">cpm_odoo.logistics_mat_exp_rec_det</field>
+            <field name="arch" type="xml">
+                <tree string="Record Details" create="True" edit="True" delete="True" import="False" export_xlsx="False" default_order="material_id asc">
+                    <field name="material_id" string="Name">
+
+                    </field>
+                    <field name="amount" string="Amount">
+
+                    </field>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="cpm_odoo.logistics_mat_exp_rec_det_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.logistics_mat_exp_rec_det.view.form</field>
+            <field name="model">cpm_odoo.logistics_mat_exp_rec_det</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group cols="2" string="Record Details">
+                            <group colspan="1">
+                                <field name="material_id" string="Material"></field>
+                            </group>
+                            <group colspan="1">
+                                <field name="amount" string="Amount"></field>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="cpm_odoo.logistics_mat_export_record_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.logistics_mat_export_record.view.form</field>
+            <field name="model">cpm_odoo.logistics_mat_exp_rec</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group cols="3" string="General Info">
+                            <group colspan="2">
+                                <field name="warehouse_id" string="Warehouse" readonly="True"></field>
+                                <field name="export_type" string="Export Type"></field>
+                                <field name="delivered_by" string="Delivered By"></field>
+                            </group>
+                            <group colspan="1">
+                                <field name="date_created" string="Date Created" readonly="True"></field>
+                                <field name="created_by" string="Created By" readonly="True"></field>
+                            </group>
+                        </group>
+                        <group cols="3" string="Record Details">
+                            <!-- <field name="exp_det_ids" string="Record Details" context="{
+                                'tree_view_ref': 'cpm_odoo.logistics_mat_exp_det_view_tree',
+                                'default_exp_rec_id':active_id
+                              }" 
+                              domain="[('exp_rec_id','=',active_id)]">
+
+                            </field> -->
+                            <field name="exp_det_ids" string="Record Details" context="{
+                                'tree_view_ref': 'cpm_odoo.logistics_mat_exp_det_view_tree'
+                              }">
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

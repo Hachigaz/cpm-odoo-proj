@@ -263,6 +263,7 @@ export class ItemList extends Component{
 
             this.get_page_list()
             this.page_data.item_list = item_list
+            // console.log(this.page_data.item_list)
         }
     }
 

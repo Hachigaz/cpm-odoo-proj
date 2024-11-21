@@ -38,11 +38,20 @@
                         <ul class="nav nav-pills flex-column" role="tablist">
                             <t t-foreach="availablePages" t-as="page" t-key="page.id">
                                 <t t-if="!page.hidden">
-                                    <li class="nav-item user-select-none">
-                                        <div t-att-id="`${page.id}`" class="nav-link" t-on-click="() => callPage(page.id)">
-                                            <t t-esc="page.name"></t>
-                                        </div>
-                                    </li>
+                                    <t t-if="page.disabled">
+                                        <li class="nav-item user-select-none">
+                                            <div t-att-id="`${page.id}`" class="nav-link disabled bg-secondary">
+                                                <t t-esc="page.name"></t>
+                                            </div>
+                                        </li>
+                                    </t>
+                                    <t t-else="">
+                                        <li class="nav-item user-select-none">
+                                            <div t-att-id="`${page.id}`" class="nav-link" t-on-click="() => callPage(page.id)">
+                                                <t t-esc="page.name"></t>
+                                            </div>
+                                        </li>
+                                    </t>
                                 </t>
                             </t>
                         </ul>

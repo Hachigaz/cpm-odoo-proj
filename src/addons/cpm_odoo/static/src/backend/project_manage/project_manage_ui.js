@@ -6,6 +6,7 @@ import { Component, onWillStart, onMounted, mount, loadFile} from "@odoo/owl"
 import { useService } from "@web/core/utils/hooks"
 import { registry } from "@web/core/registry"
 import { ProjectPlanningPage} from "./planning/project_planning_pages";
+import { PlanningDocumentManagementTab } from "../doc_mgmt/document_mgmt";
 
 
 class ProjectManageUI extends Component {
@@ -15,7 +16,8 @@ class ProjectManageUI extends Component {
     static components = {
         ProjectOverviewPage,
         ProjectPlanningPage,
-        ProjectFinancePage
+        ProjectFinancePage,
+        PlanningDocumentManagementTab
     };
 
     get pageComponent() {
@@ -47,6 +49,12 @@ class ProjectManageUI extends Component {
             name:"Safety and Risks",
             page:ProjectFinancePage,
             group_id:"cpm_view_project_staffs"
+        },
+        {
+            id: "documents",
+            name:"Documents",
+            page:PlanningDocumentManagementTab,
+            group_id:"cpm_manage_project_plans"
         }
     ]
 

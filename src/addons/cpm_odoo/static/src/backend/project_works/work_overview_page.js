@@ -6,6 +6,7 @@ import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@
 
 
 export class WorkOverviewPage extends Component{
+    static page_name="work_overview_page"
     static template="cpm_odoo.WorkOverviewPage"
 
     static formatDate = formatDate
@@ -14,7 +15,8 @@ export class WorkOverviewPage extends Component{
         this.page_data = useState({
             recent_active_tasks : [],
             expiring_tasks: [],
-            expired_tasks: []
+            expired_tasks: [],
+            upcoming_tasks: []
         })
 
         this.orm=useService("orm")
@@ -24,10 +26,34 @@ export class WorkOverviewPage extends Component{
     }
     
     async loadData(){
-        const today = new Date().toISOString().split('T')[0];
-        let started_task_list= await this.orm.call(
+        // const today = new Date().toISOString().split('T')[0];
+        this.page_data.recent_active_tasks = await this.orm.call(
             "cpm_odoo.planning_task",
             "act_get_active_tasks",
+            [
+                this.props.context_data.staff_id
+            ]
+        )
+
+        this.page_data.expiring_tasks = await this.orm.call(
+            "cpm_odoo.planning_task",
+            "act_get_expiring_tasks",
+            [
+                this.props.context_data.staff_id
+            ]
+        )
+
+        this.page_data.upcoming_tasks = await this.orm.call(
+            "cpm_odoo.planning_task",
+            "act_get_upcoming_tasks",
+            [
+                this.props.context_data.staff_id
+            ]
+        )
+
+        this.page_data.expired_tasks = await this.orm.call(
+            "cpm_odoo.planning_task",
+            "act_get_expired_tasks",
             [
                 this.props.context_data.staff_id
             ]
@@ -35,6 +61,10 @@ export class WorkOverviewPage extends Component{
     }
 
     act_view_task(task_id){
+        storePageInfo(`assigned_task_detail_view`,{
+            'task_id':task_id
+        })
 
+        moveToPage("assigned_task_detail_view",null)
     }
 }

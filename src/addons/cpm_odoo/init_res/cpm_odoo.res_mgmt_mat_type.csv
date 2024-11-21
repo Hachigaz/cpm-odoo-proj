@@ -1,0 +1,11 @@
+id,name,color
+cpm_mat_type.concrete,Concrete,#D3D3D3
+cpm_mat_type.metal,Metal,#B0C4DE
+cpm_mat_type.wood,Wood,#B22222
+cpm_mat_type.bricks,Bricks and Blocks,#FF4500
+cpm_mat_type.stone,Stone, #ADD8E6
+cpm_mat_type.glass,Glass,#8B4513
+cpm_mat_type.plastics,Plastics,#98FB98
+cpm_mat_type.insulation,Insulation Materials,#32CD32
+cpm_mat_type.roofing,Roofing Materials,#696969
+cpm_mat_type.finishings,Finishing Materials,#E6E6FA

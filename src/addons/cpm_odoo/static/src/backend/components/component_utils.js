@@ -1,6 +1,4 @@
 /** @odoo-module **/
-
-
 export function storePageContext(context){
     sessionStorage.setItem("pageContext",JSON.stringify(context))
 }
@@ -31,12 +29,13 @@ export function moveToPage(page_id,subpage_id){
 
 export function storePageInfo(page_name,data){
     data.page_name = page_name
-    sessionStorage.setItem("pageExtraData",JSON.stringify(data))
+    sessionStorage.setItem(`page_info:${page_name}`,JSON.stringify(data))
 }
 
 export function getPageInfo(page_name){
-    if(sessionStorage.getItem("pageExtraData")){
-        let data = JSON.parse(sessionStorage.getItem("pageExtraData"))
+    let pageInfo = sessionStorage.getItem(`page_info:${page_name}`) 
+    if(pageInfo){
+        let data = JSON.parse(pageInfo)
         if(data.page_name===page_name){
             return data
         }
@@ -47,6 +46,10 @@ export function getPageInfo(page_name){
     else{
         return undefined
     }
+}
+
+export function clearPageInfo(page_name){
+    sessionStorage.removeItem(`page_info:${page_name}`) 
 }
 
 export function formatDate(date_str){
@@ -79,10 +82,32 @@ export function formatDateTime(dt_str){
 }
 
 export async function joinDatas(list,orm,cols){
-    let col_recs = []
     
     for (const col of cols){
-        const ids = [...new Set(list.map(rec => rec[col[0]][0]))]
+
+        let ids = []
+        list.forEach((rec)=>{
+            let col_names = col[0].split(".")
+            let item = rec;
+            if(col_names.length>1){
+                const lastKey = col_names.pop();
+                for (const name of col_names){
+                    item = item[name]
+                    if(!item){
+                        break;
+                    }
+                }
+                if(item){
+                    if(item[lastKey]){
+                        ids.push(item[lastKey][0])
+                    }
+                }
+            }
+            else{
+                col_names = col_names[0]
+                ids.push(item[col_names][0])
+            }
+        })
     
         const recs = await orm.call(
             col[1],
@@ -97,12 +122,27 @@ export async function joinDatas(list,orm,cols){
             ]
         )
 
-        col_recs.push(recs)
+        list.forEach((rec,idx)=>{
+            let col_names = col[0].split(".")
+            let item = list[idx];
+            if(col_names.length>1){
+                const lastKey = col_names.pop();
+                for (const name of col_names){
+                    item = item[name]
+                    if(!item){
+                        break;
+                    }
+                }
+                if(item){
+                    item[lastKey] = recs.find(col_rec=>col_rec.id===item[lastKey][0])
+                }
+            }
+            else{
+                col_names = col_names[0]
+                item[col_names] = recs.find(col_rec=>col_rec.id===item[col_names][0])
+            }
+        })
     }
 
-    list.forEach((rec,idx)=>{
-        for(let i=0;i<cols.length;i++){
-            list[idx][cols[i][0]] = col_recs[i].find(col_rec=>col_rec.id===rec[cols[i][0]][0])
-        }
-    })
+    // console.log(list)
 }

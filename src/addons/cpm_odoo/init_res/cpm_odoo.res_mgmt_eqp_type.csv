@@ -1,0 +1,9 @@
+id,name,color
+cpm_eqp_type.earth_mov,Earthmoving Equipment,#FFD700
+cpm_eqp_type.mat_handling,Material Handling Equipment,#FF8C00
+cpm_eqp_type.road_cons,Road Constructions Equipment,#A9A9A9
+cpm_eqp_type.concrete_eqp,Concreting Equipment,#FF4500
+cpm_eqp_type.drilling_eqp,Drilling Equipment, #1E90FF
+cpm_eqp_type.compaction_eqp,Compaction Equipment,#8B4513
+cpm_eqp_type.demolition_eqp,Demolition Equipment,#32CD32
+cpm_eqp_type.lifting_eqp,Lifting Equipment,#98FB98

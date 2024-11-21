@@ -25,7 +25,7 @@ Long description of module's purpose
     'data': [
         'security/ir.module.category.csv',
         'security/res.groups.csv',
-        # 'security/ir.rule.csv',
+        'security/ir.rule.csv',
         'security/ir.model.access.csv',
         
         'views/views.xml',
@@ -55,6 +55,16 @@ Long description of module's purpose
         'views/stakeholders/contractor_create.xml',
         
         'views/res_mgmt/res_mgmt_acts.xml',
+        'views/res_mgmt/views/warehouse_info/warehouse_info_create.xml',
+        'views/res_mgmt/views/warehouse_info/assigned_warehouse_kanban.xml',
+        'views/res_mgmt/views/mat/material_create.xml',
+        'views/res_mgmt/views/mat/material_type_create.xml',
+        'views/res_mgmt/views/eqp/equipment_create.xml',
+        'views/res_mgmt/views/eqp/equipment_type_create.xml',
+        'views/res_mgmt/views/imports/mat_import_record_create.xml',
+        'views/res_mgmt/views/imports/eqp_import_record_create.xml',
+        'views/res_mgmt/views/exports/mat_export_record_create.xml',
+        'views/res_mgmt/views/exports/eqp_export_record_create.xml',
         
         
         # 'init_res/dump/cpm_odoo.root_project_hrm.csv',
@@ -62,13 +72,18 @@ Long description of module's purpose
         # 'init_res/dump/cpm_odoo.root_project_finance.csv',
         # 'init_res/dump/cpm_odoo.root_project_doc_mgmt.csv',
         # 'init_res/dump/cpm_odoo.root_project.csv',
-        'init_res/cpm_odoo.stakeholders_contractor_category.csv',
-        'init_res/cpm_odoo.stakeholders_contractor.csv',
-        'init_res/cpm_odoo.stakeholders_investor.csv',
         'init_res/cpm_odoo.human_res_department.csv',
         'init_res/cpm_odoo.human_res_staff.csv',
         'init_res/cpm_odoo.documents_document_category.csv',
         'init_res/cpm_odoo.documents_document_set.csv',
+        'init_res/cpm_odoo.res_mgmt_eqp_type.csv',
+        'init_res/cpm_odoo.res_mgmt_equipment.csv',
+        'init_res/cpm_odoo.res_mgmt_mat_type.csv',
+        'init_res/cpm_odoo.res_mgmt_material.csv',
+        'init_res/cpm_odoo.stakeholders_contractor_category.csv',
+        'init_res/cpm_odoo.stakeholders_contractor.csv',
+        'init_res/cpm_odoo.stakeholders_investor.csv',
+        'init_res/cpm_odoo.stakeholders_supplier.csv',
     ],
     'assets': {
         'web.assets_backend': [

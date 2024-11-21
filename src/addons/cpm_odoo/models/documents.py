@@ -205,21 +205,6 @@ class DocumentCategory(models.Model):
         default=False
     )
     
-    # encoded_name = fields.Char(
-    #     compute='_compute_encoded_name', 
-    #     string='encoded_name',
-    #     store=True
-    # )
-    
-    # @api.depends('name','color')
-    # def _compute_encoded_name(self):
-    #     for record in self:    
-    #         record.encoded_name = json.dumps({
-    #             "name":record.name,
-    #             "color":record.color
-    #         })
-    #     pass
-    
 class ContractSet(models.Model):
     _name = "cpm_odoo.documents_contract_set"
     _description = "Contract Set"

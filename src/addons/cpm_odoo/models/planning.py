@@ -1,5 +1,6 @@
 from odoo import models,fields,api
 from odoo.exceptions import ValidationError
+from datetime import datetime, timedelta
 
 class Workflow(models.Model):
     _name = "cpm_odoo.planning_workflow"
@@ -187,7 +188,7 @@ class Workflow(models.Model):
         store=True
     )
     
-    @api.depends('task_ids.task_status')
+    @api.depends('task_ids.assigned_contractor_count','task_ids.assigned_staff_count')
     def _compute_unassigned_task_count(self):
         for record in self:
             unassigned_task_count = sum(1 for task in record.task_ids if len(task.assigned_staff_ids) == 0 and len(task.assigned_contractor_ids) == 0)
@@ -305,11 +306,27 @@ class Task(models.Model):
             "assigned_staff_ids":[[4,id] for id in staff_ids]
         })
         
+        
         for staff in staff_recs:
-            staff.user_id.write({
-                'groups_id':[(4,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
-            })
-
+            if not self.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff.id):
+                staff.user_id.write({
+                    'groups_id':[(4,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
+                })
+        pass
+    
+    @api.model
+    def is_user_in_task(self,project_id,user_id):
+        recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ['assigned_staff_ids','in',user_id],
+                ['workflow_id.planning_id.project_id.id',"=",project_id]
+            ]
+        )
+        
+        if(len(recs)>0):
+            return True
+        else:
+            return False
         pass
     
     @api.model
@@ -323,9 +340,10 @@ class Task(models.Model):
         })
         
         for staff in staff_recs:
-            staff.user_id.write({
-                'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
-            })
+            if self.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff.id):
+                staff.user_id.write({
+                    'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
+                })
 
         pass
     
@@ -503,20 +521,67 @@ class Task(models.Model):
     #task actions
     @api.model
     def act_get_active_tasks(self,staff_id):
-        active_tasks = self.env["cpm_odoo.planning_task"].search_read(
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
             [
-                ('start_date','<',fields.Date.today()),
+                ('start_date','<=',fields.Date.today()),
                 ('task_status','=','active'),
                 ('workflow_id.workflow_status','=','active'),
                 # ('assigned_staff_ids','in',[staff_id])
             ],
             [],
             0,0,
-            "exp_end desc"
+            "exp_end asc"
         )
-        return active_tasks
+        return task_recs
 
+    @api.model
+    def act_get_upcoming_tasks(self,staff_id):
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ('start_date','>',fields.Date.today()),
+                ('task_status','=','active'),
+                ('workflow_id.workflow_status','=','active'),
+                # ('assigned_staff_ids','in',[staff_id])
+            ],
+            [],
+            0,0,
+            "exp_end asc"
+        )
+        return task_recs
 
+    @api.model
+    def act_get_expiring_tasks(self,staff_id):
+        one_week_later = (datetime.today() + timedelta(days=7)).date()
+
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ('exp_end','<=',one_week_later),
+                ('task_status','=','active'),
+                ('workflow_id.workflow_status','=','active'),
+                # ('assigned_staff_ids','in',[staff_id])
+            ],
+            [],
+            0,0,
+            "exp_end asc"
+        )
+        return task_recs
+
+    @api.model
+    def act_get_expired_tasks(self,staff_id):
+
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ('exp_end','<=',fields.Date.today()),
+                ('task_status','=','active'),
+                ('workflow_id.workflow_status','=','active'),
+                # ('assigned_staff_ids','in',[staff_id])
+            ],
+            [],
+            0,0,
+            "exp_end asc"
+        )
+        return task_recs
+    
     @api.model_create_multi
     def create(self, vals):
         for val in vals:
@@ -528,6 +593,15 @@ class Task(models.Model):
                 raise ValidationError(f"Cannot create task - The workflow {workflow.name} status is not in draft.")
         
         return super().create(vals)
+    
+    def write(self, vals):
+        ids = [val.id for val in vals]
+        recs = self.env["cpm_odoo.planning_task"].browse(ids)
+        
+        for rec in recs:
+            if rec.workflow_id.workflow_status != draft:
+                raise ValidationError(f"Cannot edit non-draft status task: Task {rec.name}")
+        return super().write(vals)
     
         
 class TaskCategory(models.Model):
