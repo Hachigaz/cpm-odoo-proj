@@ -85,6 +85,9 @@ class Issue(models.Model):
         default=lambda self: self._default_staff_id(),
     )
 
+    is_editable = fields.Boolean(
+        compute="_compute_is_editable", string="Is Editable", store=False)
+
     @api.model
     def _default_staff_id(self):
         current_user = self.env.user
@@ -125,9 +128,14 @@ class Issue(models.Model):
     
     def write(self, vals):
         for record in self:
-            if record.status != 'not_resolved':
+            if record.status != 'not_resolved' and self.env.user.has_group('cpm_gr.user_issues'):
                 raise ValidationError("You cannot edit issue with resolved or in progress status.")
         return super().write(vals)
+    
+    @api.depends('status')
+    def _compute_is_editable(self):
+        for record in self:
+            record.is_editable = self.env.user.has_group('cpm_gr.user_issues')
 
 
 class IssueCategory(models.Model):

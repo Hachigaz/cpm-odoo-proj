@@ -17,11 +17,12 @@
 
                     <sheet>
                         <group string='Issue Info'>
-                            <field name="title" readonly="1"/>
-                            <field name="description" readonly="1"/>
-                            <field name="category_id" readonly="1"/>
-                            <field name="level" readonly="1"/>
-                            <field name="status" readonly="1"/>
+                            <field name="title" readonly="is_editable == False"/>
+                            <field name="description" readonly="is_editable == False"/>
+                            <field name="category_id" readonly="is_editable == False"/>
+                            <field name="level" readonly="is_editable == False"/>
+                            <field name="status" readonly="is_editable == False" groups="cpm_gr.manage_issues"/>
+                            <field name="is_editable" invisible="True"/>
                         </group>
                     </sheet>
                 </form>
