@@ -55,7 +55,8 @@ cpm_ma.manage_documents,cpm_ma.manage_documents,cpm_odoo.documents_document,cpm_
 cpm_ma.task_asgn_access_task,cpm_ma.task_asgn_access_task,cpm_odoo.planning_task,cpm_gr.project_mem_gr,1,0,0,0
 cpm_ma.task_asgn_manage_task_notes,cpm_ma.task_asgn_manage_task_notes,cpm_odoo.planning_task_note,cpm_gr.project_mem_gr,1,1,1,0
 
-cpm_ma.cpm_risk,cpm_risk,cpm_odoo.risk_mgmt,base.group_user,1,1,1,1
-cpm_ma.cpm_solution,cpm_solution,cpm_odoo.risk_mgmt_solution,base.group_user,1,1,1,1
+cpm_manage_issue,cpm_manage_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.manage_issues,1,1,0,0
+cpm_user_issue,cpm_user_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.user_issues,1,1,1,1
+cpm_issue_category,cpm_issue_category,cpm_odoo.risk_mgmt_issue_category,base.group_user,1,1,1,1
 
 cpm_ma.view_staff_list,cpm_ma.view_staff_list,cpm_odoo.human_res_staff,base.group_user,1,0,0,0
