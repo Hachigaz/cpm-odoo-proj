@@ -509,7 +509,7 @@ class PlanningStaffList extends ItemList{
         this.page_data.item_display_count=24
         this.page_data.page_display_count=7
         
-        this.search_filter.search_bar.cols=["full_name"]
+        this.search_filter.search_bar.cols=["name"]
         
         super.setup()
 
@@ -563,7 +563,7 @@ class PlanningStaffAssignPanel extends ItemList{
         this.page_data.order_by_str = "department_id asc,first_name asc,last_name asc"
         this.page_data.item_display_count=24
         this.page_data.page_display_count=7
-        this.search_filter.search_bar.cols=["full_name"]
+        this.search_filter.search_bar.cols=["name"]
 
 
         this.props.asgn_act.load = null

@@ -7,7 +7,7 @@ import { useService } from "@web/core/utils/hooks"
 import { registry } from "@web/core/registry"
 import { ProjectPlanningPage} from "./planning/project_planning_pages";
 import { PlanningDocumentManagementTab } from "../doc_mgmt/document_mgmt";
-
+import { session } from "@web/session";
 
 class ProjectManageUI extends Component {
     static template = "cpm_odoo.ProjectManageUI";
@@ -59,6 +59,10 @@ class ProjectManageUI extends Component {
     ]
 
     setup(){
+        if(session.uid !== parseInt(sessionStorage.getItem('user_id'))){
+            sessionStorage.clear()
+            sessionStorage.setItem('user_id',session.uid)
+        }
         if(sessionStorage.getItem('project_id')===null || this.props.action.context.project_id){
             if(this.props.action.context.project_id !== sessionStorage.getItem("project_id")){
                 sessionStorage.setItem('project_id',this.props.action.context.project_id)
@@ -75,6 +79,7 @@ class ProjectManageUI extends Component {
             planning_id: parseInt(sessionStorage.getItem('planning_id')),
             finance_id: parseInt(sessionStorage.getItem('finance_id')),
             doc_id: parseInt(sessionStorage.getItem('doc_id')),
+            user_id: parseInt(sessionStorage.getItem('user_id')),
             client_action: this.clientActionName,
             rpc: useService("rpc"),
             orm: useService("orm"),

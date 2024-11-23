@@ -65,6 +65,11 @@ Long description of module's purpose
         'views/res_mgmt/views/imports/eqp_import_record_create.xml',
         'views/res_mgmt/views/exports/mat_export_record_create.xml',
         'views/res_mgmt/views/exports/eqp_export_record_create.xml',
+
+        'views/risk_mgmt/risk_acts.xml',
+        'views/risk_mgmt/risk_create.xml',
+        'views/risk_mgmt/risk_overview.xml',
+        'views/risk_mgmt/solution_create.xml',
         
         
         # 'init_res/dump/cpm_odoo.root_project_hrm.csv',

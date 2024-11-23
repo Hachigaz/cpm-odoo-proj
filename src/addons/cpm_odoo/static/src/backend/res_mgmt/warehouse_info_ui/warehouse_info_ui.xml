@@ -1,84 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
     <t t-name="cpm_odoo.EqpStorageRecordItemList">
-            <div class="h-100 d-flex flex-column me-4">
-                <div class="d-flex mb-2 py-2 justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <h3 class="text-2xl font-bold text-gray-600 me-2">
-                            Storages
-                        </h3>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <div class="filter-options d-flex align-items-center">
-                            <div class="me-2 d-flex">
-                                <div class="">
-                                    <select class="form-select" t-on-change="(event)=>{this.act_render_contents(event.target.value)}">
-                                        <option value="mat" t-att-selected="this.current_render_content==='mat'?true:false">Material Storages</option>
-                                        <option value="eqp" t-att-selected="this.current_render_content==='eqp'?true:false">Equipment Storages</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="me-2">
-                                <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
-                        
-                                </ListFilter>
-                            </div>
-                            <div class="me-2">
-                                <SearchBar inst="this" act_search="this.act_search">
-                
-                                </SearchBar>
-                            </div>
+        <div class="h-100 d-flex flex-column me-4">
+            <div class="d-flex mb-2 py-2 justify-content-between">
+                <div class="d-flex align-items-center">
+                    <h3 class="text-2xl font-bold text-gray-600 me-2">
+                        Equipment Storage
+                    </h3>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="filter-options d-flex align-items-center">
+                        <div class="me-2">
+                            <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
+                    
+                            </ListFilter>
+                        </div>
+                        <div class="me-2">
+                            <SearchBar inst="this" act_search="this.act_search">
+            
+                            </SearchBar>
                         </div>
                     </div>
                 </div>
-                <div class="flex-grow-1 pb-4">
-                    <table class="min-w-full bg-white border border-gray-200">
-                        <thead>
-                            <tr>
-                                <th class="py-2 px-4 border-b">Name</th>
-                                <th class="py-2 px-4 border-b">Amount</th>
-                                <th class="py-2 px-4 border-b">Equipment Type</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-if="page_data.page_arr.length > 0">
-                                <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
-                                    <tr class="hover:bg-gray-100 py-4 px-4 ">
-                                        <td class="py-2 px-4 border-b"><t t-esc="item.equipment_id.name"/></td>
-                                        <td class="py-2 px-4 border-b"><t t-esc="item.amount"/></td>
-                                        <td class="py-2 px-4 border-b"><t t-esc="item.equipment_id.eqp_type_id.name"/></td>
-                                    </tr>
-                                </t>
-                                <t t-if="page_data.page_count > 1">
-                                    <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
-                                        <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
-                                            <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
-                                                <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
-                                                    <t t-esc="page+1"/>
-                                                </button>
-                                            </t>
-                                        </div>
-                                    </div>
-                                </t>
-                            </t>
-                            <t t-else="">
-                                <tr class="py-4">
-                                    <td class="text-center border-b" colspan="6">
-                                        No record
-                                    </td>
+            </div>
+            <div class="flex-grow-1 pb-4">
+                <table class="min-w-full bg-white border border-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b">Equipment Name</th>
+                            <th class="py-2 px-4 border-b">Equipment Type</th>
+                            <th class="py-2 px-4 border-b">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-if="page_data.page_arr.length > 0">
+                            <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                                <tr class="hover:bg-gray-100 py-4 px-4 ">
+                                    <td class="py-2 px-4 border-b"><t t-esc="item.equipment_id.name"/></td>
+                                    <td class="py-2 px-4 border-b"><t t-esc="item.equipment_id.eqp_type_id.name"/></td>
+                                    <td class="py-2 px-4 border-b"><t t-esc="item.amount"/></td>
                                 </tr>
                             </t>
-                        </tbody>
-                    </table>
+                            <t t-if="page_data.page_count > 1">
+                                <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                    <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                        <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                            <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                <t t-esc="page+1"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <tr class="py-4">
+                                <td class="text-center border-b" colspan="6">
+                                    No record
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </t>
+    
+    <t t-name="cpm_odoo.MatStorageRecordItemList">
+        <div class="h-100 d-flex flex-column me-4">
+            <div class="d-flex mb-2 py-2 justify-content-between">
+                <div class="d-flex align-items-center">
+                    <h3 class="text-2xl font-bold text-gray-600 me-2">
+                        Material Storage
+                    </h3>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="filter-options d-flex align-items-center">
+                        <div class="me-2">
+                            <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
+                    
+                            </ListFilter>
+                        </div>
+                        <div class="me-2">
+                            <SearchBar inst="this" act_search="this.act_search">
+            
+                            </SearchBar>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="flex-grow-1 pb-4">
+                <table class="min-w-full bg-white border border-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b">Material Name</th>
+                            <th class="py-2 px-4 border-b">Material Type</th>
+                            <th class="py-2 px-4 border-b">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-if="page_data.page_arr.length > 0">
+                            <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                                <tr class="hover:bg-gray-100 py-4 px-4 ">
+                                    <td class="py-2 px-4 border-b"><t t-esc="item.material_id.name"/></td>
+                                    <td class="py-2 px-4 border-b"><t t-esc="item.material_id.eqp_type_id.name"/></td>
+                                    <td class="py-2 px-4 border-b"><t t-esc="item.amount"/></td>
+                                </tr>
+                            </t>
+                            <t t-if="page_data.page_count > 1">
+                                <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                    <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                        <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                            <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                <t t-esc="page+1"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <tr class="py-4">
+                                <td class="text-center border-b" colspan="6">
+                                    No record
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </t>
+
     <t t-name="cpm_odoo.WarehouseInfoUI">
-        <!-- <EqpStorageRecordItemList extra_domain="[['amount','>',0]]" context_data="this.props.context_data">
-
-        </EqpStorageRecordItemList> -->
-        <EqpStorageRecordItemList extra_domain="" context_data="this.props.context_data">
-
-        </EqpStorageRecordItemList>
+        <div class="me-2 d-flex">
+            <div class="">
+                <select class="form-select" t-on-change="(event)=>{this.showTab(event.target.value)}">
+                    <option value="material" t-att-selected="this.current_tab==='material'?true:false">Material Storage</option>
+                    <option value="equipment" t-att-selected="this.current_tab==='equipment'?true:false">Equipment Storage</option>
+                </select>
+            </div>
+        </div>
+        <div class="tab-panels">
+            <div class="material-stock-tab d-none">
+                <MatStorageRecordItemList extra_domain="[['amount','>',0],['warehouse_id','=',this.props.context_data.warehouse_info.id]]" context_data="this.props.context_data">
+        
+                </MatStorageRecordItemList>
+            </div>
+            <div class="equipment-stock-tab d-none">
+                <EqpStorageRecordItemList extra_domain="[['amount','>',0],['warehouse_id','=',this.props.context_data.warehouse_info.id]]" context_data="this.props.context_data">
+        
+                </EqpStorageRecordItemList>
+            </div>
+        </div>
     </t>
 </templates>

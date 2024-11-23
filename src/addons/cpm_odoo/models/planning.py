@@ -30,6 +30,9 @@ class Workflow(models.Model):
         for record in self:
             if record.start_date < record.planning_id.project_id.start_date:
                 raise ValidationError("The start date of the workflow must be larger than start date of the project ({}).".format(record.planning_id.project_id.start_date))
+            for dep_rec in record.depends_on:
+                if record.start_date < dep_rec.exp_end:
+                    raise ValidationError(f"The start date of the workflow must be larger than the expected end date of the depending workflows (Workflow {dep_rec.name} - {dep_rec.exp_end}).")
     
     exp_end = fields.Date(
         string = 'Due Date',
@@ -422,6 +425,9 @@ class Task(models.Model):
         for record in self:
             if(record.start_date < record.workflow_id.start_date):
                 raise ValidationError("The task start date must be larger than the start date of the workflow ({}).".format(record.workflow_id.start_date))
+            for dep_rec in record.depends_on:
+                if record.start_date < dep_rec.exp_end:
+                    raise ValidationError(f"The start date of the task must be larger than the expected end date of the depending tasks (Workflow {dep_rec.name} - {dep_rec.exp_end}).")
     
     exp_end = fields.Date(
         string = 'Due',
@@ -435,6 +441,7 @@ class Task(models.Model):
                 raise ValidationError("The expected end date must be larger than the start date.")
             if(record.exp_end > record.workflow_id.exp_end):
                 raise ValidationError(f"The expected end date must be larger than workflow expected end date ({record.workflow_id.exp_end}).")
+  
     
     end_date = fields.Date(
         string = 'Finished',
@@ -520,64 +527,62 @@ class Task(models.Model):
 
     #task actions
     @api.model
-    def act_get_active_tasks(self,staff_id):
+    def act_get_active_tasks(self,domain,count=0,cols=[]):
         task_recs = self.env["cpm_odoo.planning_task"].search_read(
             [
                 ('start_date','<=',fields.Date.today()),
                 ('task_status','=','active'),
-                ('workflow_id.workflow_status','=','active'),
-                # ('assigned_staff_ids','in',[staff_id])
-            ],
-            [],
-            0,0,
+                ('workflow_id.workflow_status','=','active')
+            ] + domain,
+            cols,
+            0,count,
             "exp_end asc"
         )
         return task_recs
 
     @api.model
-    def act_get_upcoming_tasks(self,staff_id):
+    def act_get_upcoming_tasks(self,domain,count=0,cols=[]):
         task_recs = self.env["cpm_odoo.planning_task"].search_read(
             [
                 ('start_date','>',fields.Date.today()),
                 ('task_status','=','active'),
-                ('workflow_id.workflow_status','=','active'),
-                # ('assigned_staff_ids','in',[staff_id])
-            ],
-            [],
-            0,0,
+                ('workflow_id.workflow_status','=','active')
+            ] + domain,
+            cols,
+            0,count,
             "exp_end asc"
         )
         return task_recs
 
     @api.model
-    def act_get_expiring_tasks(self,staff_id):
+    def act_get_expiring_tasks(self,domain,count=0,cols=[]):
         one_week_later = (datetime.today() + timedelta(days=7)).date()
 
         task_recs = self.env["cpm_odoo.planning_task"].search_read(
             [
+                ('start_date','<=',fields.Date.today()),
                 ('exp_end','<=',one_week_later),
                 ('task_status','=','active'),
-                ('workflow_id.workflow_status','=','active'),
-                # ('assigned_staff_ids','in',[staff_id])
-            ],
-            [],
-            0,0,
+                ('workflow_id.workflow_status','=','active')
+            ] + domain,
+            cols,
+            0,count,
             "exp_end asc"
         )
         return task_recs
 
     @api.model
-    def act_get_expired_tasks(self,staff_id):
+    def act_get_expired_tasks(self,domain,count=0,cols=[]):
 
         task_recs = self.env["cpm_odoo.planning_task"].search_read(
             [
+                ('start_date','<=',fields.Date.today()),
                 ('exp_end','<=',fields.Date.today()),
                 ('task_status','=','active'),
-                ('workflow_id.workflow_status','=','active'),
-                # ('assigned_staff_ids','in',[staff_id])
-            ],
-            [],
-            0,0,
+                ('workflow_id.workflow_status','=','active')
+            ] + domain,
+            cols,
+            0,count,
             "exp_end asc"
         )
         return task_recs
@@ -595,14 +600,25 @@ class Task(models.Model):
         return super().create(vals)
     
     def write(self, vals):
-        ids = [val.id for val in vals]
-        recs = self.env["cpm_odoo.planning_task"].browse(ids)
-        
-        for rec in recs:
-            if rec.workflow_id.workflow_status != draft:
-                raise ValidationError(f"Cannot edit non-draft status task: Task {rec.name}")
+        for rec in self:
+            if rec.workflow_id.workflow_status != 'draft':
+                for val in vals:
+                    if val["start_date"] or val["exp_end"]:
+                        raise ValidationError(f"Cannot change date of non-draft status task: Task {rec.name}")
         return super().write(vals)
     
+    
+    priority = fields.Selection(
+        [
+            ('normal', 'Normal'),
+            ('low', 'Low'),
+            ('medium', 'Medium'),
+            ('high', 'High'),
+            ('critical', 'Critical')
+        ],
+        string='priority',
+        default="normal"
+    )
         
 class TaskCategory(models.Model):
     _name = 'cpm_odoo.planning_task_category'

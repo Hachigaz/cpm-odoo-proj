@@ -13,7 +13,7 @@
                                 <field name="description" string="Description"></field>
                             </group>
                             <group colspan="1">
-                                <field name="investor_id" string="Investor"></field>
+                                <field name="investor_id" string="Investor" domain="[]"></field>
                                 <field name="amount" string="Amount" widget="monetary"></field>
                                 <field name="cur_id" string="Currency"></field>
                             </group>

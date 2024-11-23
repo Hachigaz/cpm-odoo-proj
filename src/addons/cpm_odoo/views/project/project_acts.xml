@@ -30,9 +30,6 @@
       <field name="res_model">cpm_odoo.root_project</field>
       <field name="view_mode">kanban</field>
       <field name="views">(cpm_odoo.proj_project_select_overview_view_kanban,kanban)</field>
-      <field name="domain">
-        [('is_manager',"=",True)]
-      </field>
     </record>
     <menuitem 
       sequence='10' parent='cpm_odoo.proj_root' 

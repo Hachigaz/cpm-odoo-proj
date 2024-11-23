@@ -18,6 +18,23 @@ def _process_install_module(env):
     Post-init hook to add the current user to a specific group.
     """
     group = env.ref('cpm_gr.create_and_edit_projects')
+    rec = env["cpm_odoo.human_res_staff"].create({
+        "first_name":"Superuser",
+        "last_name":"",
+        "user_id":1
+    })
+    
+    rec = env["cpm_odoo.human_res_staff"].create({
+        "first_name":"Administrator",
+        "last_name":"",
+        "user_id":2
+    })
+    
     env.user.write({
+        'groups_id':[(4,group.id)]
+    })
+    
+    cur_user = env["cpm_odoo.human_res_staff"].browse(2)
+    cur_user.write({
         'groups_id':[(4,group.id)]
     })

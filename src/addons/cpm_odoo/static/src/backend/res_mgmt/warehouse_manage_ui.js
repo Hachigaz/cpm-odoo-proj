@@ -6,6 +6,7 @@ import { Component, onWillStart, onMounted, onWillUnmount, onWillDestroy, useEff
 import { WarehouseInfoUI } from "./warehouse_info_ui/warehouse_info_ui";
 import { WarehouseImportsUI } from "./warehouse_imports_ui/warehouse_imports_ui";
 import { WarehouseExportsUI } from "./warehouse_exports_ui/warehouse_exports_ui";
+import { session } from "@web/session";
 
 class WarehouseManageUI extends Component{
     static clientActionName = "cpm_odoo.res_mgmt_manage_warehouse_act"
@@ -42,6 +43,10 @@ class WarehouseManageUI extends Component{
     ]
 
     setup(){
+        if(session.uid !== parseInt(sessionStorage.getItem('user_id'))){
+            sessionStorage.clear()
+            sessionStorage.setItem('user_id',session.uid)
+        }
         let ctx_id = sessionStorage.getItem('warehouse_id')
         let new_ctx_id = this.props.action.context.warehouse_id
         if(new_ctx_id!== undefined){

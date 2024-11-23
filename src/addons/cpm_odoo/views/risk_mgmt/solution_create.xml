@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.risk_mgmt_solution_create_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.risk_mgmt_solution_create_form.form</field>
+            <field name="model">cpm_odoo.risk_mgmt_solution</field>
+            <field name="arch" type="xml">
+                <form string="Create Solution">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="risk_id" readonly="1"/>  
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

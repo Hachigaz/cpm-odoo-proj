@@ -15,12 +15,13 @@
                     <sheet>
                         <group col="3" string="Task Info">
                             <group colspan="2">
-                                <field name="workflow_id" string="Workflow ID"></field>
-                                <field name="name" string="Name"></field>
+                                <field name="workflow_id" string="Workflow"></field>
+                                <field name="name" string="Task Name"></field>
                                 <field name="category_id" string="Category"></field>
                                 <field name="description" string="Description"></field>
                             </group>
                             <group colspan="1">
+                                <field name="priority" string="Task Priority"></field>
                                 <field name="start_date" string="Start Date" widget="date"></field>
                                 <field name="exp_end" string="Expected End Date" widget="date"></field>
                             </group>

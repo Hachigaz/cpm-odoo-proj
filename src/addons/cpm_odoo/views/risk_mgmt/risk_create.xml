@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.risk_create_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.risk_create_view_form.form</field>
+            <field name="model">cpm_odoo.risk_mgmt</field>
+            <field name="arch" type="xml">
+                <form string="New Risk">
+                    <sheet>
+                        <group string='Risk Info'>
+                            <field name="name" string="Risk Name"></field>
+                            <field name="description" string="Description"></field>
+                            <field name="category_id" string="Category"></field>
+                            <field name="project_id" string="Project"></field>
+                            <field name="priority" widget='priority' string="Priority"></field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
