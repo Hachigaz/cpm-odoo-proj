@@ -15,5 +15,7 @@ cpm_gr.manage_project_plans,cpm_gr.manage_project_plans,Manage Project Plans,cpm
 cpm_gr.project_mem_gr,cpm_gr.project_mem_gr,Project Members Group,cpm_gr_cat.cpm_groups,,
 cpm_gr.project_mem_head,cpm_gr.project_mem_head,Task Head Group,cpm_gr_cat.cpm_groups,"cpm_gr.project_mem_gr",
 
-
 cpm_gr.create_and_edit_projects,cpm_gr.create_and_edit_projects,Create and Edit Projects,cpm_gr_cat.cpm_groups,"cpm_gr.project_mgmt_gr,cpm_gr.project_mem_gr,cpm_gr.manage_project_plans,cpm_gr.manage_project_finances,cpm_gr.manage_project_documents",
+
+cpm_gr.manage_issues,cpm_gr.manage_issues,Manage Issues,cpm_gr_cat.cpm_groups,,
+cpm_gr.user_issues,cpm_gr.user_issues,User Issues,cpm_gr_cat.cpm_groups,,

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.issue_select_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.issue_select_view_form.form</field>
+            <field name="model">cpm_odoo.risk_mgmt_issue</field>
+            <field name="arch" type="xml">
+                <form string="Issue" create="false">
+
+                    <header>
+                        <button name="action_in_progress" string="In Progress" type="object" invisible="status != 'not_resolved'" groups="cpm_gr.manage_issues"/>
+                        <button name="action_resolved" string="Mark As Resolved" type="object" invisible="status != 'in_progress'" groups="cpm_gr.manage_issues"/>
+
+                        <field name="status" widget="statusbar" nolabel="1"
+                            status_visible="not_resolved,in_progress,resolved"/>
+                    </header>
+
+                    <sheet>
+                        <group string='Issue Info'>
+                            <field name="title" readonly="1"/>
+                            <field name="description" readonly="1"/>
+                            <field name="category_id" readonly="1"/>
+                            <field name="level" readonly="1"/>
+                            <field name="status" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
