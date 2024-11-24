@@ -3,12 +3,5 @@
     <!-- ============================================== -->
     <!-- ======== stakeholders root menu -->
     <!-- ============================================== -->
-    <record id="cpm_odoo.stakeholders_contractor_create_act" model="ir.actions.act_window">
-      <field name="name">Action Name</field>
-      <field name="res_model">cpm_odoo.stakeholders_contractor</field>
-      <field name="views">(cpm_odoo.stakeholders_contractor_create_view_form,form)</field>
-    </record>
-
-    <menuitem name="Stakeholders" id="cpm_odoo.stakeholders_root" action="cpm_odoo.stakeholders_contractor_create_act"/>
   </data>
 </odoo>

@@ -1,12 +1,39 @@
 <odoo>
     <data>
-        <record id="action_investor" model="ir.actions.act_window">
+        <record id="cpm_odoo.action_investor" model="ir.actions.act_window">
             <field name="name">Investors</field>
             <field name="res_model">cpm_odoo.stakeholders_investor</field>
             <field name="view_mode">tree,form</field>
+            <field name="views">[('cpm_odoo.view_investor_tree', 'tree'), ('cpm_odoo.view_investor_form', 'form')]</field>
         </record>
 
-        <menuitem id="menu_investor_root" name="Investors" parent="cpm_odoo.stakeholders_root" action="action_investor" sequence="10"/>
-        <!-- <menuitem id="menu_investor" name="Investor List" parent="menu_investor_root" action="action_investor" sequence="10"/> -->
+        <record id="cpm_odoo.action_contractor" model="ir.actions.act_window">
+            <field name="name">Contractors</field>
+            <field name="res_model">cpm_odoo.stakeholders_contractor</field>
+            <field name="view_mode">tree,form</field>
+            <field name="views">[('cpm_odoo.view_contractor_tree', 'tree'), ('cpm_odoo.view_contractor_form', 'form')]</field>
+        </record>
+
+        <record id="cpm_odoo.action_supplier" model="ir.actions.act_window">
+            <field name="name">Suppliers</field>
+            <field name="res_model">cpm_odoo.stakeholders_supplier</field>
+            <field name="view_mode">tree,form</field>
+            <field name="views">[('cpm_odoo.view_supplier_tree', 'tree'), ('cpm_odoo.view_supplier_form', 'form')]</field>
+        </record>
+
+        <record id="cpm_odoo.action_other_contact" model="ir.actions.act_window">
+            <field name="name">Other Contacts</field>
+            <field name="res_model">cpm_odoo.stakeholders_other_contacts</field>
+            <field name="view_mode">tree,form</field>
+            <field name="views">[('cpm_odoo.view_other_contact_tree', 'tree'), ('cpm_odoo.view_other_contact_form', 'form')]</field>
+        </record>
+
+
+        <menuitem name="Stakeholders" id="cpm_odoo.stakeholders_root"/>
+
+        <menuitem id="cpm_odoo.menu_investor_root" name="Investors" parent="cpm_odoo.stakeholders_root" action="cpm_odoo.action_investor" sequence="10"/>
+        <menuitem id="cpm_odoo.menu_contractor_root" name="Contractors" parent="cpm_odoo.stakeholders_root" action="cpm_odoo.action_contractor" sequence="20"/>
+        <menuitem id="cpm_odoo.menu_supplier_root" name="Suppliers" parent="cpm_odoo.stakeholders_root" action="cpm_odoo.action_supplier" sequence="30"/>
+        <menuitem id="cpm_odoo.menu_other_contact_root" name="Other Contacts" parent="cpm_odoo.stakeholders_root" action="cpm_odoo.action_other_contact" sequence="40"/>
     </data>
 </odoo>

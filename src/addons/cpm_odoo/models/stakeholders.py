@@ -75,18 +75,18 @@ class ContractorCategory(models.Model):
         size = 64
     )
     
-    # color = fields.Char(
-    #     string = 'Category Color',
-    #     required=True,
-    #     size=24,
-    #     default = "#FF5733"
-    # )
+    color = fields.Char(
+        string = 'Category Color',
+        required=True,
+        size=24,
+        default = "#FF5733"
+    )
     
-    # display = fields.Boolean(
-    #     string = 'Display',
-    #     required=True,
-    #     default=False
-    # )
+    display = fields.Boolean(
+        string = 'Display',
+        required=True,
+        default=False
+    )
     
 class Investor(models.Model):
     _name = "cpm_odoo.stakeholders_investor"

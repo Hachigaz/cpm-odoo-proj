@@ -1,10 +1,10 @@
 <odoo>
     <data>
-        <record id="cpm_odoo.view_investor_tree" model="ir.ui.view">
-            <field name="name">stakeholders.investor.tree</field>
-            <field name="model">cpm_odoo.stakeholders_investor</field>
+        <record id="cpm_odoo.view_other_contact_tree" model="ir.ui.view">
+            <field name="name">stakeholders.other_contact.tree</field>
+            <field name="model">cpm_odoo.stakeholders_other_contacts</field>
             <field name="arch" type="xml">
-                <tree string="Investors">
+                <tree string="Other Contacts">
                     <field name="partner_id"/>
                     <field name="description"/>
                     <field name="address"/>
@@ -14,13 +14,13 @@
             </field>
         </record>
 
-        <record id="cpm_odoo.view_investor_form" model="ir.ui.view">
-            <field name="name">stakeholders.investor.form</field>
-            <field name="model">cpm_odoo.stakeholders_investor</field>
+        <record id="cpm_odoo.view_other_contact_form" model="ir.ui.view">
+            <field name="name">stakeholders.other_contact.form</field>
+            <field name="model">cpm_odoo.stakeholders_other_contacts</field>
             <field name="arch" type="xml">
-                <form string="New Investor">
+                <form string="New Other Contact">
                     <sheet>
-                        <group string="Investor Info" col='3'>
+                        <group string="Other Contact Info" col='3'>
                             <group colspan='2'>
                                 <field name="partner_id"/>
                                 <field name="description"/>
