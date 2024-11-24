@@ -22,6 +22,8 @@
                             <field name="category_id" readonly="is_editable == False"/>
                             <field name="level" readonly="is_editable == False"/>
                             <field name="status" readonly="is_editable == False" groups="cpm_gr.manage_issues"/>
+                            <field name="resolved_date"/>
+                            <field name="created_at" readonly="1" />
                             <field name="is_editable" invisible="True"/>
                         </group>
                     </sheet>

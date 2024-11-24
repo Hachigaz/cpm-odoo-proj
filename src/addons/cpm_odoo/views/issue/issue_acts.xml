@@ -21,11 +21,25 @@
         </record>
     
         <menuitem 
-          sequence='10' 
           parent='cpm_odoo.issue_root' 
           name="Create New Issue" 
           id="cpm_odoo.issue_menu" 
-          action="cpm_odoo.issue_create_act" />
+          action="cpm_odoo.issue_create_act" 
+          groups="cpm_gr.user_issues"
+        />
 
+        <record id="cpm_odoo.issue_dashboard_act" model="ir.actions.act_window">
+          <field name="name">Dashboard</field>
+          <field name="res_model">cpm_odoo.risk_mgmt_issue</field>
+          <field name="view_mode">graph</field>
+        </record>
+
+        <menuitem
+          id="cpm_odoo.issue_dashboard_menu"
+          parent="cpm_odoo.issue_root"
+          name="Dashboard"
+          action="cpm_odoo.issue_dashboard_act"
+          groups="cpm_gr.manage_issues"
+        />
     </data>
 </odoo>
