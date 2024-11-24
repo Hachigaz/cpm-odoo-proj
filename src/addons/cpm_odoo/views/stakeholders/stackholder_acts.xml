@@ -1,0 +1,12 @@
+<odoo>
+    <data>
+        <record id="action_investor" model="ir.actions.act_window">
+            <field name="name">Investors</field>
+            <field name="res_model">cpm_odoo.stakeholders_investor</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_investor_root" name="Investors" parent="cpm_odoo.stakeholders_root" action="action_investor" sequence="10"/>
+        <!-- <menuitem id="menu_investor" name="Investor List" parent="menu_investor_root" action="action_investor" sequence="10"/> -->
+    </data>
+</odoo>

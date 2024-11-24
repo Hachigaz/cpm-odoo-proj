@@ -53,7 +53,9 @@ Long description of module's purpose
         'views/hr_mgmt/staff_create.xml',
         
         'views/stakeholders/contractor_create.xml',
-        
+        'views/stakeholders/investor_view.xml',
+        'views/stakeholders/stackholder_acts.xml',
+
         'views/res_mgmt/res_mgmt_acts.xml',
         
         

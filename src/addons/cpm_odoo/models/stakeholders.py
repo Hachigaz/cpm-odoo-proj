@@ -18,15 +18,38 @@ class Stakeholder(models.AbstractModel):
     # name = fields.Char(
     #     string = 'Name'
     # )
+    name = fields.Char(
+        string='Name',
+        related='partner_id.name',  # Sử dụng trường liên quan từ res.partner
+        store=True
+    )
 
     description = fields.Text(
-        string = 'Description'
+        string='Description'
     )
     
+    # image = fields.Binary(
+    #     string='Image',
+    #     attachment=True
+    # )
+    
     address = fields.Char(
-        string = 'Address',
-        size = 1024
+        string='Address',
+        size=1024
     )
+    
+    phone = fields.Char(
+        string='Phone',
+        related='partner_id.phone',  # Sử dụng trường liên quan từ res.partner
+        store=True
+    )
+    
+    email = fields.Char(
+        string='Email',
+        related='partner_id.email',  # Sử dụng trường liên quan từ res.partner
+        store=True
+    )
+
     
 class Contractor(models.Model):
     _name = "cpm_odoo.stakeholders_contractor"
@@ -52,18 +75,18 @@ class ContractorCategory(models.Model):
         size = 64
     )
     
-    color = fields.Char(
-        string = 'Category Color',
-        required=True,
-        size=24,
-        default = "#FF5733"
-    )
+    # color = fields.Char(
+    #     string = 'Category Color',
+    #     required=True,
+    #     size=24,
+    #     default = "#FF5733"
+    # )
     
-    display = fields.Boolean(
-        string = 'Display',
-        required=True,
-        default=False
-    )
+    # display = fields.Boolean(
+    #     string = 'Display',
+    #     required=True,
+    #     default=False
+    # )
     
 class Investor(models.Model):
     _name = "cpm_odoo.stakeholders_investor"

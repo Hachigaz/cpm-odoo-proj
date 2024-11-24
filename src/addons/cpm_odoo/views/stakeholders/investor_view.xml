@@ -1,0 +1,39 @@
+<odoo>
+    <data>
+        <record id="view_investor_tree" model="ir.ui.view">
+            <field name="name">stakeholders.investor.tree</field>
+            <field name="model">cpm_odoo.stakeholders_investor</field>
+            <field name="arch" type="xml">
+                <tree string="Investors">
+                    <field name="partner_id"/>
+                    <field name="description"/>
+                    <field name="address"/>
+                    <field name="phone"/>
+                    <field name="email"/>   
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_investor_form" model="ir.ui.view">
+    <field name="name">stakeholders.investor.form</field>
+    <field name="model">cpm_odoo.stakeholders_investor</field>
+    <field name="arch" type="xml">
+        <form string="Investor">
+            <sheet>
+                <group>
+                    <group string="Investor Info">
+                        <field name="partner_id"/>
+                        <field name="description"/>
+                        <field name="address"/>
+                    </group>
+                    <group string="Contact Info">
+                        <field name="phone"/>
+                        <field name="email"/>
+                    </group>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+    </data>
+</odoo>

@@ -1,6 +1,267 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
-    <t t-name="cpm_odoo.TestPage">
+    <!-- Bảng nguyên liệu -->
+    <!-- <t t-name="cpm_odoo.TestPage">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/tailwindcss/tailwind.min.css"/>
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/fontawesome/css/all.css"/>
+        </xpath>
+        <div class="mx-auto mt-8 flex box-border h-full">
+            <nav class="p-4 w-1/6 h-full">
+                <ul class="space-y-2">
+                    <li><a href="#" class="block py-2 px-4 bg-gray-300 rounded hover:bg-gray-400">Nguyên liệu</a></li>
+                    <li><a href="#" class="block py-2 px-4 bg-gray-300 rounded hover:bg-gray-400">Thiết bị</a></li>
+                    <li><a href="#" class="block py-2 px-4 bg-gray-300 rounded hover:bg-gray-400">Phiếu nhập</a></li>
+                    <li><a href="#" class="block py-2 px-4 bg-gray-300 rounded hover:bg-gray-400">Phiếu xuất</a></li>
+                </ul>
+            </nav>
+            
+            <div class="w-full">
+                <div class="flex justify-between">
+                    <h1 class="text-2xl font-bold mb-4">Danh sách nguyên liệu</h1>
+                    <div class="flex h-10 gap-2 mr-5">
+                        <button class="bg-green-500 hover:bg-green-600 w-10 h-10 rounded-md text-white"><i class="fa-solid fa-plus"></i></button>
+                        <select class="border border-gray-300 rounded p-2 w-40">
+                            <option value="">Tất cả loại nguyên liệu</option>
+                            <option value="type1">Loại nguyên liệu 1</option>
+                            <option value="type2">Loại nguyên liệu 2</option>
+                            <option value="type3">Loại nguyên liệu 3</option>
+                        </select>
+                        <input type="text" placeholder="Tìm kiếm..." class="w-80 p-3 border"/>
+                    </div>
+                </div>
+                <table class="min-w-full bg-white border border-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b">Nguyên liệu</th>
+                            <th class="py-2 px-4 border-b">Mã nguyên liệu</th>
+                            <th class="py-2 px-4 border-b">Loại nguyên liệu</th>
+                            <th class="py-2 px-4 border-b">Nhà cung cấp</th>
+                            <th class="py-2 px-4 border-b text-center">Số lượng tồn</th>
+                            <th class="py-2 px-4 border-b text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="hover:bg-gray-100">
+                            <td class="py-2 px-4 border-b flex items-center">
+                                <img src="https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg" alt="Product Image" class="w-12 h-12 mr-4"/>
+                                <span>Tên nguyên liệu 1</span>
+                            </td>
+                            <td class="py-2 px-4 border-b">NL001</td>
+                            <td class="py-2 px-4 border-b">Loại nguyên liệu 1</td>
+                            <td class="py-2 px-4 border-b">Công ty Minh Lộc</td>
+                            <td class="py-2 px-4 border-b text-center">50</td>
+                            <td class="py-2 px-4 border-b text-center">
+                                <button class="text-blue-500 hover:text-blue-700 mx-2"><i class="fas fa-eye fa-lg"></i></button>
+                                <button class="text-yellow-500 hover:text-yellow-700 mx-2"><i class="fas fa-edit fa-lg"></i></button>
+                                <button class="text-red-500 hover:text-red-700 mx-2"><i class="fas fa-trash fa-lg"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+    </t> -->
 
+    
+    <!-- Danh sách chi tiết phiếu nhập nguyên liệu-->
+    <!-- <t t-name="cpm_odoo.TestPage">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/tailwindcss/tailwind.min.css"/>
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/fontawesome/css/all.css"/>
+        </xpath>
+        <div class="w-full p-3">
+            <h1 class="text-2xl font-bold m-2">Danh sách chi tiết phiếu nhập nguyên liệu</h1>
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b">Mã phiếu nhập</th>
+                        <th class="py-2 px-4 border-b">Mã nguyên liệu</th>
+                        <th class="py-2 px-4 border-b">Ngày nhập</th>
+                        <th class="py-2 px-4 border-b">Mã nhân viên tạo</th>
+                        <th class="py-2 px-4 border-b">Mã kho</th>
+                        <th class="py-2 px-4 border-b">Số lượng</th>
+                        <th class="py-2 px-4 border-b">Tổng giá trị</th>
+                        <th class="py-2 px-4 border-b text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-2 px-4 border-b">PN001</td>
+                        <td class="py-2 px-4 border-b">NL001</td>
+                        <td class="py-2 px-4 border-b">2023-10-01</td>
+                        <td class="py-2 px-4 border-b">NV001</td>
+                        <td class="py-2 px-4 border-b">Kho 1</td>
+                        <td class="py-2 px-4 border-b">100</td>
+                        <td class="py-2 px-4 border-b">1,000,000đ</td>
+                        <td class="py-2 px-4 border-b text-center">
+                            <button class="text-yellow-500 hover:text-yellow-700 mx-2"><i class="fas fa-edit fa-lg"></i></button>
+                            <button class="text-red-500 hover:text-red-700 mx-2"><i class="fas fa-trash fa-lg"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </t> -->
+
+    <!-- Các thẻ project -->
+    <t t-name="cpm_odoo.TestPage">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/tailwindcss/tailwind.min.css"/>
+            <link rel="stylesheet" href="cpm_odoo/static/src/frontend/fontawesome/css/all.css"/>
+        </xpath>
+        <h1 class="text-2xl font-bold ml-5 mt-3">Tasks</h1>
+        <div class="flex p-3 justify-between">
+            <div class="">
+                <button class="px-3 py-2 border-b border-b-1 border-red-500 text-red-500 hover:bg-gray-200">
+                    <i class="fa-solid fa-bars pr-2"></i>
+                    <span>Task list</span> 
+                </button>
+                <button class="px-3 py-2 hover:bg-gray-200">
+                    <i class="fa-solid fa-table pr-2"></i> 
+                    <span>Task board</span>
+                </button>
+                <button class="px-3 py-2 hover:bg-gray-200">
+                    <i class="fa-solid fa-sheet-plastic pr-2"></i>
+                    <span>Timesheet</span>
+                </button>
+                <button class="px-3 py-2 hover:bg-gray-200">
+                    <i class="fa-solid fa-rotate-right pr-2"></i>
+                    <span>Recurring tasks</span>
+                </button>
+                <button class="px-3 py-2 hover:bg-gray-200">
+                    <i class="fa-solid fa-bars-staggered pr-2"></i>
+                    <span>Task bundles</span>
+                </button>
+            </div>
+            <button class="px-3 py-2 hover:bg-gray-400 bg-gray-300 rounded-sm">Work report</button>
+        </div>
+        <div class="flex justify-between px-3">
+            <div class="flex gap-2 w-3/5">
+                <button class="flex items-center text-white bg-gray-500 px-3 rounded-sm hover:bg-gray-400">
+                    <i class="fa-solid fa-plus mr-2"></i>
+                    <span>New</span>
+                </button>
+                <select name="" id="" class="text-gray-500 px-3 bg-white border-1">
+                    <option value="">
+                        <i class="fa-regular fa-bookmark mr-2"></i>
+                        <span>Bookmarks</span>
+                    </option>
+                </select>
+                <select name="" id="" class="text-gray-500 px-3 bg-white border-1">
+                    <option value="">
+                        <i class="fa-solid fa-user mr-2"></i>
+                        <span>My tasks</span>
+                    </option>
+                </select>
+                <select name="" id="" class="text-gray-500 px-3 bg-white border-1">
+                    <span>Group by: </span>
+                    <option value="">
+                        <span>Priorities</span>
+                    </option>
+                </select>
+                <select name="" id="" class="text-gray-500 px-3 bg-white border-1">
+                    <i class="fa-solid fa-sort mr-2"></i>
+                    <span>Sorted by: </span>
+                    <option value="">
+                        <span>Dealines</span>
+                    </option>
+                </select>
+                <select name="" id="" class="text-gray-500 px-3 bg-white border-1">
+                    <i class="fa-solid fa-filter mr-2"></i>
+                    <span>Sorted by: </span>
+                    <option value="">
+                        <span>Filter</span>
+                    </option>
+                </select>
+                <select name="" id="" class="text-gray-500 px-3 bg-white border-1">
+                    <option value="">
+                        <span>View</span>
+                    </option>
+                </select>
+            </div>
+            <div class="flex">
+                <button class="px-3 py-2 bg-gray-500 text-white cursor-pointer"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <input type="text" placeholder="Search tasks" class="border-1 p-2"/>
+            </div>
+        </div>
+        <div class="w-full p-3">
+            <table class="min-w-full bg-white border border-gray-200 table-fixed">
+                <thead>
+                    <tr>
+                        <th class="w-1/4 py-2 px-4 border-b">
+                            <input type="checkbox" class="py-2 px-4 border-b"/>
+                            <span class="ml-2 text-xl">High priority</span> 
+                        </th>
+                        <th class="w-1/4 py-2 px-4 border-b">Description</th>
+                        <th class="w-1/6 py-2 px-4 border-b">
+                            Trạng thái
+                        </th>
+                        <th class="w-1/6 py-2 px-4 border-b">Deadline</th>
+                        <th class="w-1/6 py-2 px-4 border-b">Remaining</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-2 px-4 border-b">
+                            <input type="checkbox" class="py-2 px-4 border-b"/>
+                            <span class="ml-2">Hoàn thành module Nhập kho</span> 
+                        </td>
+                        <td class="py-2 px-4 border-b">Hoàn thành các chunk</td>
+                        <td class="py-2 px-4 border-b">
+                            <span class="bg-red-500 text-white px-2 py-1 rounded-md">Needs attention</span>
+                        </td>
+                        <td class="py-2 px-4 border-b">2024-12-31</td>
+                        <td class="py-2 px-4 border-b text-red-500">01:00</td>
+                    </tr>
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-2 px-4 border-b">
+                            <input type="checkbox" class="py-2 px-4 border-b"/>
+                            <span class="ml-2">Lên kế hoạch cho năm 2025</span> 
+                        </td>
+                        <td class="py-2 px-4 border-b">Hoàn thành các chunk</td>
+                        <td class="py-2 px-4 border-b">
+                            <span class="bg-green-500 text-white px-2 py-1 rounded-md">Done</span>
+                        </td>
+                        <td class="py-2 px-4 border-b">2024-12-31</td>
+                        <td class="py-2 px-4 border-b text-green-500">00:00</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="w-full p-3">
+            <table class="min-w-full bg-white border border-gray-200 table-fixed">
+                <thead>
+                    <tr>
+                        <th class="w-1/4 py-2 px-4 border-b">
+                            <input type="checkbox" class="py-2 px-4 border-b"/>
+                            <span class="ml-2 text-xl">Medium priority</span> 
+                        </th>
+                        <th class="w-1/4 py-2 px-4 border-b">Description</th>
+                        <th class="w-1/6 py-2 px-4 border-b">
+                            Trạng thái
+                        </th>
+                        <th class="w-1/6 py-2 px-4 border-b">Deadline</th>
+                        <th class="w-1/6 py-2 px-4 border-b">Remaining</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-2 px-4 border-b">
+                            <input type="checkbox" class="py-2 px-4 border-b"/>
+                            <span class="ml-2">Hoàn thành module Nhân viên</span> 
+                        </td>
+                        <td class="py-2 px-4 border-b">Hoàn thành các chunk</td>
+                        <td class="py-2 px-4 border-b">
+                            <span class="bg-yellow-500 text-white px-2 py-1 rounded-md">In Progress</span>
+                        </td>
+                        <td class="py-2 px-4 border-b">2024-12-31</td>
+                        <td class="py-2 px-4 border-b">23:00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </t>
 </templates>

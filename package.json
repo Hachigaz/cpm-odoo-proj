@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^3.4.15"
+  },
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/cpm_odoo/static/src/backend/tailwind.css -o ./src/cpm_odoo/static/src/backend/tailwind.min.css --watch"
+  }
+}
