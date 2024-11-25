@@ -5,7 +5,7 @@
         <div class="row h-100">
             <div class="col-md-2 pt-2">
                 <div class="page-title mb-3">
-                    <h2 class="px-2">
+                    <h2 class="px-2 fs-4">
                         Project Finances
                     </h2>
                 </div>
@@ -49,22 +49,36 @@
             <h2 class="mb-4">Overview</h2>
             <div class="row">
                 <div class="col-4">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-body" id="total-investments-chart">
                             <h5 class="card-title">Total Investments</h5>
-                            <canvas class="chart w-80">
-
-                            </canvas>
+                            <t t-if="this.page_data.total_investments_data.length>0">
+                                <canvas class="chart w-80">
+    
+                                </canvas>
+                            </t>
+                            <t t-else="">
+                                <div class="fs-5 text-center mt-6">
+                                    No Data
+                                </div>
+                            </t>
                         </div>
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-body" id="total-expenses-chart">
                             <h5 class="card-title">Total Expenses</h5>
-                            <canvas class="chart w-80">
+                            <t t-if="this.page_data.total_expenses_data.length>0">
+                                <canvas class="chart w-80">
 
-                            </canvas>
+                                </canvas>
+                            </t>
+                            <t t-else="">
+                                <div class="fs-5 text-center mt-6">
+                                    No Data
+                                </div>
+                            </t>
                         </div>
                     </div>
                 </div>
@@ -119,21 +133,23 @@
                 <tbody>
                     <!-- Table rows will go here -->
                      <t t-if="this.page_data.recent_transactions.length>0">
-                        <t t-foreach="this.page_data.recent_transactions" t-as="trans" t-key="trans.id">
+                        <t t-foreach="this.page_data.recent_transactions" t-as="trans" t-key="trans_index">
                            <tr>
-                               <td><t t-esc="trans.title"/></td>
-                               <td><t t-esc="trans.d_amount"/></td>
-                               <td><t t-esc="this.constructor.formatDateTime(trans.date_created)"/></td>
-                               <t t-if="trans.category_id">
-                                   <t t-esc="trans.category_id.name"/>
-                               </t>
-                               <t t-elif="trans.investor_id">
-                                    <t t-esc="trans.investor_id.name"/>
-                               </t>
-                               <t t-else="">
-                                    No Category
-                               </t>
-                               <td><t t-esc="trans.status[1]"/></td>
+                                <td><t t-esc="trans.title"/></td>
+                                <td><t t-esc="trans.d_amount"/></td>
+                                <td><t t-esc="this.constructor.formatDateTime(trans.date_created)"/></td>
+                                <td>
+                                    <t t-if="trans.category_id">
+                                        <t t-esc="trans.category_id.name"/>
+                                    </t>
+                                    <t t-elif="trans.investor_id">
+                                        <t t-esc="trans.investor_id.name"/>
+                                    </t>
+                                    <t t-else="">
+                                        No Category
+                                    </t>
+                                </td>
+                                <td><t t-esc="trans.status[1]"/></td>
                            </tr>
                         </t>
                      </t>
@@ -158,27 +174,36 @@
                         <th scope="col">Date</th>
                         <th scope="col">Category/Investor</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                      <t t-if="this.page_data.pending_transactions.length>0">
-                        <t t-foreach="this.page_data.pending_transactions" t-as="trans" t-key="trans.id">
+                        <t t-foreach="this.page_data.pending_transactions" t-as="trans" t-key="trans_index">
                         <tr>
                             <td><t t-esc="trans.title"/></td>
                             <td><t t-esc="trans.d_amount"/></td>
                             <td><t t-esc="this.constructor.formatDateTime(trans.date_created)"/></td>
-                               <td>
-                                   <t t-if="trans.category_id">
-                                       <t t-esc="trans.category_id.name"/>
-                                   </t>
-                                   <t t-elif="trans.investor_id">
-                                        <t t-esc="trans.investor_id.name"/>
-                                   </t>
-                                   <t t-else="">
-                                        No Category
-                                   </t>
-                               </td>
+                            <td>
+                                <t t-if="trans.category_id">
+                                    <t t-esc="trans.category_id.name"/>
+                                </t>
+                                <t t-elif="trans.investor_id">
+                                    <t t-esc="trans.investor_id.name"/>
+                                </t>
+                                <t t-else="">
+                                    No Category
+                                </t>
+                            </td>
                             <td><t t-esc="trans.status[1]"/></td>
+                            <td>
+                                <div class="btn btn-outline-secondary me-1" t-on-click="()=>{this.act_confirm_transaction(trans.trans_type,trans.id)}">
+                                    <i class="fa-solid fa-check-to-slot"></i>
+                                </div>
+                                <div class="btn btn-outline-secondary" t-on-click="()=>{this.act_delete_transaction(trans.trans_type,trans.id)}">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </div>
+                            </td>
                         </tr>
                         </t>
                     </t>

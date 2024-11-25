@@ -1,6 +1,6 @@
 <templates>
     <t t-name="cpm_odoo.ProjectPlanningPage" owl="1">
-        <div class="">
+        <div class="h-100 d-flex flex-column">
             <div class="pb-2">
                 <div class="btn-group">
                     <div class="btn-group">
@@ -12,7 +12,7 @@
                     </div>
                 </div>
             </div>
-            <div class="pt-2 pb-2" id="subpage-view">
+            <div class="pt-2 pb-2 flex-grow-1" id="subpage-view">
                 <t t-component="subpageComponent" context_data="props.context_data"/>
             </div>
         </div>
@@ -172,7 +172,7 @@
                     </td>
                     <td>
                         <t t-if="workflow.workflow_status">
-                            <t t-esc="workflow.workflow_status"/>
+                            <t t-esc="this.constructor.formatSnakeStr(workflow.workflow_status)"/>
                         </t>
                     </td>
                     <td>
@@ -285,10 +285,15 @@
                 <t t-foreach="state_data.task_list" t-as="task" t-key="task.id">
                     <div class="card g-col-4">
                         <div class="card-body">
-                            <h5 class="card-title mt-2">
-                                <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
-                                <t t-esc="task.name"/>
-                            </h5>
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title mt-2">
+                                    <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
+                                    <t t-esc="task.name"/>
+                                </h5>
+                                <!-- <span class="text-center">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </span> -->
+                            </div>
                             <p class="card-text mt-2">
                                 <t t-if="task.description">
                                     <t t-esc="task.description"/>
@@ -329,13 +334,16 @@
     </t>
 
     <t t-name="cpm_odoo.PlanningManageWorkflow" owl="1">
-        <div class="row mt-2">
+        <div class="row mt-2 h-100 d-flex flex-column">
             <div class="d-flex align-items-center mb-2">
                 <div class="fw-bold fs-1 me-5 mb-2">
                     Workflow - <t t-esc="page_data.workflow_info.name"/>
                 </div>
                 <div class="btn-list">
                     <t t-if="this.page_data.workflow_info.workflow_status === 'draft'">
+                        <button type="button" class="btn btn-outline-secondary ms-2" t-on-click="(event)=>{this.act_edit_general_info()}">
+                            Edit Workflow Info
+                        </button>
                         <button type="button" class="btn btn-outline-secondary ms-2" t-on-click="(event)=>{this.act_create_new_task()}">
                             Create New Task
                         </button>
@@ -345,8 +353,8 @@
                     </t>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-2">
+            <div class="row flex-grow-1">
+                <div class="col-md-2 h-100">
                     <ul class="nav nav-pills flex-column" role="tablist">
                         <li class="nav-item user-select-none">
                             <div class="nav-link active"  data-bs-toggle="tab" data-bs-target=".task-tabs #overview-tab" role="tab">
@@ -371,10 +379,112 @@
 
                     </ul>
                 </div>
-                <div class="col-md-10">
-                    <div class="tab-content task-tabs">
-                        <div class="tab-pane fade show active overflow-auto" id="overview-tab" role="tabpanel">
+                <div class="col-md-10 h-100">
+                    <div class="tab-content task-tabs h-100">
+                        <div class="tab-pane fade show active overflow-auto h-100" id="overview-tab" role="tabpanel">
+                            <div class="container d-flex flex-column h-100 align-items-center">
+                                <!-- Dashboard Overview -->
+                                <div class="row mb-3 g-3 w-100">
+                                    <div class="col-md-4">
+                                        <div class="card text-white bg-primary mb-4 h-100">
+                                            <div class="card-header">Workflow Info</div>
+                                            <div class="card-body d-flex flex-column">
+                                                <h5 class="card-title">
+                                                    <strong>Workflow Name: </strong>
+                                                    <span class="fs-5">
+                                                        <t t-esc="this.page_data.workflow_info.name"/>
+                                                    </span>
+                                                </h5>
+                                                <p class="mb-2 flex-grow-1">
+                                                    <div class="h-100 overflow-hidden">
+                                                        <t t-set="description" t-value="this.page_data.workflow_info.descripton"/>
+                                                        <strong>Description:</strong> <t t-esc="description?description:'No Description'"/>
+                                                    </div>
+                                                </p>
+                                                <p class="mb-2">
+                                                    <strong>Start Date:</strong> <t t-esc="this.constructor.formatDate(this.page_data.workflow_info.start_date)"/>
+                                                </p>
+                                                <p class="mb-2">
+                                                    <strong>Due Date:</strong> <t t-esc="this.constructor.formatDate(this.page_data.workflow_info.exp_end)"/>
+                                                </p>
+                                                <p class="mb-2">
+                                                    <strong>Status:</strong> <t t-esc="this.constructor.formatSnakeStr(this.page_data.workflow_info.workflow_status)"/>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                             
+                                    <!-- Timeline and Milestones -->
+                                    <div class="col-md-8">
+                                        <div class="card mb-3 h-100 d-flex flex-column">
+                                            <div class="card-header">Workflow Progress</div>
+                                            <div class="card-body flex-grow-1 overflow-hidden">
+                                                <div class="milestone d-flex flex-column h-100">
+                                                    <div class='flex-grow-1'>
+                                                        <p class="mb-2">
+                                                            Active Task Count: 
+                                                            <t t-esc="this.page_data.workflow_info.active_task_count"/>
+                                                        </p>
+                                                        <p class="mb-2">
+                                                            Completed Task Count: 
+                                                            <t t-esc="this.page_data.workflow_info.completed_task_count"/>
+                                                        </p>
+                                                        <p class="mb-2">
+                                                            Verified Task Count: 
+                                                            <t t-esc="this.page_data.workflow_info.verified_task_count"/>
+                                                        </p>
+                                                        <p class="mb-2">
+                                                            Unassigned Task Count: 
+                                                            <t t-esc="this.page_data.workflow_info.unassigned_task_count"/>
+                                                        </p>
+                                                    </div>
+                                                    <h6 class="mb-2">Progress:</h6>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" t-att-style="`width: ${this.overview_page_data.workflow_progress_val}%;`"><t t-esc="this.overview_page_data.workflow_progress"/>%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Task List -->
+                                <div class="row g-3 flex-grow-1 w-100">
+                                    <div class="col-md-12">
+                                        <div class="card h-100 p-0">
+                                            <div class="card-header fs-4">Active Tasks</div>
+                                            <div class="card-body">
+                                                <t t-if="this.overview_page_data.task_list.length>0">
+                                                    <ul class="list-group">
+                                                        <t t-foreach="this.overview_page_data.task_list" t-as="task" t-key="task.id">
+                                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                                <t t-esc="task.name"/>
+                                                                <t t-if="task.task_status==='active'">
+                                                                    <span class="badge bg-warning">Active</span>
+                                                                </t>
+                                                                <t t-elif="task.task_status==='completed'">
+                                                                    <span class="badge bg-secondary">Pending</span>
+                                                                </t>
+                                                                <t t-elif="task.task_status==='verifed'">
+                                                                    <span class="badge bg-success-light">Completed</span>
+                                                                </t>
+                                                            </li>
+                                                        </t>
+                                                        <!-- <span class="badge bg-warning">Active</span>
+                                                        <span class="badge bg-secondary">Pending</span>
+                                                        <span class="badge bg-success-light">Completed</span>
+                                                        <span class="badge bg-info">Upcoming</span> -->
+                                                    </ul>
+                                                </t>
+                                                <t t-else="">
+                                                    <div class="mt-4 text-center">
+                                                        No Tasks
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                          
                         </div>
                         <div class="tab-pane fade overflow-auto" id="task-list" role="tabpanel">
                             <PlanningTaskList page_data="{task_list: page_data.task_list}">
@@ -494,9 +604,9 @@
                                             <div class="card-body">
                                                 <div class="row mb-3">
                                                     <div class="col-3 d-flex align-items-center">
-                                                        <div class="img-wrapper w-100 h-100">
+                                                        <div class="img-wrapper w-100 h-100 d-flex align-items-center">
                                                             <img 
-                                                                t-att-src="`web/image/?model=cpm_odoo.stakeholders_contractor&amp;id=${contractor.id}&amp;field=avatar_512`" alt="Image"
+                                                                t-att-src="`web/image/?model=cpm_odoo.stakeholders_contractor&amp;id=${contractor.contractor_id.id}&amp;field=avatar_512`" alt="Image"
                                                                 style="width: 100%;aspect-ratio:1/1"
                                                                 class="img-fluid rounded-circle"
                                                             />
@@ -505,17 +615,48 @@
                                                     <div class="col-9 d-flex align-items-center">
                                                         <div class="contractor-info-wrapper rounded px-2 py-2 w-100 h-100">
                                                             <h5 class="card-title">
-                                                                <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
-                                                                <t t-esc="contractor.name"/>
+                                                                <t t-esc="contractor.contractor_id.name"/>
                                                             </h5>
-                                                            <span class="card-text">
-                                                                <p>
-                                                                    <t t-if="contractor.description">
-                                                                        <t t-esc="contractor.description"/>
+                                                            <!-- <div class="d-flex justify-content-between">
+                                                                <h5 class="card-title">
+                                                                    <t t-esc="contractor.contractor_id.name"/>
+                                                                </h5>
+                                                                <t t-if="!contractor.contract_set_id">
+                                                                    <span class="text-center">
+                                                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                                                    </span>
+                                                                </t>
+                                                            </div> -->
+                                                            <span class="card-text d-flex flex-column">
+                                                                <p class="mb-2 flex-grow-1">
+                                                                    <t t-if="contractor.contractor_id.description">
+                                                                        <t t-esc="contractor.contractor_id.description"/>
                                                                     </t>
                                                                     <t t-else="">
                                                                         No Description
                                                                     </t>
+                                                                </p>
+                                                                <t t-if="!contractor.contract_set_id">
+                                                                    <div class="mb-2">
+                                                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                                                        <span class="">
+                                                                            No Contract Attached
+                                                                        </span>
+                                                                    </div>
+                                                                </t>
+                                                                <p class="mb-2">
+                                                                    <div class="btn-list">
+                                                                        <t t-if="contractor.contract_set_id">
+                                                                            <div class="btn btn-outline-secondary" t-on-click="()=>{this.act_view_contract(contractor.contract_set_id[0])}">
+                                                                                View Contract
+                                                                            </div>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <div class="btn btn-outline-secondary me-2" t-on-click="()=>{this.act_attach_contract(contractor.id)}">
+                                                                                Attach Contract
+                                                                            </div>
+                                                                        </t>
+                                                                    </div>
                                                                 </p>
                                                             </span>
                                                         </div>
@@ -707,8 +848,8 @@
                                                     <t t-set="fade_out" t-value="' d-none animate__fadeOut '"/>
                                                     <t t-set="cancel_button_class" t-value="'btn btn-danger rounded-pill px-3 py-1 cancel-act animate__animated  '"/>
                                                     <div class="options d-flex justify-content-end">
-                                                        <t t-if="props.task_info.assigned_contractor_ids.length>0">
-                                                            <t t-if="!props.task_info.assigned_contractor_ids.includes(contractor.id)">
+                                                        <t t-if="this.assigned_contractors_ids.length>0">
+                                                            <t t-if="!this.assigned_contractors_ids.includes(contractor.id)">
                                                                 <button t-att-class="assign_button_class + fade_in" t-on-click="(event)=>{this.act_assign(contractor.id)}">
                                                                     Assign
                                                                 </button>
@@ -948,8 +1089,8 @@
                                         Admin
                                     </t>
                                 </p>
-                                <small class="text-muted">Amount: <t t-esc="item.amount"/>đ</small>
-                                <small class="text-muted">Uploaded At: <t t-esc="this.constructor.formatDateTime(item.date_created)"/></small>
+                                <p class="text-muted">Amount: <t t-esc="this.constructor.formatCurrency(item.amount,item.cur_id)"/></p>
+                                <p class="text-muted">Uploaded At: <t t-esc="this.constructor.formatDateTime(item.date_created)"/></p>
                             </div>
                             <t t-if="this.state_info.can_delete">
                                 <div class="btn-wrapper border d-flex align-items-center justify-content-center">
@@ -979,7 +1120,7 @@
             </div>
         </t>
         <t t-else="">
-            <div class="">
+            <div class="text-center mt-4 fs-5 fw-bold">
                 No record
             </div>
         </t>
@@ -1058,9 +1199,9 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <PlanningStaffAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.staff_asgn_act">
+                                                    <!-- <PlanningStaffAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.staff_asgn_act">
 
-                                                    </PlanningStaffAssignPanel>
+                                                    </PlanningStaffAssignPanel> -->
                                                 </div>
                                                 <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}">Close</button>
@@ -1128,12 +1269,12 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane fade show active p-3" id="staff-list-tab" role="tabpanel">
-                                    <PlanningStaffList task_info="page_data.task_info">
+                                    <PlanningStaffList task_info="page_data.task_info" extra_domain="this.assigned_staff_extra_domain">
                                         
                                     </PlanningStaffList>
                                 </div>
                                 <div class="tab-pane fade p-3" id="contractor-list-tab" role="tabpanel">
-                                    <PlanningContractorList task_info="page_data.task_info">
+                                    <PlanningContractorList context_data='this.props.context_data' task_info="page_data.task_info">
                                         
                                     </PlanningContractorList>
                                 </div>

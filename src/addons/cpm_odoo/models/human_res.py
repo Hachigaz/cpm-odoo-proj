@@ -16,18 +16,6 @@ class Staff(models.Model):
         size = 64
     )
     
-    full_name = fields.Char(
-        compute='_compute_full_name', 
-        string='full_name',
-        store=True
-    )
-    
-    @api.depends('first_name','last_name')
-    def _compute_full_name(self):
-        for record in self:
-            record.full_name = record.first_name + " " + record.last_name
-        pass
-    
     employed_on = fields.Date(
         string = 'Employed On',
         default = fields.Date.today()    
@@ -53,8 +41,23 @@ class Staff(models.Model):
     @api.model_create_multi
     def create(self, vals):
         for val in vals:
-            val["name"] = val["first_name"].lower() + " " + val["last_name"].lower()
+            val["name"] = val["first_name"] + " " +  val['last_name']
         return super().create(vals)
+    
+    
+    def update_name(self):
+        for record in self:
+            self.name = self.first_name + self.last_name
+    
+    @api.onchange('first_name')
+    def _onchange_first_name(self):
+        self.update_name()
+        pass
+    
+    @api.onchange('last_name')
+    def _onchange_last_name(self):
+        self.update_name()
+        pass
     
     # def unlink(self):
     #     # Get the parent record from the child

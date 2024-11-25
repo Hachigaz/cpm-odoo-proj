@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================== -->
+        <!-- ======== risk menu -->
+        <!-- ============================================== -->
+        
+
+        <record id="cpm_odoo.risk_overview_act" model="ir.actions.act_window">
+          <field name="name">Risks</field>
+          <field name="res_model">cpm_odoo.risk_mgmt</field>
+          <field name="view_mode">kanban</field>
+        </record>
+    
+        <menuitem name="Risks" id="cpm_odoo.risk_root" action="cpm_odoo.risk_overview_act"/>
+
+        <record id="cpm_odoo.risk_create_act" model="ir.actions.act_window">
+          <field name="name">New Risk</field>
+          <field name="res_model">cpm_odoo.risk_mgmt</field>
+          <field name="views">(cpm_odoo.risk_create_view_form,form)</field>
+        </record>
+    
+        <menuitem sequence='10' parent='cpm_odoo.risk_root' name="Create New Risk" id="cpm_odoo.risk_menu" action="cpm_odoo.risk_create_act"/>
+
+    </data>
+</odoo>

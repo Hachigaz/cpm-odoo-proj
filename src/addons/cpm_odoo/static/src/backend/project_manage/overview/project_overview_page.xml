@@ -2,17 +2,217 @@
 <templates>
 
     <t t-name="cpm_odoo.ProjectOverviewPage" owl="1">
-        <div class="">
-            <div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Accordion Item #1
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+        <div class="h-100">
+            <div class="container h-100 d-flex flex-column">
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <!-- Project Information Section -->
+                        <section class="bg-light rounded p-4 h-100">
+                            <div class="d-flex align-items-center mb-3">
+                                <h2 class="h4 m-0 me-4">Project Information</h2>
+                                <t t-if="this.constructor.isInGroup(this.props.context_data.user_id,'cpm_gr.project_head_manager',this.orm)">
+                                    <a class="btn btn-outline-secondary btn-link" t-on-click="()=>{this.act_edit_project()}">Edit Info</a>    
+                                </t>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="mb-1">
+                                        <strong>Project Name:</strong> <t t-esc="this.state_data.project_info.name"/>
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong>
+                                            Start Date:
+                                        </strong> 
+                                        <t t-set="start_date" t-value="this.state_data.project_info.start_date"/>
+                                        <t t-esc="start_date?this.constructor.formatDate(start_date):'Not Specified'"/>
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong>
+                                            End Date:
+                                        </strong> 
+                                        <t t-set="exp_end" t-value="this.state_data.project_info.exp_end"/>
+                                        <t t-esc="exp_end?this.constructor.formatDate(exp_end):'Not Specified'"/>
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong>
+                                            Assigned Managers:
+                                        </strong>
+                                        <t t-set="first_manager" t-value="this.state_data.project_info.head_manager_ids[0]"/>
+                                        <t t-set="manager_count" t-value="this.state_data.project_info.head_manager_ids.length - 1"/>
+                                        <t t-esc="`${first_manager?first_manager.name:''} ${manager_count > 0 ? 'and '+manager_count+' others':''}`"/>
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-md-8">
+                        <!-- Team Members Section -->
+                        <section class="bg-light rounded p-4 h-100">
+                            <div class="">
+                                <div class="mb-3">
+                                    <h2 class="h4 m-0">Stakeholders</h2>
+                                </div>
+                                <t t-if="this.state_data.investor_list.length>0">
+                                    <div class="row">
+                                        <t t-foreach="this.state_data.investor_list" t-as="investor" t-key="investor.id">
+                                            <div class="col-md-4 mb-3">
+                                                <div class="card shadow-sm">
+                                                    <div class="card-body text-center">
+                                                        <h5 class="card-title fw-bold"><t t-esc="investor.name"/></h5>
+                                                        <p class="card-text text-primary mb-2">Total Investments:
+                                                            <t t-esc="investor.investments?this.constructor.formatCurrency(investor.investments.total_investments,investor.investments.cur_id):'No Investment'"/>
+                                                        </p>
+                                                        <a href="#" class="btn btn-outline-primary btn-sm">Contact</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <t t-if="this.state_data.investor_count>3">
+                                        <div class="text-center fs-5">
+                                            <t t-esc="`And ${this.state_data.investor_count - 3} ${this.state_data.investor_count - 3 > 0?'other':'others'}`"/>
+                                        </div>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <div class="fs-5 text-center mt-5">
+                                        No Investors
+                                    </div>
+                                </t>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3 flex-grow-1">
+                    <div class="col-md-4">
+                        <!-- Risks Section -->
+                        <section class="bg-light rounded p-4 h-100 overflow-hidden">
+                            <div class="mb-3">
+                                <h2 class="h4 m-0">Issues</h2>
+                            </div>
+                            <div class="">
+                                <t t-if="this.state_data.issue_list.length>0">
+                                    <t t-foreach="this.state_data.issue_list" t-as="issue" t-key="issue.id">
+                                        <t t-if="issue.level=='minor'">
+                                            
+                                        </t>
+                                        <t t-elif="issue.level=='moderate'">
+
+                                        </t>
+                                        <t t-elif="issue.level=='major'">
+
+                                        </t>
+                                        <t t-elif="issue.level=='critical'">
+
+                                        </t>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <div class="fs-5 text-center mt-3">
+                                        No issue just yet
+                                    </div>
+                                </t>
+                            </div>
+                            <!-- <div class="alert alert-warning">
+                                <strong>Risk:</strong> Delay in material delivery.
+                            </div>
+                            <div class="alert alert-danger">
+                                <strong>Issue:</strong> Overbudget by 10%.
+                            </div> -->
+                        </section>
+                    </div>
+                    <div class="col-8">
+                        <div class="row g-3 h-100">
+                            <div class="col-md-6 h-100">
+                                <!-- Workflow Section -->
+                                <section class="bg-light rounded p-4 h-100 d-flex flex-column">
+                                    <div class="mb-3">
+                                        <h2 class="h4 m-0">Statistics</h2>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold">Total Tasks</span>
+                                                    <span class="text-primary h5"><t t-esc="this.state_data.statistics.total_task_count"/></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold">Completed Tasks</span>
+                                                    <span class="text-success h5"><t t-esc="this.state_data.statistics.completed_task_count"/></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold">Project Progress</span>
+                                                    <span class="text-info h5"><t t-esc="this.state_data.statistics.project_progress"/>%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold">Members</span>
+                                                    <span class="text-info h5">12</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold">Upcoming Deadlines</span>
+                                                    <span class="text-danger h5">3</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="col-md-6 h-100">
+                                <!-- Tasks Section -->
+                                <section class="bg-light rounded p-4 h-100 overflow-hidden">
+                                    <div class="mb-3">
+                                        <h2 class="h4 m-0">Recent Tasks</h2>
+                                    </div>
+                                    <ul class="list-group">
+                                        <t t-if="this.state_data.recent_tasks.length>0">
+                                            <t t-foreach="this.state_data.recent_tasks" t-as="task" t-key="task.id">
+                                                <t t-set="task_status" t-value="this.constructor.categorizeDate(task.exp_end)"/>
+                                                <t t-if="task_status === 'Today'">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <span class="text-muted"><t t-esc="task.name"/></span>
+                                                        <span class="badge bg-danger-subtle bg-danger rounded-pill text-white px-3 py-1">This Week</span>
+                                                    </li>
+                                                </t>
+                                                <t t-elif="task_status === 'Next Week'">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <span class="text-muted"><t t-esc="task.name"/></span>
+                                                        <span class="badge bg-danger-subtle bg-warning rounded-pill text-white px-3 py-1">Next Week</span>
+                                                    </li>
+                                                </t>
+                                                <t t-else="">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <span class="text-muted"><t t-esc="task.name"/></span>
+                                                        <span class="badge bg-danger-subtle bg-success rounded-pill text-white px-4 py-1">Active</span>
+                                                    </li>
+                                                </t>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <li class="d-flex justify-content-center align-items-center fs-5 mt-3">
+                                                No Recent Tasks
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </section>
+                            </div>
                         </div>
                     </div>
                 </div>

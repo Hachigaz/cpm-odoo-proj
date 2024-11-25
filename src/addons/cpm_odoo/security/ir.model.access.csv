@@ -41,16 +41,22 @@ cpm_ma.edit_investors,cpm_ma.edit_investors,cpm_odoo.stakeholders_investor,cpm_g
 cpm_ma.edit_task_expenses,cpm_ma.edit_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.manage_project_finances,1,1,0,0
 
 cpm_ma.view_proj_documents,cpm_ma.view_proj_documents,cpm_odoo.root_project_doc_mgmt,cpm_gr.view_project_documents,1,0,0,0
-cpm_ma.view_contract_sets,cpm_ma.view_contract_sets,cpm_odoo.documents_contract_set,cpm_gr.view_project_documents,1,0,0,0
+cpm_ma.view_contract_sets,cpm_ma.view_contract_sets,cpm_odoo.contracts_contract_set,cpm_gr.view_project_documents,1,0,0,0
 cpm_ma.view_document_sets,cpm_ma.view_document_sets,cpm_odoo.documents_document_set,cpm_gr.view_project_documents,1,0,0,0
 cpm_ma.view_document_categories,cpm_ma.view_document_categories,cpm_odoo.documents_document_category,cpm_gr.view_project_documents,1,0,0,0
 cpm_ma.view_documents,cpm_ma.view_documents,cpm_odoo.documents_document,cpm_gr.view_project_documents,1,0,0,0
 
 cpm_ma.manage_proj_documents,cpm_ma.manage_proj_documents,cpm_odoo.root_project_doc_mgmt,cpm_gr.manage_project_documents,1,1,0,0
-cpm_ma.manage_contract_sets,cpm_ma.manage_contract_sets,cpm_odoo.documents_contract_set,cpm_gr.manage_project_documents,1,1,1,1
+cpm_ma.manage_contract_sets,cpm_ma.manage_contract_sets,cpm_odoo.contracts_contract_set,cpm_gr.manage_project_documents,1,1,1,1
 cpm_ma.manage_document_sets,cpm_ma.manage_document_sets,cpm_odoo.documents_document_set,cpm_gr.manage_project_documents,1,1,1,1
 cpm_ma.manage_document_categories,cpm_ma.manage_document_categories,cpm_odoo.documents_document_category,cpm_gr.manage_project_documents,1,1,1,1
 cpm_ma.manage_documents,cpm_ma.manage_documents,cpm_odoo.documents_document,cpm_gr.manage_project_documents,1,1,1,1
 
 cpm_ma.task_asgn_access_task,cpm_ma.task_asgn_access_task,cpm_odoo.planning_task,cpm_gr.project_mem_gr,1,0,0,0
 cpm_ma.task_asgn_manage_task_notes,cpm_ma.task_asgn_manage_task_notes,cpm_odoo.planning_task_note,cpm_gr.project_mem_gr,1,1,1,0
+
+cpm_manage_issue,cpm_manage_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.manage_issues,1,1,0,0
+cpm_user_issue,cpm_user_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.user_issues,1,1,1,1
+cpm_issue_category,cpm_issue_category,cpm_odoo.risk_mgmt_issue_category,base.group_user,1,1,1,1
+
+cpm_ma.view_staff_list,cpm_ma.view_staff_list,cpm_odoo.human_res_staff,base.group_user,1,0,0,0

@@ -23,7 +23,7 @@
                                     </span>
                                 </div>
                                 <div class="project_desc oe_kanban_content">
-                                    <div class="description">
+                                    <div class="description mb-2">
                                         <t t-if="record.description.value">
                                             <t t-esc="record.description"/> 
                                         </t>
@@ -36,7 +36,7 @@
                                             Start Date: 
                                             <t t-esc="record.start_date.value"/>
                                         </div>
-                                        <div class="end_date">
+                                        <div class="end_date mb-2">
                                             Expected End Date: 
                                             <t t-if="record.exp_end.value">
                                                 <t t-esc="record.exp_end.value"/>

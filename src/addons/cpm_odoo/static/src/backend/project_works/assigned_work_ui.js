@@ -49,6 +49,10 @@ class AssignedWorkPage extends Component{
     ]
 
     setup(){
+        if(session.uid !== parseInt(sessionStorage.getItem('user_id'))){
+            sessionStorage.clear()
+            sessionStorage.setItem('user_id',session.uid)
+        }
         if(getPageContext().client_action === this.constructor.clientActionName){
             this.currentPage = getPageContext().page_id;
             this.pageContext = getPageContext()

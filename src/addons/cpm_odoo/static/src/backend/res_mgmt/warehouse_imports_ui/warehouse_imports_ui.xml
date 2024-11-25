@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="cpm_odoo.ImportRecordItemList">
+            <div class="h-100 d-flex flex-column me-4">
+                <div class="d-flex mb-2 py-2 justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <h3 class="text-2xl font-bold text-gray-600 me-2">
+                            Imports
+                        </h3>
+                        <div class="ms-2 d-flex"> 
+                            <div class="">
+                                <select class="form-select" t-on-change="(event)=>{this.act_render_contents(event.target.value)}">
+                                    <option value="mat" t-att-selected="this.current_render_content==='mat'?true:false">Material Imports</option>
+                                    <option value="eqp" t-att-selected="this.current_render_content==='eqp'?true:false">Equipment Imports</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="btn-list me-2">
+                            <button class="btn btn-secondary rounded me-2" t-on-click="()=>{this.act_create_new_eqp_import_record()}">
+                                Import Equipments
+                            </button>
+                            <button class="btn btn-secondary rounded" t-on-click="()=>{this.act_create_new_mat_import_record()}">
+                                Import Materials
+                            </button>
+                        </div>
+                        <div class="filter-options d-flex align-items-center">
+                            <div class="me-2">
+                                <SearchBar inst="this" act_search="this.act_search">
+                
+                                </SearchBar>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-grow-1 pb-4">
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b">Date Created</th>
+                                <th class="py-2 px-4 border-b">Created By</th>
+                                <th class="py-2 px-4 border-b">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="page_data.page_arr.length > 0">
+                                <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                                    <tr class="hover:bg-gray-100 py-4 px-4 ">
+                                        <td class="py-2 px-4 border-b"><t t-esc="this.constructor.formatDateTime(item.date_created)"/></td>
+                                        <td class="py-2 px-4 border-b"><t t-esc="item.created_by.name?item.created_by.name:'Admin'"/> </td>
+                                        <td class="py-2 px-4 border-b">
+                                            <t t-if="!item.is_verified">
+                                                <button class="text-red-500 hover:text-red-700 mx-2" t-on-click="()=>{this.act_verify_record_detail(this.current_render_content,item.id)}"><i class="fa-solid fa-check-to-slot"></i></button>
+                                            </t>
+                                            <button class="text-blue-500 hover:text-blue-700 mx-2" t-on-click="()=>{this.act_view_record_detail(this.current_render_content,item.id)}"><i class="fas fa-eye fa-lg"></i></button>
+                                            <button class="text-yellow-500 hover:text-yellow-700 mx-2" t-on-click="()=>{this.act_edit_record_detail(this.current_render_content,item.id)}"><i class="fas fa-edit fa-lg"></i></button>
+                                            <button class="text-red-500 hover:text-red-700 mx-2" t-on-click="()=>{this.act_delete_record_detail(this.current_render_content,item.id)}"><i class="fas fa-trash fa-lg"></i></button>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="page_data.page_count > 1">
+                                    <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                        <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                            <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                                <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                    <t t-esc="page+1"/>
+                                                </button>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr class="py-4">
+                                    <td class="text-center border-b" colspan="6">
+                                        No record
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    </t>
+    <t t-name="cpm_odoo.WarehouseImportsUI">
+        <ImportRecordItemList extra_domain="[['warehouse_id','=',this.props.context_data.warehouse_info.id]]" context_data="this.props.context_data">
+
+        </ImportRecordItemList>
+    </t>
+</templates>

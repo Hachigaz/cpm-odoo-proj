@@ -29,7 +29,39 @@ export class WorkOverviewPage extends Component{
             "cpm_odoo.planning_task",
             "act_get_active_tasks",
             [
-                this.props.context_data.staff_id
+                [
+                    ['assigned_staff_ids','in',this.props.context_data.staff_id]
+                ]
+            ]
+        )
+
+        this.page_data.expiring_tasks = await this.orm.call(
+            "cpm_odoo.planning_task",
+            "act_get_expiring_tasks",
+            [
+                [
+                    ['assigned_staff_ids','in',this.props.context_data.staff_id]
+                ]
+            ]
+        )
+
+        this.page_data.upcoming_tasks = await this.orm.call(
+            "cpm_odoo.planning_task",
+            "act_get_upcoming_tasks",
+            [
+                [
+                    ['assigned_staff_ids','in',this.props.context_data.staff_id]
+                ]
+            ]
+        )
+
+        this.page_data.expired_tasks = await this.orm.call(
+            "cpm_odoo.planning_task",
+            "act_get_expired_tasks",
+            [
+                [
+                    ['assigned_staff_ids','in',this.props.context_data.staff_id]
+                ]
             ]
         )
     }

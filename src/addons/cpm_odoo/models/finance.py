@@ -73,6 +73,10 @@ class InvestmentRecord(models.Model):
         string='Created By'
     )
     
+    def act_process_transaction(self):
+        for record in self:
+            record.status='processed'
+    
 class ExpenseRecord(models.Model):
     _name = 'cpm_odoo.finance_expense_record'
     _description = "Expense Record"
@@ -154,6 +158,10 @@ class ExpenseRecord(models.Model):
             if(len(staff)>0):
                 val["created_by"] = staff.id
         return super().create(vals)
+    
+    def act_process_transaction(self):
+        for record in self:
+            record.status='paid'
     
 class ExpenseCategory(models.Model):
     _name = 'cpm_odoo.finance_expense_category'

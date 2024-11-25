@@ -2,56 +2,6 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 import json
 
-# class ProjectHRM(models.Model):
-#     _name = "cpm_odoo.root_project_hrm"
-#     _description = "Project HRM"
-    
-#     project_id = fields.Many2one(
-#         comodel_name = 'cpm_odoo.root_project', 
-#         string='Project',
-#         ondelete="cascade"
-#     )
-    
-#     project_staff_ids = fields.Many2many(
-#         comodel_name = 'cpm_odoo.human_res_staff', 
-#         string='Staffs',
-#         relation = "project_assigned_staffs",
-#         column1 = "hrm_id",
-#         column2 = "staff_id"
-#     )
-    
-#     # @api.onchange("project_staff_ids")
-#     # def _onchange_staff_ids(self):
-#     #     current_ids = self.project_staff_ids.ids
-#     #     previous_ids = self.env['cpm_odoo.human_res_staff'].browse(self.id).project_staff_ids.ids
-        
-#     #     # added_ids = set(current_ids) - set(previous_ids)
-#     #     # if added_ids:
-#     #     #     pass
-        
-        
-#     #     removed_ids = set(previous_ids) - set(current_ids)
-#     #     if removed_ids:
-#     #         for id in removed_ids:
-#     #             if(self.env["cpm_odoo.planning_task"].)
-#     #         pass
-    
-#     # assigned_accountant_ids = fields.Many2many(
-#     #     comodel_name = 'cpm_odoo.human_res_staff',
-#     #     string='Assigned Accountants'
-#     # )
-    
-#     # assigned_qcs = fields.Many2many(
-#     #     comodel_name = 'cpm_odoo.human_res_staff', 
-#     #     string='assigned_qcs'
-#     # )
-    
-#     def name_get(self, cr, user, ids, context=None):
-#         result = []
-#         for record in self:
-#             result.append((record.project_id.short_name))
-#         return result
-
 
 class ProjectPlanning(models.Model):
     _name = "cpm_odoo.root_project_planning"
@@ -233,7 +183,7 @@ class ProjectFinance(models.Model):
     @api.depends('total_investments','total_expenses')
     def _compute_current_budget(self):
         for record in self:
-            record.current_budget = total_investments - total_expenses
+            record.current_budget = record.total_investments - record.total_expenses
         pass
     
     
@@ -407,19 +357,10 @@ class Project(models.Model):
     )
     
     _inherits = {
-        # "cpm_odoo.root_project_hrm":"proj_hrm_id",
         "cpm_odoo.root_project_planning":"proj_planning_id",
         "cpm_odoo.root_project_finance":"proj_finance_id",
         "cpm_odoo.root_project_doc_mgmt":"proj_doc_id"
     }
-    
-    # proj_hrm_id = fields.Many2one(
-    #     comodel_name = 'cpm_odoo.root_project_hrm', 
-    #     string='HRM Management',
-    #     readonly=True,
-    #     required = True,
-    #     ondelete = 'restrict'
-    # )
     
     proj_planning_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project_planning', 
@@ -452,6 +393,14 @@ class Project(models.Model):
         ondelete="restrict"
     )
     
+    proj_mgmt_ids = fields.Many2many(
+        'cpm_odoo.human_res_staff', 
+        string='proj_mgmt_ids',
+        relation='cpm_odoo_proj_mgmt_ids_tab',
+        column1="pid",
+        column2="uid"
+    )
+    
     proj_mem_group_id = fields.Many2one(
         comodel_name = 'res.groups', 
         string='proj_mem_group',
@@ -459,18 +408,123 @@ class Project(models.Model):
         ondelete="restrict"
     )
     
+    proj_mem_ids = fields.Many2many(
+        'cpm_odoo.human_res_staff', 
+        string='proj_mem_ids',
+        relation='cpm_odoo_proj_mem_ids_tab',
+        column1="pid",
+        column2="uid"
+    )
+    
+    def add_staff_to_mgmt(self,staff_id):
+        for record in self:
+            record.write({
+                'proj_mgmt_ids':[(4,staff_id)]
+            })
+            staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+            staff_rec.write({
+                'groups_id':[[4,record.proj_mgmt_group_id.id]]
+            })
+    
+    def rem_staff_from_mgmt(self,staff_id):
+        for record in self:
+            record.write({
+                'proj_mgmt_ids':[(3,staff_id)]
+            })
+            staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+            staff_rec.write({
+                'groups_id':[[3,record.proj_mgmt_group_id.id]]
+            })
+    
+    def add_staff_to_mem(self,staff_id):
+        for record in self:
+            record.write({
+                'proj_mem_ids':[(4,staff_id)]
+            })
+            staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+            staff_rec.write({
+                'groups_id':[[4,record.proj_mem_group_id.id]]
+            })
+    
+    def rem_staff_from_mem(self,staff_id):
+        for record in self:
+            record.write({
+                'proj_mem_ids':[(3,staff_id)]
+            })
+            staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+            staff_rec.write({
+                'groups_id':[[3,record.proj_mem_group_id.id]]
+            })
+        
+    
+    
+    head_mgmt_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='head_mgmt_group',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
+    head_manager_ids = fields.Many2many(
+        comodel_name = 'cpm_odoo.human_res_staff', 
+        string='head_manager',
+        relation='proj_head_managers_tab',
+        column1="pid",
+        column2="sid"
+    )
+    
+    @api.onchange('head_manager_ids')
+    def _onchange_head_manager_ids(self):
+        if(self.sudo().id):
+            p_rec = self.sudo()
+            # Get old and new records
+            old_records = p_rec._origin.many2many_field
+            new_records = p_rec.many2many_field
+
+            # Determine changes
+            added_records = new_records - old_records
+            removed_records = old_records - new_records
+            
+            for rec in added_records:
+                p_rec.add_head_manager(rec.id)
+            
+            for rec in removed_records:
+                p_rec.rem_head_manager(rec.id)
+        
+    def add_head_manager(self,staff_id):
+        for record in self:
+            record.write({
+                'head_manager_ids':[(4,staff_id)]
+            })
+            staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+            staff_rec.write({
+                'groups_id':[[4,record.head_mgmt_group_id.id]]
+            })
+        pass
+    
+    def rem_head_manager(self,staff_id):
+        for record in self:
+            record.write({
+                'head_manager_ids':[(3,staff_id)]
+            })
+            staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+            staff_rec.write({
+                'groups_id':[[3,record.head_mgmt_group_id.id]]
+            })
+        pass
+    
     @api.model_create_multi
     def create(self, vals):
-        # raise ValidationError(json.dumps([group.name for group in self.env.user.groups_id]))
         records = super().create(vals)
         for record in records:
+            record = record.sudo()
             # record.proj_hrm_id.project_id = record.id
             record.proj_planning_id.project_id = record.id
             record.proj_finance_id.project_id = record.id
             record.proj_doc_id.project_id = record.id
             
             
-            mgmt_gr_rec = self.env["res.groups"].create({
+            mgmt_gr_rec = self.env["res.groups"].sudo().create({
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Mgmt Group {record.id}",
                 "implied_ids":[self.env.ref("cpm_gr.project_mgmt_gr").id],
@@ -479,7 +533,7 @@ class Project(models.Model):
             
             record.proj_mgmt_group_id = mgmt_gr_rec.id
             
-            mem_gr_rec = self.env["res.groups"].create({
+            mem_gr_rec = self.env["res.groups"].sudo().create({
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Member Group {record.id}",
                 "implied_ids":[self.env.ref("cpm_gr.project_mem_gr").id],
@@ -488,16 +542,28 @@ class Project(models.Model):
             
             record.proj_mem_group_id = mem_gr_rec.id
             
-            cur_user = self.env.user
-            cur_user.write({
-                'groups_id': [(4,mgmt_gr_rec.id),(4,mem_gr_rec.id)]
+            head_mgmt_gr_rec = self.env["res.groups"].sudo().create({
+                "id":f"cpm_gr.proj{record.id}",
+                "name":f"Project Head Manager Group {record.id}",
+                "implied_ids":[self.env.ref("cpm_gr.project_head_manager").id,mgmt_gr_rec.id,mem_gr_rec.id],
+                "comment":f"Project Header Manager Group {record.short_name}"
             })
-            mgmt_gr_rec.write({
-                "users":[(4,cur_user.id)]
-            })
-            mem_gr_rec.write({
-                "users":[(4,cur_user.id)]
-            })
+            record.head_mgmt_group_id = head_mgmt_gr_rec.id
+            
+            record.add_head_manager(self.env["cpm_odoo.human_res_staff"].search(["&",["user_id",'=',self.env.user.id],"|",['active','=',True],['active','=',False]]).id)
+            for user in record.head_manager_ids:
+                record.add_head_manager(user.id)
+                
+            # cur_user = self.env.user
+            # cur_user.write({
+            #     'groups_id': [(4,mgmt_gr_rec.id),(4,mem_gr_rec.id)]
+            # })
+            # mgmt_gr_rec.write({
+            #     "users":[(4,cur_user.id)]
+            # })
+            # mem_gr_rec.write({
+            #     "users":[(4,cur_user.id)]
+            # })
         return records
     
     rule_ids = fields.Many2many(
@@ -512,28 +578,3 @@ class Project(models.Model):
             for rule in record.rule_ids:
                 rule.unlink()
         return super().unlink()
-    
-    
-    
-    is_manager = fields.Boolean(
-        string="Is Manager",
-        compute="_compute_is_manager",
-        store=False
-    )
-
-    @api.depends('is_manager')
-    def _compute_is_manager(self):
-        for record in self:
-            record.is_manager = self.env.user.has_group(record.proj_mgmt_group_id)
-
-
-    is_member = fields.Boolean(
-        string="Is Member",
-        compute="_compute_is_member",
-        store=False
-    )
-
-    @api.depends('is_member')
-    def _compute_is_member(self):
-        for record in self:
-            record.is_manager = self.env.user.has_group(record.proj_mem_group_id)

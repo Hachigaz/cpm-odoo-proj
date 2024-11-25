@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.risk_mgmt_overview_kanban" model="ir.ui.view">
+            <field name="name">cpm_odoo.risk_mgmt_overview_kanban.kanban.view</field>
+            <field name="model">cpm_odoo.risk_mgmt</field>
+            <field name="arch" type="xml">
+                <kanban string="Risks" default_group_by="priority" create="False" edit="False" delete="False" >         
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="oe_kanban_details">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <div class="category">
+                                        <field name="category_id"/>
+                                    </div>
+                                    <div class="project">
+                                        <field name="project_id"/>
+                                    </div>
+                                    <div class="priority my-1">
+                                        <field name="priority" 
+                                            widget="badge" 
+                                            string="Priority"
+                                            decoration-muted="priority == '1'"
+                                            decoration-warning="priority == '2'"
+                                            decoration-danger="priority == '3'" />
+                                    </div>
+                                    <div class="btn-list my-2">
+                                        <button name="action_view_solutions" type="object" class="btn btn-primary" t-att-data-id="record.id">
+                                            View Solutions
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <!-- <record id="cpm_odoo.risk_mgmt_tree" model="ir.ui.view">
+            <field name="name">cpm_odoo.risk_mgmt.tree</field>
+            <field name="model">cpm_odoo.risk_mgmt</field>
+            <field name="arch" type="xml">
+                <tree string="Risks">
+                    <field name="name"/>
+                    <field name="priority" 
+                      widget="badge" 
+                      string="Priority"
+                      decoration-muted="priority == '1'"
+                      decoration-warning="priority == '2'"
+                      decoration-danger="priority == '3'" />
+                </tree>
+            </field>
+        </record> -->
+    </data>
+</odoo>

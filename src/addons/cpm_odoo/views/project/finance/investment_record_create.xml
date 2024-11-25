@@ -13,7 +13,7 @@
                                 <field name="description" string="Description"></field>
                             </group>
                             <group colspan="1">
-                                <field name="investor_id" string="Investor"></field>
+                                <field name="investor_id" string="Investor" domain="[['id','in',context.get('display_investor_ids')]]" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                                 <field name="amount" string="Amount" widget="monetary"></field>
                                 <field name="cur_id" string="Currency"></field>
                             </group>

@@ -29,6 +29,9 @@ class Workflow(models.Model):
         for record in self:
             if record.start_date < record.planning_id.project_id.start_date:
                 raise ValidationError("The start date of the workflow must be larger than start date of the project ({}).".format(record.planning_id.project_id.start_date))
+            for dep_rec in record.depends_on:
+                if record.start_date < dep_rec.exp_end:
+                    raise ValidationError(f"The start date of the workflow must be larger than the expected end date of the depending workflows (Workflow {dep_rec.name} - {dep_rec.exp_end}).")
     
     exp_end = fields.Date(
         string = 'Due Date',
@@ -145,6 +148,9 @@ class Workflow(models.Model):
         #check for unassigned tasks
         if(workflow.unassigned_task_count>0):
             raise ValidationError(f"The workflow {workflow.name} has unassigned tasks.")
+        for rec in workflow.task_ids:
+            if rec.unattached_contractor_count > 0:
+                raise ValidationError(f"The workflow {workflow.name} has tasks ({rec.name}) with contractors without attached contracts")
         #set active status
         if workflow.workflow_status =='draft':
             workflow.workflow_status = 'active'
@@ -213,7 +219,7 @@ class TaskAssignContractor(models.Model):
     )
     
     contract_set_id = fields.Many2one(
-        comodel_name = 'cpm_odoo.documents_contract_set', 
+        comodel_name = 'cpm_odoo.contracts_contract_set', 
         string='contract_set',
         ondelete="restrict",
         default=None
@@ -349,6 +355,18 @@ class Task(models.Model):
             record.assigned_contractor_count = len(record.assigned_contractor_ids)
         pass
     
+    unattached_contractor_count = fields.Integer(
+        string = 'Unattached Contract Contractor Count',
+        compute = '_compute_unattached_contractor_count',
+        store=True
+    )
+    
+    @api.depends('assigned_contractor_ids.contract_set_id')
+    def _compute_unattached_contractor_count(self):
+        for record in self:
+            record.unattached_contractor_count = sum([1 for rec in record.assigned_contractor_ids if rec.contract_set_id == None])
+        pass
+    
     @api.model
     def act_assign_contractors_to_task(self,task_id,contractor_ids):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
@@ -367,9 +385,10 @@ class Task(models.Model):
     @api.model
     def act_unassign_contractors_to_task(self,task_id,contractor_ids):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
-
+        
+        assigned_ids = [rec.id for rec in task.assigned_contractor_ids if rec.contractor_id.id in contractor_ids]
         task.write({
-            "assigned_contractor_ids":[[2,id] for id in contractor_ids]
+            "assigned_contractor_ids":[[2,id] for id in assigned_ids]
         })
 
         pass
@@ -404,6 +423,9 @@ class Task(models.Model):
         for record in self:
             if(record.start_date < record.workflow_id.start_date):
                 raise ValidationError("The task start date must be larger than the start date of the workflow ({}).".format(record.workflow_id.start_date))
+            for dep_rec in record.depends_on:
+                if record.start_date < dep_rec.exp_end:
+                    raise ValidationError(f"The start date of the task must be larger than the expected end date of the depending tasks (Workflow {dep_rec.name} - {dep_rec.exp_end}).")
     
     exp_end = fields.Date(
         string = 'Due',
@@ -417,6 +439,7 @@ class Task(models.Model):
                 raise ValidationError("The expected end date must be larger than the start date.")
             if(record.exp_end > record.workflow_id.exp_end):
                 raise ValidationError(f"The expected end date must be larger than workflow expected end date ({record.workflow_id.exp_end}).")
+  
     
     end_date = fields.Date(
         string = 'Finished',
@@ -502,21 +525,66 @@ class Task(models.Model):
 
     #task actions
     @api.model
-    def act_get_active_tasks(self,staff_id):
-        active_tasks = self.env["cpm_odoo.planning_task"].search_read(
+    def act_get_active_tasks(self,domain,count=0,cols=[]):
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
             [
                 ('start_date','<',fields.Date.today()),
                 ('task_status','=','active'),
-                ('workflow_id.workflow_status','=','active'),
-                # ('assigned_staff_ids','in',[staff_id])
-            ],
-            [],
-            0,0,
-            "exp_end desc"
+                ('workflow_id.workflow_status','=','active')
+            ] + domain,
+            cols,
+            0,count,
+            "exp_end asc"
         )
         return active_tasks
 
+    @api.model
+    def act_get_upcoming_tasks(self,domain,count=0,cols=[]):
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ('start_date','>',fields.Date.today()),
+                ('task_status','=','active'),
+                ('workflow_id.workflow_status','=','active')
+            ] + domain,
+            cols,
+            0,count,
+            "exp_end asc"
+        )
+        return task_recs
 
+    @api.model
+    def act_get_expiring_tasks(self,domain,count=0,cols=[]):
+        one_week_later = (datetime.today() + timedelta(days=7)).date()
+
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ('start_date','<=',fields.Date.today()),
+                ('exp_end','<=',one_week_later),
+                ('task_status','=','active'),
+                ('workflow_id.workflow_status','=','active')
+            ] + domain,
+            cols,
+            0,count,
+            "exp_end asc"
+        )
+        return task_recs
+
+    @api.model
+    def act_get_expired_tasks(self,domain,count=0,cols=[]):
+
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ('start_date','<=',fields.Date.today()),
+                ('exp_end','<=',fields.Date.today()),
+                ('task_status','=','active'),
+                ('workflow_id.workflow_status','=','active')
+            ] + domain,
+            cols,
+            0,count,
+            "exp_end asc"
+        )
+        return task_recs
+    
     @api.model_create_multi
     def create(self, vals):
         for val in vals:
@@ -529,6 +597,26 @@ class Task(models.Model):
         
         return super().create(vals)
     
+    def write(self, vals):
+        for rec in self:
+            if rec.workflow_id.workflow_status != 'draft':
+                for val in vals:
+                    if val["start_date"] or val["exp_end"]:
+                        raise ValidationError(f"Cannot change date of non-draft status task: Task {rec.name}")
+        return super().write(vals)
+    
+    
+    priority = fields.Selection(
+        [
+            ('normal', 'Normal'),
+            ('low', 'Low'),
+            ('medium', 'Medium'),
+            ('high', 'High'),
+            ('critical', 'Critical')
+        ],
+        string='priority',
+        default="normal"
+    )
         
 class TaskCategory(models.Model):
     _name = 'cpm_odoo.planning_task_category'
@@ -652,7 +740,7 @@ class TaskExpense(models.Model):
         comodel_name = 'cpm_odoo.finance_expense_record', 
         string='expense',
         required=True,
-        ondelete = "restrict"
+        ondelete = "cascade"
     )
     
     expense_type = fields.Selection([

@@ -3,8 +3,9 @@ import { GanttDisplay, ItemList, SearchBar} from "../../components/components";
 import { PlanningDocumentManagementTab } from "../../doc_mgmt/document_mgmt";
 import { DocumentSetItemList } from "../../doc_mgmt/document_mgmt";
 import { useService } from "@web/core/utils/hooks";
-import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime} from "../../components/component_utils";
+import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, joinM2MDatas, formatSnakeStr} from "../../components/component_utils";
 import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
+import { formatCurrency } from "../finance/components";
 
 class PlanningOverview extends Component {
     static page_name = "PlanningOverview"
@@ -121,6 +122,7 @@ class PlanningWorkflowList extends Component{
     static template = "cpm_odoo.PlanningWorkflowList";
 
     formatDate = formatDate
+    static formatSnakeStr = formatSnakeStr
 
     setup(){
         onWillStart(()=>{
@@ -404,6 +406,9 @@ class PlanningManageWorkflow extends Component{
     static template = "cpm_odoo.PlanningManageWorkflow";
     static components = {PlanningTaskList,PlanningTaskGraph}
 
+    static formatDate = formatDate
+    static formatSnakeStr = formatSnakeStr
+
     setup(){
         const page_name = PlanningManageWorkflow.page_name
         this.pageInfo = getPageInfo(page_name)
@@ -419,11 +424,16 @@ class PlanningManageWorkflow extends Component{
             },
             task_list:[]
         })
+
+        this.overview_page_data = useState({
+            task_list:[]
+        })
+
+        this.action = useService('action')
         
-        this.loadData()
 
-        onWillStart(()=>{
-
+        onWillStart(async ()=>{
+            await this.loadData()
         })
     }
     
@@ -436,7 +446,7 @@ class PlanningManageWorkflow extends Component{
                 [
                     ['id','=',this.pageInfo.workflow_id]
                 ],
-                ["id","name","start_date","exp_end","workflow_status","task_count","unassigned_task_count","workflow_status"],
+                ["id","name","start_date","exp_end","workflow_status","task_count","unassigned_task_count","active_task_count","completed_task_count","verified_task_count"],
                 0,1,null
             ]
         ))[0]
@@ -452,10 +462,22 @@ class PlanningManageWorkflow extends Component{
                 [
                     ['workflow_id','=',this.pageInfo.workflow_id]
                 ],
-                ["id","name","description","start_date","exp_end","assigned_staff_count","assigned_contractor_count","depends_on"],
+                ["id","name","description","start_date","exp_end","assigned_staff_count","assigned_contractor_count",'task_status',"depends_on"],
                 0,null,null
             ]
         )
+
+        await this.loadOverviewPageData()
+    }
+
+    async loadOverviewPageData(){
+        this.overview_page_data.task_list = [...this.page_data.task_list].splice(0,6)
+        
+
+        this.overview_page_data.workflow_progress_val = ((this.page_data.workflow_info.verified_task_count / (this.page_data.workflow_info.task_count>0?this.page_data.workflow_info.task_count:1)) * 100);
+        this.overview_page_data.workflow_progress = ((this.page_data.workflow_info.verified_task_count / (this.page_data.workflow_info.task_count>0?this.page_data.workflow_info.task_count:1)) * 100).toFixed(1);
+
+        console.log(this.page_data.workflow_info,this.overview_page_data.workflow_progress) 
     }
 
     async act_create_new_task(){
@@ -464,7 +486,7 @@ class PlanningManageWorkflow extends Component{
             "act_create_task",
             [this.pageInfo.workflow_id]
         )
-        this.props.context_data.action.doAction(result)
+        this.action.doAction(result)
         // await this.props.context_data.action.doAction({
         //     type: 'ir.actions.act_window',
         //     name: 'Create New Task',
@@ -486,6 +508,19 @@ class PlanningManageWorkflow extends Component{
             [this.pageInfo.workflow_id]
         )
     }
+
+    async act_edit_general_info(){
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Workflow - Edit Info',
+            res_model: 'cpm_odoo.planning_workflow',
+            view_mode: 'form',
+            res_id:this.page_data.workflow_info.id,
+            views: [[false, 'form']],
+            target: 'new',
+            context: { 'default_field': 'value' },
+        });
+    }
 }
 
 
@@ -502,6 +537,7 @@ class PlanningStaffList extends ItemList{
     
 
     setup(){
+        console.log(this.props.extra_domain)
         super.init()
 
         this.page_data.model_name = "cpm_odoo.human_res_staff"
@@ -510,14 +546,14 @@ class PlanningStaffList extends ItemList{
         this.page_data.item_display_count=24
         this.page_data.page_display_count=7
         
-        this.search_filter.search_bar.cols=["full_name"]
+        this.search_filter.search_bar.cols=["name"]
         
         super.setup()
 
         useEffect(()=>{
-            this.page_data.extra_domain = [["id","in",Array.from(this.props.task_info.assigned_staff_ids)]]
-            this.act_setup_list()
-        },()=>[this.props.task_info.assigned_staff_ids])
+            this.page_data.extra_domain = this.props.extra_domain
+        },
+        ()=>[this.props.extra_domain])
     }
 }
 
@@ -531,20 +567,57 @@ class PlanningContractorList extends ItemList{
     setup(){
         super.init()
 
-        this.page_data.model_name = "cpm_odoo.stakeholders_contractor"
+        this.page_data.model_name = "cpm_odoo.planning_task_assign_contractor"
         this.page_data.column_list = []//columns to get from model
-        this.page_data.order_by_str = "category_id asc, name asc"
+        this.page_data.order_by_str = ""
+        this.page_data.join_cols = [
+            ['contractor_id','cpm_odoo.stakeholders_contractor',["id","name","description"]]
+        ]
         this.page_data.item_display_count=24
         this.page_data.page_display_count=7
         
         this.search_filter.search_bar.cols=["name"]
-        
+        this.action=useService('action')
         super.setup()
 
         useEffect(()=>{
-            this.page_data.extra_domain = [["id","in",Array.from(this.props.task_info.assigned_contractor_ids)]]
+            this.page_data.extra_domain = [["task_id","=",this.props.task_info.id]]
             this.act_setup_list()
         },()=>[this.props.task_info.assigned_contractor_ids])
+    }
+
+    async act_attach_contract(contractor_assign_id){
+        let view_id = await this.orm.call(
+            'ir.ui.view',
+            'search_read',
+            [
+                [
+                    ['name','=','cpm_odoo.planning_task_assign_contractor_attach_contract']
+                ],
+                ['id','name','xml_id'],
+                0,1,""
+            ]
+        )
+
+        view_id = view_id[0].id
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Attach Contract',
+            res_model: 'cpm_odoo.planning_task_assign_contractor',
+            view_mode: 'form',
+            res_id:contractor_assign_id,
+            views: [[view_id, 'form']],
+            target: 'new',
+            context:{project_id:this.props.context_data.project_id}
+        });
+    }
+
+    async act_view_contract(contract_id){
+        await this.action.doAction({
+            type: 'ir.actions.client',
+            tag: 'cpm_odoo.document_set_detail',
+            context: {document_set_id:contract_id}
+        });
     }
 }
 
@@ -564,7 +637,7 @@ class PlanningStaffAssignPanel extends ItemList{
         this.page_data.order_by_str = "department_id asc,first_name asc,last_name asc"
         this.page_data.item_display_count=24
         this.page_data.page_display_count=7
-        this.search_filter.search_bar.cols=["full_name"]
+        this.search_filter.search_bar.cols=["name"]
 
 
         this.props.asgn_act.load = null
@@ -703,6 +776,10 @@ class PlanningContractorAssignPanel extends ItemList{
         
         this.search_filter.search_bar.cols=["name"]
 
+        useEffect(()=>{
+            this.assigned_contractors_ids = this.props.task_info.assigned_contractor_ids.map(obj=>obj.contractor_id[0])
+            this.act_setup_list()
+        },()=>[this.props.task_info.assigned_contractor_ids])
 
         this.props.asgn_act.load = null
         this.props.asgn_act.save = this.act_save
@@ -836,6 +913,8 @@ class PlanningTaskAttachedDocumentsPanel extends Component{
 
         this.cmp_root = useRef('cmp-root')
 
+        
+
         useEffect(()=>{
             if(this.props.task_info.attached_document_ids){
                 this.doc_set_item_list.extra_domain = [["id","in",Array.from(this.props.task_info.attached_document_ids)]]
@@ -937,16 +1016,18 @@ class PlanningTaskExpenseList extends ItemList{
     }
 
     static formatDateTime=formatDateTime
+    static formatCurrency = formatCurrency
     
 
     setup(){
         super.init()
 
         this.page_data.model_name = "cpm_odoo.planning_task_expense"
-        this.page_data.column_list = ["id","title","description","amount","category_id","date_created","created_by","expense_type","status"]
+        this.page_data.column_list = ["id","title","description","amount","category_id","date_created","created_by","expense_type","status",'cur_id']
         this.page_data.order_by_str = "date_created desc, title asc"
         this.page_data.join_cols = [
-            ['category_id','cpm_odoo.finance_expense_category']
+            ['category_id','cpm_odoo.finance_expense_category'],
+            ["cur_id","res.currency",["id","symbol","position","decimal_places","rate"]]
         ]
         this.search_filter.search_bar.cols=['name']
         
@@ -1017,7 +1098,6 @@ class PlanningManageTask extends Component{
             }
         })
         
-        this.loadData()
 
         this.staff_asgn_act = useState({
             load:undefined,
@@ -1031,8 +1111,8 @@ class PlanningManageTask extends Component{
             cancel:undefined
         })
 
-        onWillStart(()=>{
-
+        onWillStart(async ()=>{
+            await this.loadData()
         })
 
         onMounted(()=>{
@@ -1044,7 +1124,7 @@ class PlanningManageTask extends Component{
     
 
     async loadData(){
-        this.page_data.task_info = (await this.props.context_data.orm.call(
+        let task_info = (await this.props.context_data.orm.call(
             'cpm_odoo.planning_task',
             'search_read',
             [
@@ -1054,10 +1134,18 @@ class PlanningManageTask extends Component{
                 ["id","name","start_date","exp_end","task_status","assigned_staff_ids","assigned_contractor_ids","attached_document_ids"],
                 0,1,null
             ]
-        ))[0]
+        ))
+
+        await joinM2MDatas(
+            task_info,this.props.context_data.orm,['assigned_contractor_ids','cpm_odoo.planning_task_assign_contractor',[]]
+        )
+        
+        this.page_data.task_info= task_info[0]
         if(!this.page_data.task_info){
             moveToPage(false,"workflow")
         }
+        
+        this.assigned_staff_extra_domain = [['id','in',this.page_data.task_info.assigned_staff_ids]]
     }
 
     async act_edit_task_info(){

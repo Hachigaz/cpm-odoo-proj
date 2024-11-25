@@ -49,6 +49,17 @@ export function getPageInfo(page_name){
     }
 }
 
+export function clearPageInfo(page_name){
+    sessionStorage.removeItem(`page_info:${page_name}`) 
+}
+
+export function formatSnakeStr(str){
+    return str
+    .split('_') // Split the string by underscores
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+    .join(' '); // Join the words back together with spaces
+}
+
 export function formatDate(date_str){
     const inputDate = date_str;
 
@@ -78,6 +89,46 @@ export function formatDateTime(dt_str){
     return `${time_str[0]}:${time_str[1]} ${day}/${month}/${year}`
 }
 
+export function categorizeDate(dateString) {
+    const inputDate = new Date(dateString);
+    const now = new Date();
+    
+    // Normalize the dates to ignore the time part
+    const today = new Date(now.setHours(0, 0, 0, 0));
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    
+    // Set the current date to the start of the week (Sunday)
+    const startOfThisWeek = new Date(new Date(today).setDate(today.getDate() - today.getDay()));
+    const startOfNextWeek = new Date(startOfThisWeek);
+    startOfNextWeek.setDate(startOfNextWeek.getDate() + 7);
+    const endOfNextWeek = new Date(startOfNextWeek);
+    endOfNextWeek.setDate(endOfNextWeek.getDate() + 6);
+    
+    // Check for "Today"
+    if (inputDate >= today && inputDate < tomorrow) {
+        return "Today";
+    }
+    // Check for "Tomorrow"
+    if (inputDate >= tomorrow && inputDate < new Date(tomorrow).setHours(24, 0, 0, 0)) {
+        return "Tomorrow";
+    }
+    // Check if it's in the past today
+    if (inputDate < today) {
+        return "Passed today";
+    }
+    // Check for "This week"
+    if (inputDate >= startOfThisWeek && inputDate < startOfNextWeek) {
+        return "This week";
+    }
+    // Check for "Next week"
+    if (inputDate >= startOfNextWeek && inputDate <= endOfNextWeek) {
+        return "Next week";
+    }
+    // Otherwise, it's "Other"
+    return "Other";
+}
+
 export async function joinDatas(list,orm,cols){
     let col_recs = []
     
@@ -99,10 +150,31 @@ export async function joinDatas(list,orm,cols){
 
         col_recs.push(recs)
     }
+}
 
-    list.forEach((rec,idx)=>{
-        for(let i=0;i<cols.length;i++){
-            list[idx][cols[i][0]] = col_recs[i].find(col_rec=>col_rec.id===rec[cols[i][0]][0])
-        }
-    })
+
+export async function joinM2MDatas(list,orm,col){
+    for (const [idx,rec] of list.entries()){
+        list[idx][col[0]] = await orm.call(
+            col[1],
+            "search_read",
+            [
+                [
+                    ['id','in',list[idx][col[0]]]
+                ],
+                col[2],0,0,""
+            ]
+        )
+    }
+}
+
+export async function isInGroup(user_id,gr_xml_id,orm){
+    let result = await orm.call(
+        "res.users",
+        "has_group",
+        [
+            gr_xml_id
+        ]
+    )
+    return result
 }
