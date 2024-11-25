@@ -95,7 +95,7 @@ class Issue(models.Model):
     _name = "cpm_odoo.risk_mgmt_issue"
     _description = "Model"
     
-    name = fields.Char(
+    title = fields.Char(
         string = 'Name',
         required=True,
         size = 256

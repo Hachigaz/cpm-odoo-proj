@@ -15,9 +15,9 @@
                     <sheet>
                         <group col="3" string="Task Info">
                             <group colspan="2">
-                                <field name="workflow_id" string="Workflow"></field>
+                                <field name="workflow_id" string="Workflow" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                                 <field name="name" string="Task Name"></field>
-                                <field name="category_id" string="Category"></field>
+                                <field name="category_id" string="Category" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                                 <field name="description" string="Description"></field>
                             </group>
                             <group colspan="1">
@@ -27,7 +27,7 @@
                             </group>
                         </group>
                         <group string="Dependencies">
-                            <field name="depends_on" string="Depends On" widget='many2many'>
+                            <field name="depends_on" string="Depends On" widget='many2many' options="{'no_create':True, 'no_quick_create':True, 'no_open':False,'no_create_edit':True}">
                                 <tree 
                                     create="False" edit="False" delete="False" import="False" export_xlsx="False" 
                                     open_form_view="False" default_order="start_date desc,exp_end desc,name asc" 

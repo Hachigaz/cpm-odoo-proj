@@ -4,6 +4,7 @@ import { useService } from "@web/core/utils/hooks";
 import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime} from "../../components/component_utils";
 import { Component, onWillStart, onMounted, onWillUnmount, onWillDestroy, useEffect, useState, useRef} from "@odoo/owl";
 
+
 export class ExportRecordItemList extends ItemList{
     static page_name='cpm_odoo.ExportRecordItemList'
     static template="cpm_odoo.ExportRecordItemList"

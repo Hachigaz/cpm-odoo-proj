@@ -173,9 +173,13 @@ export class ItemList extends Component{
                 domain:[],
                 extra_domain:[],
                 order_by_str:"",
-                join_cols:[]
+                join_cols:[],
+                updated_at:0
             })
-    
+            
+            if(this.props.extra_domain){
+                this.page_data.extra_domain = this.props.extra_domain
+            }
     
             this.search_filter = useState({
                 search_bar:{
@@ -207,7 +211,7 @@ export class ItemList extends Component{
                 domain.push(item)
             })
         }
-        if (this.page_data.extra_domain){
+        if (this.page_data.extra_domain && this.page_data.extra_domain.length > 0){
             this.page_data.extra_domain.forEach((item)=>{
                 domain.push(item)
             })
@@ -228,7 +232,7 @@ export class ItemList extends Component{
             page_count+=1
         }
         this.page_data.page_count = page_count
-        this.act_load_page(0)
+        await this.act_load_page(0)
     }
 
     async act_load_page(page){
@@ -239,10 +243,15 @@ export class ItemList extends Component{
                     domain.push(item)
                 })
             }
-            if (this.page_data.extra_domain){
+            if (this.page_data.extra_domain && this.page_data.extra_domain.length > 0){
                 this.page_data.extra_domain.forEach((item)=>{
                     domain.push(item)
                 })
+            }
+            const now = Date.now();
+            
+            if(this.page_data.model_name === "cpm_odoo.human_res_staff"){
+                console.log(this.page_data.extra_domain,domain,now)
             }
             this.page_data.current_page = page
             let item_list = await this.orm.call(
@@ -262,8 +271,10 @@ export class ItemList extends Component{
             }
 
             this.get_page_list()
-            this.page_data.item_list = item_list
-            // console.log(this.page_data.item_list)
+            if(this.page_data.updated_at<now){
+                this.page_data.updated_at=now
+                this.page_data.item_list = item_list
+            }
         }
     }
 

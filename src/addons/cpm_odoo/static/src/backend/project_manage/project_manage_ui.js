@@ -6,8 +6,9 @@ import { Component, onWillStart, onMounted, mount, loadFile} from "@odoo/owl"
 import { useService } from "@web/core/utils/hooks"
 import { registry } from "@web/core/registry"
 import { ProjectPlanningPage} from "./planning/project_planning_pages";
-import { PlanningDocumentManagementTab } from "../doc_mgmt/document_mgmt";
+import { DocumentManagementTab } from "../doc_mgmt/document_mgmt";
 import { session } from "@web/session";
+import { ContractManagementTab } from "../doc_mgmt/contract_mgmt";
 
 class ProjectManageUI extends Component {
     static template = "cpm_odoo.ProjectManageUI";
@@ -17,7 +18,8 @@ class ProjectManageUI extends Component {
         ProjectOverviewPage,
         ProjectPlanningPage,
         ProjectFinancePage,
-        PlanningDocumentManagementTab
+        DocumentManagementTab,
+        ContractManagementTab
     };
 
     get pageComponent() {
@@ -53,7 +55,13 @@ class ProjectManageUI extends Component {
         {
             id: "documents",
             name:"Documents",
-            page:PlanningDocumentManagementTab,
+            page:DocumentManagementTab,
+            group_id:"cpm_manage_project_plans"
+        },
+        {
+            id: "contracts",
+            name:"Contracts",
+            page:ContractManagementTab,
             group_id:"cpm_manage_project_plans"
         }
     ]

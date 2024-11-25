@@ -46,6 +46,8 @@
                         <group cols="3" string="General Info">
                             <group colspan="2">
                                 <field name="warehouse_id" string="Warehouse" readonly="True"></field>
+                                <field name="export_type" string="Export Type"></field>
+                                <field name="delivered_by" string="Delivered By"></field>
                             </group>
                             <group colspan="1">
                                 <field name="date_created" string="Date Created" readonly="True"></field>

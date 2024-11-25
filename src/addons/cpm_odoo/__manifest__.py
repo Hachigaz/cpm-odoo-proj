@@ -48,6 +48,8 @@ Long description of module's purpose
         'views/doc_mgmt/document_category_create.xml',
         'views/doc_mgmt/document_set_create.xml',
         'views/doc_mgmt/add_doc_to_set_form.xml',
+        'views/doc_mgmt/contract_views.xml',
+        'views/doc_mgmt/contract_set_create.xml',
         
         'views/hr_mgmt/hr_acts.xml',
         'views/hr_mgmt/staff_create.xml',
