@@ -7,6 +7,7 @@
             <field name="arch" type="xml">
                 <graph string="Issue Resolved By Month" type="bar">
                     <field name="resolved_date" interval="month" type="row"/>
+                    <field name="level" type="col"/>
                     <field name="id" type="measure"/>
                 </graph>
             </field>
