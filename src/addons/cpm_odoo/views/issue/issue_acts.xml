@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================== -->
+        <!-- ======== issue menu -->
+        <!-- ============================================== -->
+        
+
+        <record id="cpm_odoo.issue_overview_act" model="ir.actions.act_window">
+          <field name="name">Issues</field>
+          <field name="res_model">cpm_odoo.risk_mgmt_issue</field>
+          <field name="view_mode">kanban</field>
+        </record>
+    
+        <menuitem name="Issues" id="cpm_odoo.issue_root" action="cpm_odoo.issue_overview_act"/>
+
+        <record id="cpm_odoo.issue_create_act" model="ir.actions.act_window">
+          <field name="name">New Issue</field>
+          <field name="res_model">cpm_odoo.risk_mgmt_issue</field>
+          <field name="view_mode">form</field>
+        </record>
+    
+        <menuitem 
+          parent='cpm_odoo.issue_root' 
+          name="Create New Issue" 
+          id="cpm_odoo.issue_menu" 
+          action="cpm_odoo.issue_create_act" 
+          groups="cpm_gr.user_issues"
+        />
+
+        <record id="cpm_odoo.issue_dashboard_act" model="ir.actions.act_window">
+          <field name="name">Dashboard</field>
+          <field name="res_model">cpm_odoo.risk_mgmt_issue</field>
+          <field name="view_mode">graph</field>
+        </record>
+
+        <menuitem
+          id="cpm_odoo.issue_dashboard_menu"
+          parent="cpm_odoo.issue_root"
+          name="Dashboard"
+          action="cpm_odoo.issue_dashboard_act"
+          groups="cpm_gr.manage_issues"
+        />
+
+        <record id="cpm_odoo.safety_mesures_act" model="ir.actions.act_window">
+          <field name="name">Safety Measures</field>
+          <field name="res_model">cpm_odoo.safety_mgmt</field>
+          <field name="views">form</field>
+        </record>
+
+        <menuitem
+          id="cpm_odoo.safety_mesures_menu"
+          parent="cpm_odoo.issue_root"
+          name="Safety Measures"
+          action="cpm_odoo.safety_mesures_act"
+        />
+    </data>
+</odoo>

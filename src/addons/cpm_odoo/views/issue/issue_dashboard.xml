@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.issue_dashboard_view_graph" model="ir.ui.view">
+            <field name="name">cpm_odoo.issue_dashboard_view_graph.graph</field>
+            <field name="model">cpm_odoo.risk_mgmt_issue</field>
+            <field name="arch" type="xml">
+                <graph string="Issue Resolved By Month" type="bar">
+                    <field name="resolved_date" interval="month" type="row"/>
+                    <field name="level" type="col"/>
+                    <field name="id" type="measure"/>
+                </graph>
+            </field>
+        </record>
+    </data>
+</odoo>
