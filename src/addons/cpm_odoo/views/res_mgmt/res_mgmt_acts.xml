@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+      <record id="cpm_odoo.res_mgmt_manage_warehouse_act" model="ir.actions.client">
+        <field name="name">Manage Warehouse</field>
+        <field name="tag">cpm_odoo.res_mgmt_manage_warehouse_act</field>
+        <field name="target">main</field>
+      </record>
         <!-- ============================================== -->
         <!-- ======== warehouses root menu -->
         <!-- ============================================== -->
-        <record id="cpm_odoo.warehouse_overview_act" model="ir.actions.act_window">
-          <field name="name">Resources Management</field>
-          <field name="res_model">cpm_odoo.planning_workflow</field>
-          <field name="view_mode">form</field>
-        </record>
-    
-        <menuitem name="Resources Management" id="cpm_odoo.warehouse_root" action="cpm_odoo.warehouse_overview_act"/>
-
+        <menuitem name="Resources Management" id="cpm_odoo.warehouse_root"/>
         
         <record id="cpm_odoo.assigned_warehouse_list_act" model="ir.actions.act_window">
           <field name="name">Assigned Warehouses</field>
@@ -19,8 +17,16 @@
           <field name="view_mode">kanban</field>
         </record>
 
-        <menuitem name="Warehouses" parent="cpm_odoo.warehouse_root" id="cpm_odoo.assigned_warehouse_menuitem" action="cpm_odoo.assigned_warehouse_list_act"/>
+        <menuitem sequence="10" name="Warehouses" parent="cpm_odoo.warehouse_root" id="cpm_odoo.assigned_warehouse_menuitem" action="cpm_odoo.assigned_warehouse_list_act"/>
 
+        <record id="cpm_odoo.create_new_warehouse_act" model="ir.actions.act_window">
+          <field name="name">New Warehouse</field>
+          <field name="res_model">cpm_odoo.res_mgmt_warehouse_info</field>
+          <field name="view_mode">form</field>
+          <field name="target">new</field>
+        </record>
+
+        <menuitem sequence="20" name="New Warehouse" parent="cpm_odoo.warehouse_root" id="cpm_odoo.create_new_warehouse_menuitem" action="cpm_odoo.create_new_warehouse_act"/>
 
         <record id="cpm_odoo.test_page" model="ir.actions.client">
           <field name="name">Test</field>
@@ -28,6 +34,6 @@
           <field name="target">main</field>
         </record>
 
-        <menuitem name="Test" parent="cpm_odoo.warehouse_root" id="cpm_odoo.warehouse_test" action="cpm_odoo.test_page"/>
+        <menuitem sequence="30" name="Test" parent="cpm_odoo.warehouse_root" id="cpm_odoo.warehouse_test" action="cpm_odoo.test_page"/>
     </data>
 </odoo>

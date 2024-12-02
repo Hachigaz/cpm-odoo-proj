@@ -96,6 +96,12 @@
         </DocumentSetItemList>
     </t>
 
+    <t t-name="cpm_odoo.DocumentCategoryTab">
+        <DocumentCategoryItemList>
+            
+        </DocumentCategoryItemList>
+    </t>
+
     <t t-name="cpm_odoo.DocumentManagementTab">
         <!-- Header -->
          

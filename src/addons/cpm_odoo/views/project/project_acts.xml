@@ -57,6 +57,7 @@
       <field name="res_model">cpm_odoo.root_project</field>
       <field name="view_mode">form</field>
       <field name="views">(cpm_odoo.proj_project_create_view_form,form)</field>
+      <field name="target">new</field>
     </record>
     <menuitem 
       sequence='30' parent='cpm_odoo.proj_root' 

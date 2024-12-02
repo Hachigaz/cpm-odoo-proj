@@ -250,9 +250,9 @@ export class ItemList extends Component{
             }
             const now = Date.now();
             
-            if(this.page_data.model_name === "cpm_odoo.human_res_staff"){
-                console.log(this.page_data.extra_domain,domain,now)
-            }
+            // if(this.page_data.model_name === "cpm_odoo.human_res_staff"){
+            //     console.log(this.page_data.extra_domain,domain,now)
+            // }
             this.page_data.current_page = page
             let item_list = await this.orm.call(
                 this.page_data.model_name,

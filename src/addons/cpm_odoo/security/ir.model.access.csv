@@ -1,4 +1,6 @@
 id,name,model_id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+cpm_ma.view_projects,cpm_ma.view_projects,cpm_odoo.root_project,base.group_user,1,0,0,0
+
 cpm_ma.create_and_edit_projects,cpm_ma.create_and_edit_projects,cpm_odoo.root_project,cpm_gr.create_and_edit_projects,1,1,1,0
 cpm_ma.create_and_edit_proj_doc,cpm_ma.create_and_edit_proj_doc,cpm_odoo.root_project_doc_mgmt,cpm_gr.create_and_edit_projects,1,1,1,0
 cpm_ma.create_and_edit_proj_planning,cpm_ma.create_and_edit_proj_planning,cpm_odoo.root_project_planning,cpm_gr.create_and_edit_projects,1,1,1,0
@@ -12,6 +14,10 @@ cpm_ma.planning_view_task_categories,cpm_ma.planning_view_task_categories,cpm_od
 cpm_ma.planning_view_task_expenses,cpm_ma.planning_view_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.view_project_plans,1,0,0,0
 cpm_ma.planning_view_task_notes,cpm_ma.planning_view_task_notes,cpm_odoo.planning_task_note,cpm_gr.view_project_plans,1,0,0,0
 cpm_ma.planning_view_task_note_categories,cpm_ma.planning_view_task_note_categories,cpm_odoo.planning_task_note_category,cpm_gr.view_project_plans,1,0,0,0
+cpm_ma.planning_view_task_assign_contractor,cpm_ma.planning_view_task_assign_contractor,cpm_odoo.planning_task_assign_contractor,cpm_gr.view_project_plans,1,0,0,0
+cpm_ma.planning_view_task_assign_staff,cpm_ma.planning_view_task_assign_staff,cpm_odoo.planning_task_assign_staff,cpm_gr.view_project_plans,1,0,0,0
+cpm_ma.planning_view_task_checklist_item,cpm_ma.planning_view_task_checklist_item,cpm_odoo.task_checklist_item,cpm_gr.view_project_plans,1,0,0,0
+cpm_ma.planning_view_task_history_log,cpm_ma.planning_view_task_history_log,cpm_odoo.task_history_log,cpm_gr.view_project_plans,1,0,0,0
 
 cpm_ma.planning_manage_planning,cpm_ma.planning_manage_planning,cpm_odoo.root_project_planning,cpm_gr.manage_project_plans,1,1,0,0
 cpm_ma.planning_manage_workflows,cpm_ma.planning_manage_workflows,cpm_odoo.planning_workflow,cpm_gr.manage_project_plans,1,1,1,1
@@ -21,6 +27,10 @@ cpm_ma.planning_manage_task_categories,cpm_ma.planning_manage_task_categories,cp
 cpm_ma.planning_manage_task_expenses,cpm_ma.planning_manage_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.manage_project_plans,1,1,1,1
 cpm_ma.planning_manage_task_notes,cpm_ma.planning_manage_task_notes,cpm_odoo.planning_task_note,cpm_gr.manage_project_plans,1,1,1,1
 cpm_ma.planning_manage_task_note_categories,cpm_ma.planning_manage_task_note_categories,cpm_odoo.planning_task_note_category,cpm_gr.manage_project_plans,1,1,1,1
+cpm_ma.planning_manage_task_assign_contractor,cpm_ma.planning_manage_task_assign_contractor,cpm_odoo.planning_task_assign_contractor,cpm_gr.manage_project_plans,1,1,1,1
+cpm_ma.planning_manage_task_assign_staff,cpm_ma.planning_manage_task_assign_staff,cpm_odoo.planning_task_assign_staff,cpm_gr.manage_project_plans,1,1,1,1
+cpm_ma.planning_manage_task_checklist_item,cpm_ma.planning_manage_task_checklist_item,cpm_odoo.task_checklist_item,cpm_gr.manage_project_plans,1,1,1,1
+cpm_ma.planning_manage_task_history_log,cpm_ma.planning_manage_task_history_log,cpm_odoo.task_history_log,cpm_gr.manage_project_plans,1,1,1,1
 
 cpm_ma.view_project_finances,cpm_ma.view_project_finances,cpm_odoo.root_project_finance,cpm_gr.view_project_finances,1,0,0,0
 cpm_ma.view_project_investor_record,cpm_ma.view_project_investor_record,cpm_odoo.project_investor_investment_record,cpm_gr.view_project_finances,1,0,0,0
@@ -52,11 +62,28 @@ cpm_ma.manage_document_sets,cpm_ma.manage_document_sets,cpm_odoo.documents_docum
 cpm_ma.manage_document_categories,cpm_ma.manage_document_categories,cpm_odoo.documents_document_category,cpm_gr.manage_project_documents,1,1,1,1
 cpm_ma.manage_documents,cpm_ma.manage_documents,cpm_odoo.documents_document,cpm_gr.manage_project_documents,1,1,1,1
 
-cpm_ma.task_asgn_access_task,cpm_ma.task_asgn_access_task,cpm_odoo.planning_task,cpm_gr.project_mem_gr,1,0,0,0
-cpm_ma.task_asgn_manage_task_notes,cpm_ma.task_asgn_manage_task_notes,cpm_odoo.planning_task_note,cpm_gr.project_mem_gr,1,1,1,0
-
-cpm_manage_issue,cpm_manage_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.manage_issues,1,1,0,0
-cpm_user_issue,cpm_user_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.user_issues,1,1,1,1
-cpm_issue_category,cpm_issue_category,cpm_odoo.risk_mgmt_issue_category,base.group_user,1,1,1,1
+cpm_ma.manage_issue,cpm_ma.manage_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.manage_issues,1,1,0,0
+cpm_ma.user_issue,cpm_ma.user_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.user_issues,1,1,1,1
+cpm_ma.issue_category,cpm_ma.issue_category,cpm_odoo.risk_mgmt_issue_category,base.group_user,1,1,1,1
 
 cpm_ma.view_staff_list,cpm_ma.view_staff_list,cpm_odoo.human_res_staff,base.group_user,1,0,0,0
+cpm_ma.view_department,cpm_ma.view_department,cpm_odoo.human_res_department,base.group_user,1,0,0,0
+cpm_ma.view_contractor,cpm_ma.view_contractor,cpm_odoo.stakeholders_contractor,base.group_user,1,0,0,0
+cpm_ma.view_contractor_category,cpm_ma.view_contractor_category,cpm_odoo.stakeholders_contractor_category,base.group_user,1,0,0,0
+
+cpm_ma.task_mem_view_planning,cpm_ma.task_mem_view_planning,cpm_odoo.root_project_planning,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_workflows,cpm_ma.task_mem_view_workflows,cpm_odoo.planning_workflow,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_task_info,task_mem_view_task_info,cpm_odoo.planning_task,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_task_history_log,cpm_ma.task_mem_view_task_history_log,cpm_odoo.task_history_log,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_task_assign_contractor,cpm_ma.task_mem_view_task_assign_contractor,cpm_odoo.planning_task_assign_contractor,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_task_assign_staff,cpm_ma.task_mem_view_task_assign_staff,cpm_odoo.planning_task_assign_staff,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_task_checklist_item,cpm_ma.task_mem_view_task_checklist_item,cpm_odoo.task_checklist_item,cpm_gr.project_mem_gr,1,1,0,0
+cpm_ma.task_mem_view_task_expenses,cpm_ma.task_mem_view_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_task_notes,cpm_ma.task_mem_view_task_notes,cpm_odoo.planning_task_note,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_task_note_categories,cpm_ma.task_mem_view_task_note_categories,cpm_odoo.planning_task_note_category,cpm_gr.project_mem_gr,1,0,0,0
+
+
+cpm_ma.task_head_mem_manage_task_checklist_item,cpm_ma.task_head_mem_manage_task_checklist_item,cpm_odoo.task_checklist_item,cpm_gr.project_head_mem_gr,1,1,1,1
+cpm_ma.task_head_mem_view_task_expenses,cpm_ma.task_head_mem_manage_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.project_head_mem_gr,1,1,1,1
+cpm_ma.task_head_mem_view_task_notes,cpm_ma.task_head_mem_manage_task_notes,cpm_odoo.planning_task_note,cpm_gr.project_head_mem_gr,1,1,1,1
+cpm_ma.task_head_mem_view_task_note_categories,cpm_ma.task_head_mem_manage_task_note_categories,cpm_odoo.planning_task_note_category,cpm_gr.project_head_mem_gr,1,1,1,1

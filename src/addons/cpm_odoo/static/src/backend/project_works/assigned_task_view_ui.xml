@@ -1,6 +1,191 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
     <t t-name="cpm_odoo.AssignedTaskDetailView">
-        
+        <div class="container my-4">
+            <!-- Task Header -->
+            <div class="row border-bottom pb-3 mb-4">
+                <div class="col-md-8">
+                    <h2 class="mb-1">
+                        Task Title
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Assigned to: <strong>Staff Name</strong>
+                    </p>
+                    <p class="text-muted">Due Date: <strong>December 10, 2024</strong></p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="btn-list">
+                        <button class="btn btn-sm btn-secondary me-2" t-on-click="()=>{this.act_create_task_issue()}">Report Issue</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task OverviewS -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                <h5>Task Overview</h5>
+                <p>Description of the task, detailing the objectives, scope, and requirements.</p>
+                <div class="d-flex align-items-center">
+                    <span class="me-2">Status:</span>
+                    <span class="badge bg-primary">In Progress</span>
+                </div>
+                </div>
+                <div class="col-md-6">
+                <h5>Details</h5>
+                <ul class="list-unstyled mb-0">
+                    <li><strong>Priority:</strong> High</li>
+                    <li><strong>Estimated Hours:</strong> 15</li>
+                    <li><strong>Created On:</strong> November 27, 2024</li>
+                </ul>
+                </div>
+            </div>
+
+            <!-- Tabs for Additional Features -->
+            <div id="task-detail-tabs">
+                <ul class="nav nav-tabs" id="taskDetailTabs" role="tablist">
+                    <li class="nav-item">
+                    <button class="nav-link" id="subtasks-tab" t-on-click="()=>{this.show_tab('subtasks')}">
+                        Checklist
+                    </button>
+                    </li>
+                    <li class="nav-item">
+                    <button class="nav-link" id="attachments-tab" t-on-click="()=>{this.show_tab('attachments')}">
+                        Attachments
+                    </button>
+                    </li>
+                    <li class="nav-item">
+                    <button class="nav-link" id="comments-tab" t-on-click="()=>{this.show_tab('comments')}">
+                        Comments
+                    </button>
+                    </li>
+                    <li class="nav-item">
+                    <button class="nav-link" id="history-tab" t-on-click="()=>{this.show_tab('history')}">
+                        History
+                    </button>
+                    </li>
+                </ul>
+                <!-- Tab Content -->
+                <div class="tab-content pt-3">
+                    <!-- Subtasks -->
+                    <div class="tab-pane fade" id="subtasks">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5>Checklist</h5>
+                            <div class="btn-list">
+                                <div class="btn btn-secondary" t-on-click="()=>{this.act_add_checklist_item()}">
+                                    Add Checklist Item
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="list-group">
+                            <t t-if="this.page_data.checklist.length>0">
+                                <t t-foreach="this.page_data.checklist" t-as="item" t-key="item.id">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div class="">
+                                            <t t-esc="item.title"/>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <div class="d-flex me-2">
+                                                <t t-if="item.assigned_staffs || item.assigned_contractors">
+                                                    <div class="me-1">
+                                                        <t t-foreach="item.assigned_staffs" t-as="mem" t-key="mem_index">
+                                                            <div class="img-wrapper" t-att-style="`width:40px;height:40px;${mem_index>0?'margin-left:-30px':''}`">
+                                                                <img
+                                                                    t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=${mem}&amp;field=avatar_256`" alt="Image"
+                                                                    style="width: 100%;aspect-ratio:1/1"
+                                                                    class="img-fluid rounded-circle"
+                                                                />
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                    <div class="me-1">
+                                                        <t t-foreach="item.assigned_contractors" t-as="mem" t-key="mem_index">
+                                                            <div class="img-wrapper" t-att-style="`width:40px;height:40px;${mem_index>0?'margin-left:-30px':''}`">
+                                                                <img
+                                                                    t-att-src="`web/image/?model=cpm_odoo.stakeholders_contractor&amp;id=${mem}&amp;field=avatar_256`" alt="Image"
+                                                                    style="width: 100%;aspect-ratio:1/1"
+                                                                    class="img-fluid rounded-circle"
+                                                                />
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                </t>
+                                                <t t-else="">
+
+                                                </t>
+                                            </div>
+                                            <div class="">
+                                                <t t-if="item.is_completed">
+                                                    <span class="badge bg-success bg-gradient text-white">Completed</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="badge bg-warning bg-gradient">In Progress</span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <t t-if="!item.is_completed">
+                                                <div class="btn btn-sm btn-secondary" t-on-click="()=>{this.mark_completed(item.id)}">
+                                                    Mark Completed
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </li>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <li class="text-center fs-4">
+                                    No Record
+                                </li>
+                            </t>
+                        </ul>
+                    </div>
+
+                    <!-- Attachments -->
+                    <div class="tab-pane fade" id="attachments">
+                        <h5>Attachments</h5>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div>
+                            <i class="bi bi-file-earmark"></i> <a href="#">Document.pdf</a>
+                            </div>
+                            <div>
+                            <i class="bi bi-image"></i> <a href="#">Image.jpg</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments -->
+                    <div class="tab-pane fade" id="comments">
+                        <h5>Comments</h5>
+                        <textarea class="form-control mb-3" rows="3" placeholder="Add a comment..."></textarea>
+                        <button class="btn btn-primary btn-sm">Post Comment</button>
+                        <ul class="list-unstyled mt-3">
+                            <li class="border-bottom pb-2 mb-2">
+                            <strong>User 1:</strong> Comment details here.
+                            <small class="text-muted d-block">2 hours ago</small>
+                            </li>
+                            <li>
+                            <strong>User 2:</strong> Another comment.
+                            <small class="text-muted d-block">1 day ago</small>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- History -->
+                    <div class="tab-pane fade" id="history">
+                        <h5>History</h5>
+                        <ul class="list-unstyled">
+                            <t t-foreach="this.page_data.history_log" t-as="log" t-key="log.id">
+                                <li>
+                                    <i class="fa-regular fa-clock"></i> <t t-esc="log.title"/>
+                                </li>
+                            </t>
+                            <!-- <li>
+                            <i class="bi bi-clock-history"></i> Task marked as "In Progress" by Staff Name - 2 days ago
+                            </li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </t>
 </templates>

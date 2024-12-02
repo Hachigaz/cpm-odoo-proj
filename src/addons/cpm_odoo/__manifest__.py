@@ -39,6 +39,7 @@ Long description of module's purpose
         
         'views/project/planning/tasks/create_task.xml',
         'views/project/planning/tasks/create_task_expense.xml',
+        'views/project/planning/tasks/task_detail_forms.xml',
         'views/project/planning/workflows/create_workflow.xml',
         
         'views/project/finance/expense_category_create.xml',
@@ -53,6 +54,26 @@ Long description of module's purpose
         
         'views/hr_mgmt/hr_acts.xml',
         'views/hr_mgmt/staff_create.xml',
+        'views/hr_mgmt/staff_view.xml',
+        
+        'views/stakeholders/contractor_create.xml',
+        
+        'views/res_mgmt/res_mgmt_acts.xml',
+        'views/res_mgmt/views/warehouse_info/warehouse_info_create.xml',
+        'views/res_mgmt/views/warehouse_info/assigned_warehouse_kanban.xml',
+        'views/res_mgmt/views/mat/material_create.xml',
+        'views/res_mgmt/views/mat/material_type_create.xml',
+        'views/res_mgmt/views/eqp/equipment_create.xml',
+        'views/res_mgmt/views/eqp/equipment_type_create.xml',
+        'views/res_mgmt/views/imports/mat_import_record_create.xml',
+        'views/res_mgmt/views/imports/eqp_import_record_create.xml',
+        'views/res_mgmt/views/exports/mat_export_record_create.xml',
+        'views/res_mgmt/views/exports/eqp_export_record_create.xml',
+
+        'views/issue/issue_acts.xml',
+        'views/issue/issue_create.xml',
+        'views/issue/issue_overview.xml',
+        'views/issue/issue_select_view.xml',
         
         'views/stakeholders/contractor_create.xml',
         

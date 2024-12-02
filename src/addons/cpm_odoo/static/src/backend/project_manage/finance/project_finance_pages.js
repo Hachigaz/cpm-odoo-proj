@@ -891,7 +891,7 @@ class FinanceBudgetsTab extends Component {
                 ["investor_ids"],0,1,""
             ]
         ))[0].investor_ids
-        console.log(display_investor_ids)
+        // console.log(display_investor_ids)
         await this.props.context_data.action.doAction({
             type: 'ir.actions.act_window',
             name: 'New Investment Record',

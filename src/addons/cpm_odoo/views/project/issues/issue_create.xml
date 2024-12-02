@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cpm_odoo.issue_create_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.issue_create_view_form.form</field>
+            <field name="model">cpm_odoo.risk_mgmt_issue</field>
+            <field name="arch" type="xml">
+                <form string="New Issue">
+                    <sheet>
+                        <group string='Issue Info'>
+                            <field name="title" string="Issue Title"></field>
+                            <field name="description" string="Description"></field>
+                            <field name="category_id" string="Category"></field>
+                            <field name="level" widget='selection' string="Level"></field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

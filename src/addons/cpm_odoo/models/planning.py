@@ -1,9 +1,10 @@
 from odoo import models,fields,api
 from odoo.exceptions import ValidationError
+from datetime import datetime, timedelta
 
 class Workflow(models.Model):
     _name = "cpm_odoo.planning_workflow"
-    _description = "Model"
+    _description = "Workflow"
     
     planning_id = fields.Many2one(
         comodel_name = 'cpm_odoo.root_project_planning', 
@@ -146,6 +147,8 @@ class Workflow(models.Model):
     def mark_active(self, workflow_id):
         workflow = self.env["cpm_odoo.planning_workflow"].browse(workflow_id)
         #check for unassigned tasks
+        if(workflow.task_count > 0):
+            raise ValidationError(f"The workflow {workflow.name} has no task yet.")
         if(workflow.unassigned_task_count>0):
             raise ValidationError(f"The workflow {workflow.name} has unassigned tasks.")
         for rec in workflow.task_ids:
@@ -154,9 +157,10 @@ class Workflow(models.Model):
         #set active status
         if workflow.workflow_status =='draft':
             workflow.workflow_status = 'active'
+            return True
         else:
             raise ValidationError(f"The workflow {workflow.name} is not in draft status.")
-        
+            return False
         pass
     
     @api.model
@@ -193,15 +197,15 @@ class Workflow(models.Model):
         store=True
     )
     
-    @api.depends('task_ids.task_status')
+    @api.depends('task_ids.assigned_contractor_count','task_ids.assigned_staff_count')
     def _compute_unassigned_task_count(self):
         for record in self:
             unassigned_task_count = sum(1 for task in record.task_ids if len(task.assigned_staff_ids) == 0 and len(task.assigned_contractor_ids) == 0)
             record.unassigned_task_count = unassigned_task_count
         pass
    
-class TaskAssignContractor(models.Model):
-    _name = "cpm_odoo.planning_task_assign_contractor"
+class TaskAssign_Abs(models.Model):
+    _name = "cpm_odoo.planning_task_assign_abs"
     _description = "TaskAssignContractor"
     
     task_id = fields.Many2one(
@@ -211,6 +215,12 @@ class TaskAssignContractor(models.Model):
         required=True
     )
     
+class TaskAssignContractor(models.Model):
+    _name = "cpm_odoo.planning_task_assign_contractor"
+    _description = "TaskAssignContractor"
+    
+    _inherit=["cpm_odoo.planning_task_assign_abs"]
+    
     contractor_id = fields.Many2one(
         comodel_name = 'cpm_odoo.stakeholders_contractor', 
         string='contractor',
@@ -219,15 +229,37 @@ class TaskAssignContractor(models.Model):
     )
     
     contract_set_id = fields.Many2one(
-        comodel_name = 'cpm_odoo.contracts_contract_set', 
+        comodel_name = 'cpm_odoo.contracts_contract_set',
         string='contract_set',
         ondelete="restrict",
         default=None
     )
+    
+    contractor_name = fields.Char('contractor_name',related="contractor_id.name")
+    
+    @api.constrains('contract_set_id')
+    def _constrains_contract_set_id(self):
+        if(self.contract_set_id.contractor_id.id != self.contractor_id.id):
+            raise ValidationError("Attached contract does not have the same contractor as the assigned contractor in the task.")
+        pass
+    
+class TaskAssignStaff(models.Model):
+    _name = "cpm_odoo.planning_task_assign_staff"
+    _description = "TaskAssignStaff"
+    
+    _inherit=["cpm_odoo.planning_task_assign_abs"]
+    
+    staff_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.human_res_staff', 
+        string='staff'
+    )
+    
+    staff_name = fields.Char('staff_name',related="staff_id.name")
+    department_name = fields.Char('department_name',related="staff_id.department_id.name")
    
 class Task(models.Model):
     _name = "cpm_odoo.planning_task"
-    _description = "Model"
+    _description = "Task"
     
     workflow_id = fields.Many2one(
         comodel_name = 'cpm_odoo.planning_workflow',
@@ -266,8 +298,20 @@ class Task(models.Model):
     @api.model
     def act_mark_completed(self, task_id):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
+        
+        staff = self.env["cpm_odoo.human_res_staff"].search(
+            [["user_id","=",self.env.user.id]]
+        )
+        
         if(task.task_status == "active"):
             task.task_status = "completed"
+            
+            task.write({
+                "task_log_ids":[(0,0,{
+                    "title":f"{staff.name if staff else ''} marked the task as completed.",
+                    "staff_id":None
+                })]
+            })
         else:
             raise ValidationError("The task status is not completed.")
         pass
@@ -275,18 +319,54 @@ class Task(models.Model):
     @api.model
     def act_verify_task(self,task_id):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
+        
+        staff = self.env["cpm_odoo.human_res_staff"].search(
+            [["user_id","=",self.env.user.id]]
+        )
+        
         if(task.task_status == "completed"):
             task.task_status = "verified"
+            
+            task.write({
+                "task_log_ids":[(0,0,{
+                    "title":f"{staff.name if staff else ''} verified the task.",
+                    "staff_id":None
+                })]
+            })
+        else:
+            raise ValidationError("The task status is not completed.")
+        pass
+    
+    def act_reject_completion(self,task_id,cause_str):
+        task = self.env["cpm_odoo.planning_task"].browse(task_id)
+        
+        staff = self.env["cpm_odoo.human_res_staff"].search(
+            [["user_id","=",self.env.user.id]]
+        )
+        
+        if(task.task_status == "completed"):
+            task.task_status = "active"
+            
+            task.write({
+                "task_log_ids":[(0,0,{
+                    "title":f"{staff.name if staff else ''} rejected the task completion.",
+                    "staff_id":None
+                })],
+                "task_note_ids":[(0,0,{
+                    "title":"Task completion rejected",
+                    "created_by":staff.id,
+                    "description":cause_str
+                })]
+            })
         else:
             raise ValidationError("The task status is not completed.")
         pass
     
     
-    
-    assigned_staff_ids = fields.Many2many(
-        comodel_name = 'cpm_odoo.human_res_staff', 
-        string='Assigned Staffs',
-        relation = 'cpm_odoo_pl_task_hr_staff'
+    assigned_staff_ids = fields.One2many(
+        comodel_name = 'cpm_odoo.planning_task_assign_staff', 
+        inverse_name = 'task_id', 
+        string='Assigned Staffs'
     )
     
     assigned_staff_count = fields.Integer(
@@ -306,17 +386,25 @@ class Task(models.Model):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
         
         staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
-
-        task.write({
-            "assigned_staff_ids":[[4,id] for id in staff_ids]
-        })
         
         for staff in staff_recs:
-            staff.user_id.write({
-                'groups_id':[(4,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
-            })
+            if not self.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff.id):
+                staff.user_id.write({
+                    'groups_id':[(4,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
+                })
 
-        pass
+        task.write({
+            "assigned_staff_ids":[(0,0,{
+                "staff_id":id
+            }) for id in staff_ids]
+        })
+            
+            
+        cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+        task.add_log(
+            f"{', '.join(staff.name for staff in staff_recs)} was assigned to the task.",
+            cur_staff.id if cur_staff else None
+        )
     
     @api.model
     def act_unassign_staffs_to_task(self,task_id,staff_ids):
@@ -325,14 +413,37 @@ class Task(models.Model):
         staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
 
         task.write({
-            "assigned_staff_ids":[[3,id] for id in staff_ids]
+            "assigned_staff_ids":[(0,0,{
+                "staff_id":id
+            }) for id in staff_ids]
         })
         
+        cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+        task.add_log(
+            f"{', '.join(staff.name for staff in staff_recs)} was unassigned from the task.",
+            cur_staff.id if cur_staff else None
+        )
+        
         for staff in staff_recs:
-            staff.user_id.write({
-                'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
-            })
-
+            if not self.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff.id):
+                staff.user_id.write({
+                    'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
+                })
+        pass
+    
+    @api.model
+    def is_user_in_task(self,project_id,user_id):
+        recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ['assigned_staff_ids','in',user_id],
+                ['workflow_id.planning_id.project_id.id',"=",project_id]
+            ]
+        )
+        
+        if(len(recs)>0):
+            return True
+        else:
+            return False
         pass
     
     
@@ -361,15 +472,17 @@ class Task(models.Model):
         store=True
     )
     
-    @api.depends('assigned_contractor_ids.contract_set_id')
+    @api.depends('assigned_contractor_ids.contract_set_id.document_count')
     def _compute_unattached_contractor_count(self):
         for record in self:
-            record.unattached_contractor_count = sum([1 for rec in record.assigned_contractor_ids if rec.contract_set_id == None])
+            record.unattached_contractor_count = sum([1 for rec in record.assigned_contractor_ids if rec.contract_set_id == None or rec.contract_set_id.document_count == 0])
         pass
     
     @api.model
     def act_assign_contractors_to_task(self,task_id,contractor_ids):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
+        
+        contractor_recs = self.env["cpm_odoo.stakeholders_contractor"].search([["id",'in',contractor_ids]])
 
         task.write(
             {
@@ -377,7 +490,12 @@ class Task(models.Model):
                     (0,0,{
                         "contractor_id":contractor_id
                     }) for contractor_id in contractor_ids
-                ]
+                ],
+            
+                "task_log_ids":[(0,0,{
+                    "title":f"Contractor {contractor.name} was assigned to the task.",
+                    "staff_id":None
+                }) for contractor in contractor_recs]
             }
         )
         pass
@@ -386,9 +504,16 @@ class Task(models.Model):
     def act_unassign_contractors_to_task(self,task_id,contractor_ids):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
         
+        contractor_recs = self.env["cpm_odoo.stakeholders_contractor"].search([["id",'in',contractor_ids]])
+        
         assigned_ids = [rec.id for rec in task.assigned_contractor_ids if rec.contractor_id.id in contractor_ids]
         task.write({
-            "assigned_contractor_ids":[[2,id] for id in assigned_ids]
+            "assigned_contractor_ids":[[2,id] for id in assigned_ids],
+            
+            "task_log_ids":[(0,0,{
+                "title":f"Contractor {contractor.name} was unassigned from the task.",
+                "staff_id":None
+            }) for contractor in contractor_recs]
         })
 
         pass
@@ -444,12 +569,6 @@ class Task(models.Model):
     end_date = fields.Date(
         string = 'Finished',
         readonly=True
-    )
-        
-    task_note_ids = fields.One2many(
-        comodel_name = 'cpm_odoo.planning_task_note', 
-        inverse_name = 'task_id', 
-        string='Notes'
     )
     
     task_expense_ids = fields.One2many(
@@ -528,7 +647,7 @@ class Task(models.Model):
     def act_get_active_tasks(self,domain,count=0,cols=[]):
         task_recs = self.env["cpm_odoo.planning_task"].search_read(
             [
-                ('start_date','<',fields.Date.today()),
+                ('start_date','<=',fields.Date.today()),
                 ('task_status','=','active'),
                 ('workflow_id.workflow_status','=','active')
             ] + domain,
@@ -536,7 +655,7 @@ class Task(models.Model):
             0,count,
             "exp_end asc"
         )
-        return active_tasks
+        return task_recs
 
     @api.model
     def act_get_upcoming_tasks(self,domain,count=0,cols=[]):
@@ -595,7 +714,15 @@ class Task(models.Model):
             if(not workflow.workflow_status=="draft"):
                 raise ValidationError(f"Cannot create task - The workflow {workflow.name} status is not in draft.")
         
-        return super().create(vals)
+        recs = super().create(vals)
+
+        for rec in recs:
+            staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+            rec.add_log(
+                f"{staff_rec.name if staff_rec else ''} created the task",
+                staff_rec.id if staff_rec else None)
+
+        return recs
     
     def write(self, vals):
         for rec in self:
@@ -604,6 +731,15 @@ class Task(models.Model):
                     if val["start_date"] or val["exp_end"]:
                         raise ValidationError(f"Cannot change date of non-draft status task: Task {rec.name}")
         return super().write(vals)
+    
+    def add_log(self,title,staff_id):
+        for record in self:
+            record.sudo().write({
+                "task_log_ids":[(0,0,{
+                    "title":title,
+                    "staff_id":staff_id if staff_id else None
+                })]
+            })
     
     
     priority = fields.Selection(
@@ -616,6 +752,24 @@ class Task(models.Model):
         ],
         string='priority',
         default="normal"
+    )
+        
+    task_note_ids = fields.One2many(
+        comodel_name = 'cpm_odoo.planning_task_note', 
+        inverse_name = 'task_id', 
+        string='Notes'
+    )
+    
+    task_checklist_ids = fields.One2many(
+        'cpm_odoo.task_checklist_item', 
+        inverse_name = 'task_id', 
+        string='task_checklist'
+    )
+    
+    task_log_ids = fields.One2many(
+        'cpm_odoo.task_history_log', 
+        inverse_name = 'task_id', 
+        string='task_log'
     )
         
 class TaskCategory(models.Model):
@@ -669,7 +823,9 @@ class TaskChecklistItem(models.Model):
     
     task_id = fields.Many2one(
         comodel_name='cpm_odoo.planning_task', 
-        string='task'
+        string='task',
+        required=True,
+        ondelete="cascade"
     )
     
     title = fields.Char(
@@ -678,6 +834,36 @@ class TaskChecklistItem(models.Model):
         required=True
     )
     
+    assigned_staffs = fields.Many2many(
+        comodel_name = 'cpm_odoo.planning_task_assign_staff', 
+        string='assigned_staffs',
+        relation="cpm_assigned_task_checklist_assigned_staff",
+        column1="tid",
+        column2="sid"
+    )
+    
+    @api.constrains('assigned_staffs')
+    def _constrains_assigned_staffs(self):
+        for rec in self.assigned_staffs:
+            if self.task_id.id != rec.task_id.id:
+                raise ValidationError("Cannot assign checklist to staff not in assigned staff list.")
+        pass
+    
+    assigned_contractors = fields.Many2many(
+        comodel_name = 'cpm_odoo.planning_task_assign_contractor', 
+        string='assigned_contractors',
+        relation="cpm_assigned_task_checklist_assigned_contractors",
+        column1="tid",
+        column2="cid"
+    )
+    
+    @api.constrains('assigned_contractors')
+    def _constrains_assigned_contractors(self):
+        for rec in self.assigned_contractors:
+            if self.task_id.id != rec.task_id.id:
+                raise ValidationError("Cannot assign checklist to staff not in assigned staff list.")
+        pass
+    
     description = fields.Text(
         string='description'
     )
@@ -685,6 +871,73 @@ class TaskChecklistItem(models.Model):
     is_completed = fields.Boolean(
         string='is_completed',
         default=False
+    )
+    
+    date_created = fields.Datetime(
+        'date_created',
+        default=fields.Datetime.now(),
+        required=True
+    )
+    
+    def mark_completed(self):
+        staff_rec = next((rec for rec in self.assigned_staffs if self.env.user.id == rec.staff_id.user_id))
+        self.is_completed = True
+        self.task_id.add_log(
+            f"Marked the task checklist {self.title} as completed",
+            staff_rec
+        )
+        return True
+        
+    
+    def mark_reset(self):
+        staff_rec = next((rec for rec in self.assigned_staffs if self.env.user.id == rec.staff_id.user_id))
+        self.is_completed = False
+
+        self.task_id.add_log(
+            f"Marked the task checklist {self.title} as incomplete",
+            staff_rec
+        )
+        return True
+    
+    due_date = fields.Date(
+        'due_date',
+        required=True
+    )
+    
+    @api.constrains('due_date')
+    def _constrains_due_date(self):
+        if(self.due_date<self.task_id.start_date):
+            raise ValidationError('Due Date cannot be before the task start date ({self.task_id.start_date}).')
+        if(self.due_date > self.task_id.exp_end):
+            raise ValidationError('Due Date cannot be after the task expected due date ({self.task_id.exp_end}).')
+        pass
+    
+class TaskHistoryLogItem(models.Model):
+    _name = 'cpm_odoo.task_history_log'
+    _description = "Task History Log"
+    
+    task_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.planning_task',
+        string='Task',
+        required=True,
+        ondelete = 'cascade'
+    )
+    
+    title = fields.Text(
+        'title',
+        required=True
+    )
+
+    date_logged = fields.Datetime(
+        'date_logged',
+        default=fields.Datetime.now(),
+        required=True
+    )
+    
+    staff_id = fields.Many2one(
+        'cpm_odoo.human_res_staff', 
+        string='staff',
+        ondelete="set null"
     )
 
 class TaskNote(models.Model):

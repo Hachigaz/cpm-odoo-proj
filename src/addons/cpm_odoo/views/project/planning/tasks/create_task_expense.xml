@@ -5,10 +5,7 @@
             <field name="name">cpm_odoo.planning_task_expense_create.view.form</field>
             <field name="model">cpm_odoo.planning_task_expense</field>
             <field name="arch" type="xml">
-                <form string="Task Expense">
-                    <header>
-
-                    </header>
+                <form string="Task Expense"> 
                     <sheet>
                         <group col="3" string="Task Info">
                             <group colspan="2">

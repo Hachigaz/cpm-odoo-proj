@@ -26,6 +26,10 @@ class Staff(models.Model):
         string='Department',
         auto_join=True
     )
+    department_name = fields.Char(
+        'department_name',
+        related="department_id.name"
+    )
     
     _inherits = {
         "res.users":"user_id"
@@ -71,6 +75,19 @@ class Staff(models.Model):
 
     #     return result
 
+    @api.model
+    def find_staff_by_user_id(self,uid):
+        staff_rec = self.env["cpm_odoo.human_res_staff"].search_read(
+            [
+                ['user_id','=',uid]
+            ],
+            [],
+            0,1,""
+        )
+        
+        staff_rec = staff_rec[0] if staff_rec else None
+        
+        return staff_rec
     
 class Department(models.Model):
     _name = 'cpm_odoo.human_res_department'

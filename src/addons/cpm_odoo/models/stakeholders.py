@@ -1,4 +1,6 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+import json
 
 class Stakeholder(models.AbstractModel):
     _name = "cpm_odoo.stakeholders_stakeholder"
@@ -14,28 +16,14 @@ class Stakeholder(models.AbstractModel):
         required=True,
         ondelete="restrict"
     )
-    
-    # name = fields.Char(
-    #     string = 'Name'
-    # )
-    name = fields.Char(
-        string='Name',
-        related='partner_id.name',  # Sử dụng trường liên quan từ res.partner
-        store=True
-    )
 
     description = fields.Text(
-        string='Description'
+        string = 'Description'
     )
     
-    # image = fields.Binary(
-    #     string='Image',
-    #     attachment=True
-    # )
-    
     address = fields.Char(
-        string='Address',
-        size=1024
+        string = 'Address',
+        size = 1024
     )
     
     phone = fields.Char(
@@ -49,7 +37,6 @@ class Stakeholder(models.AbstractModel):
         related='partner_id.email',  # Sử dụng trường liên quan từ res.partner
         store=True
     )
-
     
 class Contractor(models.Model):
     _name = "cpm_odoo.stakeholders_contractor"
@@ -106,3 +93,91 @@ class Supplier(models.Model):
     
     _inherit = "cpm_odoo.stakeholders_stakeholder"
     
+    supplied_eqp_ids = fields.Many2many(
+        comodel_name = 'cpm_odoo.res_mgmt_equipment', 
+        string='supplied_eqp'
+    )
+    
+    @api.onchange('supplied_eqp_ids')
+    def _onchange_supplied_eqp_ids(self):
+        eqp_recs = self.env["cpm_odoo.res_mgmt_equipment"].search(
+            [
+                ['supplier_ids','in',self.id]
+            ]
+        )
+
+        add_diff_recs = [item for item in eqp_recs if not any(eqp.id == item.id for eqp in self.supplied_eqp_ids)]
+        
+        for rec in add_diff_recs:
+            rec.write({
+                "supplier_ids":[(3,self.id)]
+            })
+            
+        rem_diff_recs = [item for item in self.supplied_eqp_ids if not any(eqp.id == item.id for eqp in eqp_recs)]
+
+        for rec in rem_diff_recs:
+            rec.write({
+                "supplier_ids":[(4,self.id)]
+            })
+    
+    supplied_eqp_count = fields.Char(
+        compute='_compute_supplied_eqp_count', 
+        string='supplied_eqp_count',
+        store=True
+    )
+    
+    @api.depends('supplied_eqp_ids')
+    def _compute_supplied_eqp_count(self):
+        for record in self:
+            record.supplied_eqp_count = len(record.supplied_eqp_ids)
+        pass
+    
+    supplied_mat_ids = fields.Many2many(
+        comodel_name = 'cpm_odoo.res_mgmt_material', 
+        string='supplied_mat'
+    )
+    
+    @api.onchange('supplied_mat_ids')
+    def _onchange_supplied_mat_ids(self):
+        mat_recs = self.env["cpm_odoo.res_mgmt_material"].search(
+            [
+                ['supplier_ids','in',self.id]
+            ]
+        )
+
+        add_diff_recs = [item for item in mat_recs if not any(mat.id == item.id for mat in self.supplied_mat_ids)]
+        
+        for rec in add_diff_recs:
+            rec.write({
+                "supplier_ids":[(3,self.id)]
+            })
+            
+        rem_diff_recs = [item for item in self.supplied_mat_ids if not any(mat.id == item.id for mat in mat_recs)]
+
+        for rec in rem_diff_recs:
+            rec.write({
+                "supplier_ids":[(4,self.id)]
+            })
+            
+    
+    supplied_mat_count = fields.Char(
+        compute='_compute_supplied_mat_count', 
+        string='supplied_mat_count',
+        store=True
+    )
+    
+    @api.depends('supplied_mat_ids')
+    def _compute_supplied_mat_count(self):
+        for record in self:
+            record.supplied_mat_count = len(record.supplied_mat_ids)
+        pass
+    
+    supplier_type = fields.Selection(
+        [
+            ('material_supplier', 'Material Supplier'),
+            ('equipment_supplier', 'Equipment Supplier'),
+            ('general_supplier', 'Genreral Supplier')
+        ], 
+        string='supplier_type',
+        required=True
+    )

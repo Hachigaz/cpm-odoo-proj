@@ -6,7 +6,12 @@
                     <div class="btn-group">
                         <t t-foreach="availablePages" t-as="page" t-key="page.id">
                             <t t-if="page.hidden !== true">
-                                <button type="button" class="btn btn-secondary me-1" t-on-click="() => callSubPage(page.id)"><t t-esc="page.name"/></button>
+                                <t t-if="page.disabled">
+                                    <button type="button" class="btn btn-secondary me-1 disabled"><t t-esc="page.name"/></button>
+                                </t>
+                                <t t-else="">
+                                    <button type="button" class="btn btn-secondary me-1" t-on-click="() => callSubPage(page.id)"><t t-esc="page.name"/></button>
+                                </t>
                             </t>
                         </t>
                     </div>
@@ -647,8 +652,11 @@
                                                                 <p class="mb-2">
                                                                     <div class="btn-list">
                                                                         <t t-if="contractor.contract_set_id">
-                                                                            <div class="btn btn-outline-secondary" t-on-click="()=>{this.act_view_contract(contractor.contract_set_id[0])}">
+                                                                            <div class="btn btn-outline-secondary me-2" t-on-click="()=>{this.act_view_contract(contractor.contract_set_id[0])}">
                                                                                 View Contract
+                                                                            </div>
+                                                                            <div class="btn btn-outline-secondary" t-on-click="()=>{this.act_change_contract(contractor.id)}">
+                                                                                Switch Contract
                                                                             </div>
                                                                         </t>
                                                                         <t t-else="">
@@ -743,7 +751,7 @@
                                                     <t t-set="cancel_button_class" t-value="'btn btn-danger rounded-pill px-3 py-1 cancel-act animate__animated  '"/>
                                                     <div class="options d-flex justify-content-end">
                                                         <t t-if="props.task_info.assigned_staff_ids.length>0">
-                                                            <t t-if="!props.task_info.assigned_staff_ids.includes(staff.id)">
+                                                            <t t-if="!this.assigned_staff_ids.includes(staff.id)">
                                                                 <button t-att-class="assign_button_class + fade_in" t-on-click="(event)=>{this.act_assign(staff.id)}">
                                                                     Assign
                                                                 </button>
@@ -1199,9 +1207,9 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <!-- <PlanningStaffAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.staff_asgn_act">
+                                                    <PlanningStaffAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.staff_asgn_act">
 
-                                                    </PlanningStaffAssignPanel> -->
+                                                    </PlanningStaffAssignPanel>
                                                 </div>
                                                 <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}">Close</button>
