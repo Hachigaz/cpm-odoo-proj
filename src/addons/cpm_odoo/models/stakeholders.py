@@ -14,15 +14,6 @@ class Stakeholder(models.AbstractModel):
         required=True,
         ondelete="restrict"
     )
-    
-    # name = fields.Char(
-    #     string = 'Name'
-    # )
-    name = fields.Char(
-        string='Name',
-        related='partner_id.name',  # Sử dụng trường liên quan từ res.partner
-        store=True
-    )
 
     description = fields.Text(
         string='Description'
