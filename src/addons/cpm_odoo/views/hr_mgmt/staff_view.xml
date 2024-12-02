@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="cpm_odoo.human_res_staff_view_tree" model="ir.ui.view">
+            <field name="name">cpm_odoo.human_res_staff.view.tree</field>
+            <field name="model">cpm_odoo.human_res_staff</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="name" string="Name"></field>
+                    <field name="department_id" string="Department">
+                    
+                    </field>
+                </tree>
+            </field>
+        </record>
+    
+        <record id="cpm_odoo.human_res_department_view_tree" model="ir.ui.view">
+            <field name="name">cpm_odoo.human_res_department.view.tree</field>
+            <field name="model">cpm_odoo.human_res_department</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="name" string="Department Name"></field>
+                </tree>
+            </field>
+        </record>
+        
+    
+    </data>
+    
+
+</odoo>

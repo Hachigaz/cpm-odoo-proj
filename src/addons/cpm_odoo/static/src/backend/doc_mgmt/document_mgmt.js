@@ -339,12 +339,22 @@ class GeneralDocumentTab extends Component{
     }
 }
 
+class DocumentCategoryTab extends Component{
+    static page_name='cpm_odoo.DocumentCategoryTab'
+    static template="cpm_odoo.DocumentCategoryTab"
+
+    static components={
+        DocumentCategoryItemList
+    }
+}
+
 export class DocumentManagementTab extends Component{
     static page_name='cpm_odoo.DocumentManagementTab'
     static template="cpm_odoo.DocumentManagementTab"
     static components = {
         ProjectDocumentTab,
-        GeneralDocumentTab
+        GeneralDocumentTab,
+        DocumentCategoryTab
     };
     get pageComponent() {
         const renderPage = this.constructor.availablePages.find(page => page.id === this.currentPage);
@@ -362,6 +372,12 @@ export class DocumentManagementTab extends Component{
             id:GeneralDocumentTab.page_name,
             name:"General Documents",
             page:GeneralDocumentTab,
+            group_id:""
+        },
+        {
+            id:DocumentCategoryTab.page_name,
+            name:"Document Categories",
+            page:DocumentCategoryTab,
             group_id:""
         }
     ]

@@ -148,7 +148,7 @@ export class ProjectOverviewPage extends Component {
             ["cur_id","res.currency",["id","symbol","position","decimal_places","rate"]]
         ])
 
-        console.log(total_invests)
+        // console.log(total_invests)
 
         investor_list.forEach((arr,idx)=>{
             let total_invest = total_invests.find(item=>item.investor_id[0]===arr.id)

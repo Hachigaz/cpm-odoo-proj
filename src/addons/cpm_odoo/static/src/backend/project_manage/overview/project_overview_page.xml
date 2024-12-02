@@ -38,9 +38,16 @@
                                         <strong>
                                             Assigned Managers:
                                         </strong>
-                                        <t t-set="first_manager" t-value="this.state_data.project_info.head_manager_ids[0]"/>
-                                        <t t-set="manager_count" t-value="this.state_data.project_info.head_manager_ids.length - 1"/>
-                                        <t t-esc="`${first_manager?first_manager.name:''} ${manager_count > 0 ? 'and '+manager_count+' others':''}`"/>
+                                        <t t-if="this.state_data.project_info.head_manager_ids.length>0">
+                                            <t t-set="first_manager" t-value="this.state_data.project_info.head_manager_ids[0]"/>
+                                            <t t-set="manager_count" t-value="this.state_data.project_info.head_manager_ids.length - 1"/>
+                                            <t t-esc="`${first_manager?first_manager.name:''} ${manager_count > 0 ? 'and '+manager_count+' others':''}`"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="fw-bold text-warning">
+                                                Not Assigned
+                                            </span>
+                                        </t>
                                     </p>
                                 </div>
                             </div>

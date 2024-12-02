@@ -10,7 +10,6 @@
                         <group string='Material Info'>
                             <field name="name">Material Name</field>
                             <field name="mat_type_id">Type</field>
-                            <field name="supplier_id">Supplier</field>
                         </group>
                     </sheet>
                 </form>

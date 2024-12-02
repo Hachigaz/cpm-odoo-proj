@@ -1,3 +1,6 @@
 
 /temp_data
 /.vscode
+*.pyc
+/src/addons/cpm_odoo/__pycache__
+/src/addons/cpm_odoo/controllers/__pycache__

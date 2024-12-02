@@ -209,7 +209,7 @@
                     </t>
                     <t t-else="">
                         <tr class="text-center">
-                            <td colspan="5">
+                            <td colspan="6">
                                 No Recent Transaction
                             </td>
                         </tr>

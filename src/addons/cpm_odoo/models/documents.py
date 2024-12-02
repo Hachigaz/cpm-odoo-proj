@@ -62,8 +62,8 @@ class DocumentSet_Abs(models.AbstractModel):
         for record in self:
             if self.is_project_specific and not self.project_doc_mgmt_id:
                 raise ValidationError("Project specific documents must relate to a specific project")
-            elif not self.is_project_specific and self.project_doc_mgmt_id:
-                raise ValidationError("Document is not project specific but an id was provided")
+            # elif not self.is_project_specific and self.project_doc_mgmt_id != None:
+                # raise ValidationError("Document is not project specific but an id was provided")
         pass
     
     @api.depends('document_ids.date_uploaded')
@@ -73,37 +73,20 @@ class DocumentSet_Abs(models.AbstractModel):
             record.document_count = len(record.document_ids)
         pass
     
-    @api.model
-    def act_add_doc_to_set(self,doc_set_id):
-        staff = self.env['cpm_odoo.human_res_staff'].search([('user_id', '=', self.env.user.id)])
-        
-        
-        view = self.env.ref('cpm_odoo.document_add_form_view')
-
-        return {
-            "type": 'ir.actions.act_window',
-            "name": 'Add Document',
-            "res_model": 'cpm_odoo.documents_document',
-            "view_mode": 'form',
-            "views": [[view.id, 'form']],
-            "target": 'current',
-            "context": { 
-                'default_document_set_id': doc_set_id,
-                'default_uploaded_by': staff.id
-            }
-            # "context": { 'default_document_set_id': self.env.context.document_set_id },
-        }
-    
     @api.model_create_multi
     def create(self, vals):
         for val in vals:
-            if(val.get('is_project_specific') or self.env.context.get('default_is_project_specific')):
-                val["project_doc_mgmt_id"]=None
             if self.env.context.get('project_id'):
                 project_id = self.env.context.get('project_id')
                 val['project_doc_mgmt_id'] = self.env['cpm_odoo.root_project'].browse(project_id).proj_doc_id.id
                 
-        return super().create(vals)
+        recs = super().create(vals)
+
+        for rec in recs:
+            if(rec.is_project_specific==False):
+                rec.project_doc_mgmt_id=None
+                
+        return recs
     
 
 class DocumentSet(models.Model):
@@ -118,6 +101,27 @@ class DocumentSet(models.Model):
         ondelete = "restrict",
         default=None
     )
+    
+    @api.model
+    def act_add_doc_to_set(self,doc_set_id):
+        staff = self.env['cpm_odoo.human_res_staff'].search([('user_id', '=', self.env.user.id)])
+        
+        
+        view = self.env.ref('cpm_odoo.document_add_form_view')
+
+        return {
+            "type": 'ir.actions.act_window',
+            "name": 'Add Document',
+            "res_model": 'cpm_odoo.documents_document',
+            "view_mode": 'form',
+            "views": [[view.id, 'form']],
+            "target": 'new',
+            "context": { 
+                'default_document_set_id': doc_set_id,
+                'default_uploaded_by': staff.id
+            }
+            # "context": { 'default_document_set_id': self.env.context.document_set_id },
+        }
     
     def unlink(self):
         for record in self:
@@ -285,6 +289,27 @@ class ContractSet(models.Model):
                     if(len(recs)>0):
                         raise ValidationError(f"Cannot change the contractor of the contract {record.name}, it is linked to task {recs[0].task_id.name}")
         return super().write(vals)
+    
+    @api.model
+    def act_add_doc_to_set(self,doc_set_id):
+        staff = self.env['cpm_odoo.human_res_staff'].search([('user_id', '=', self.env.user.id)])
+        
+        
+        view = self.env.ref('cpm_odoo.contract_add_form_view')
+
+        return {
+            "type": 'ir.actions.act_window',
+            "name": 'Add Contract',
+            "res_model": 'cpm_odoo.contracts_contract',
+            "view_mode": 'form',
+            "views": [[view.id, 'form']],
+            "target": 'new',
+            "context": { 
+                'default_contract_set_id': doc_set_id,
+                'default_uploaded_by': staff.id
+            }
+            # "context": { 'default_contract_set_id': self.env.context.contract_set_id },
+        }
     
     def unlink(self):
         for record in self:
