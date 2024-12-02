@@ -4,14 +4,14 @@
     <data>
         <record id="cpm_odoo.contract_set_create_form_view" model="ir.ui.view">
             <field name="name">cpm_odoo.contract_set_create_form_view</field>
-            <field name="model">cpm_odoo.documents_contract_set</field>
+            <field name="model">cpm_odoo.contracts_contract_set</field>
             <field name="arch" type="xml">
                 <form string="context.get('action_name')">
                     <sheet string="Document Set Info">
                         <group col="3">
                             <group colspan="2">
                                 <field name="name" string="Document Name"></field>
-                                <field name="contractor_id" string="Contractor"></field>
+                                <field name="contractor_id" string="Contractor" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                             </group>
                             <group colspan="2">
                                 <field name="is_project_specific" string="Is Project Specific"></field>
@@ -21,6 +21,28 @@
                     </sheet>
                 </form>
             </field>
-        </record>    
+        </record>
+
+        <record id="cpm_odoo.contract_set_create_form_view_2" model="ir.ui.view">
+            <field name="name">cpm_odoo.contract_set_create_form_view_2</field>
+            <field name="model">cpm_odoo.contracts_contract_set</field>
+            <field name="arch" type="xml">
+                <form string="context.get('action_name')">
+                    <sheet string="Document Set Info">
+                        <group col="3">
+                            <group colspan="2">
+                                <field name="name" string="Document Name"></field>
+                                <field name="contractor_id" readonly="True" string="Contractor" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
+                            </group>
+                            <group colspan="2">
+                                <field name="is_project_specific" string="Is Project Specific"></field>
+                                <field name="project_doc_mgmt_id" string="" readonly="True" invisible="True"></field>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
     </data>
 </odoo>

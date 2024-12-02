@@ -51,67 +51,70 @@ class ProjectFinanceDashboardTab extends Component {
         await this.getTotalExpensesChartData()
         await this.getInvestmentvsExepenseChartData()
 
-        let ctx = document.querySelector("#finance-overview-section #total-investments-chart .chart").getContext('2d');
-
-        this.charts.totalInvestmentsChart = new Chart(ctx, {
-            type: 'pie',  // Specify the chart type
-            data: {
-                labels: this.page_data.total_investments_data.map(item=>{return item.investor_id.name}),  // Add labels for the segments
-                datasets: [{
-                    label: 'Total Investments',
-                    data: this.page_data.total_investments_data.map(item=>item.total_investments),  // Values for each segment
-                    // backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],  // Colors for each segment
-                    hoverOffset: 4  // Offset for hovering effect
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            // Format tooltip with '$' symbol
-                            label: (context) => {
-                                return this.page_data.total_investments_data[context.dataIndex].d_total_investments;  // Add $ symbol in the tooltip
+        if(this.page_data.total_investments_data.length>0){
+            let ctx = document.querySelector("#finance-overview-section #total-investments-chart .chart").getContext('2d');
+    
+            this.charts.totalInvestmentsChart = new Chart(ctx, {
+                type: 'pie',  // Specify the chart type
+                data: {
+                    labels: this.page_data.total_investments_data.map(item=>{return item.investor_id.name}),  // Add labels for the segments
+                    datasets: [{
+                        label: 'Total Investments',
+                        data: this.page_data.total_investments_data.map(item=>item.total_investments),  // Values for each segment
+                        // backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],  // Colors for each segment
+                        hoverOffset: 4  // Offset for hovering effect
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                // Format tooltip with '$' symbol
+                                label: (context) => {
+                                    return this.page_data.total_investments_data[context.dataIndex].d_total_investments;  // Add $ symbol in the tooltip
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
+        if(this.page_data.total_expenses_data.length>0){
+            let ctx = document.querySelector("#finance-overview-section #total-expenses-chart .chart").getContext('2d');
 
-        ctx = document.querySelector("#finance-overview-section #total-expenses-chart .chart").getContext('2d');
-
-        this.charts.totalExpensesChart = new Chart(ctx, {
-            type: 'pie',  // Specify the chart type
-            data: {
-                labels: this.page_data.total_expenses_data.map(item=>item.category_id?item.category_id.name:"Other"),  // Add labels for the segments
-                datasets: [{
-                    label: 'Total Expenses',
-                    data: this.page_data.total_expenses_data.map(item=>item.total_expenses),  // Values for each segment
-                    hoverOffset: 4  // Offset for hovering effect
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            // Format tooltip with '$' symbol
-                            label: (context) => {
-                                return this.page_data.total_expenses_data[context.dataIndex].d_total_expenses;  // Add $ symbol in the tooltip
+            this.charts.totalExpensesChart = new Chart(ctx, {
+                type: 'pie',  // Specify the chart type
+                data: {
+                    labels: this.page_data.total_expenses_data.map(item=>item.category_id?item.category_id.name:"Other"),  // Add labels for the segments
+                    datasets: [{
+                        label: 'Total Expenses',
+                        data: this.page_data.total_expenses_data.map(item=>item.total_expenses),  // Values for each segment
+                        hoverOffset: 4  // Offset for hovering effect
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                // Format tooltip with '$' symbol
+                                label: (context) => {
+                                    return this.page_data.total_expenses_data[context.dataIndex].d_total_expenses;  // Add $ symbol in the tooltip
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
 
         const inv_recs = this.page_data.inv_recs_by_month
@@ -161,8 +164,8 @@ class ProjectFinanceDashboardTab extends Component {
                 this.page_data.inv_vs_rec_by_month.push(
                     {
                         date:monthYear,
-                        'inv_rec': inv_recs.find(rec=>rec['date_created:month']=monthYear),
-                        'exp_rec': exp_recs.find(rec=>rec['date_created:month']=monthYear)
+                        'inv_rec': inv_recs.find(rec=>rec['date_created:month']==monthYear),
+                        'exp_rec': exp_recs.find(rec=>rec['date_created:month']==monthYear)
                     });
                 
                 minDate.setMonth(minDate.getMonth() + 1);
@@ -172,7 +175,7 @@ class ProjectFinanceDashboardTab extends Component {
             var expensesScaleFactor = 1;
     
     
-            ctx = document.querySelector("#rve-section #investment-vs-expense-chart .chart").getContext('2d');
+            let ctx = document.querySelector("#rve-section #investment-vs-expense-chart .chart").getContext('2d');
             this.charts.investment_vs_expense_chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -180,14 +183,14 @@ class ProjectFinanceDashboardTab extends Component {
                     datasets: [
                         {
                             label: 'Total Investment By Month',
-                            data: this.page_data.inv_vs_rec_by_month.map(item=>item.inv_rec.amount/investmentScaleFactor),
+                            data: this.page_data.inv_vs_rec_by_month.map(item=>item.inv_rec?(item.inv_rec.amount/investmentScaleFactor):0),
                             backgroundColor: 'rgba(75, 192, 192, 0.6)',
                             borderColor: 'rgba(75, 192, 192, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Total Expense By Month',
-                            data: this.page_data.inv_vs_rec_by_month.map(item=>-item.exp_rec.amount/expensesScaleFactor),
+                            data: this.page_data.inv_vs_rec_by_month.map(item=>item.exp_rec?(-item.exp_rec.amount/expensesScaleFactor):0),
                             backgroundColor: 'rgba(255, 99, 132, 0.6)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1
@@ -356,7 +359,8 @@ class ProjectFinanceDashboardTab extends Component {
 
 
         await joinDatas(investments_list,this.orm,[
-            ["investor_id","cpm_odoo.stakeholders_investor",["id","name"]]
+            ["investor_id","cpm_odoo.stakeholders_investor",["id","name"]],
+            ["cur_id","res.currency",["id","symbol","position","decimal_places","rate"]]
         ])
         
         let expenses_list = await this.orm.call(
@@ -375,7 +379,8 @@ class ProjectFinanceDashboardTab extends Component {
         )
 
         await joinDatas(expenses_list,this.orm,[
-            ["category_id","cpm_odoo.finance_expense_category",["id","name"]]
+            ["category_id","cpm_odoo.finance_expense_category",["id","name"]],
+            ["cur_id","res.currency",["id","symbol","position","decimal_places","rate"]]
         ])
 
         expenses_list.forEach((exp,idx) => {
@@ -416,8 +421,13 @@ class ProjectFinanceDashboardTab extends Component {
             ]
         )
 
+        investments_list.forEach((inv,idx) => {
+            investments_list[idx].trans_type="investment"
+        });
+
         await joinDatas(investments_list,this.orm,[
-            ["investor_id","cpm_odoo.stakeholders_investor",["id","name"]]
+            ["investor_id","cpm_odoo.stakeholders_investor",["id","name"]],
+            ["cur_id","res.currency",["id","symbol","position","decimal_places","rate"]]
         ])
         
         let expenses_list = await this.orm.call(
@@ -437,10 +447,12 @@ class ProjectFinanceDashboardTab extends Component {
 
         expenses_list.forEach((exp,idx) => {
             expenses_list[idx].amount = -expenses_list[idx].amount
+            expenses_list[idx].trans_type="expense"
         });
 
         await joinDatas(expenses_list,this.orm,[
-            ["category_id","cpm_odoo.finance_expense_category",["id","name"]]
+            ["category_id","cpm_odoo.finance_expense_category",["id","name"]],
+            ["cur_id","res.currency",["id","symbol","position","decimal_places","rate"]]
         ])
 
         const rec_transactions = [...investments_list, ...expenses_list].sort((inv, exp) => {
@@ -515,6 +527,54 @@ class ProjectFinanceDashboardTab extends Component {
             ]
         )
         this.page_data.pending_transaction_count = pending_transaction_count
+    }
+
+    async act_confirm_transaction(trans_type,trans_id){
+        if(confirm("Confirm Transaction?")){
+            if(trans_type==='expense'){
+                await this.orm.call(
+                    'cpm_odoo.finance_expense_record',
+                    'act_process_transaction',
+                    [
+                        trans_id
+                    ]
+                )
+            }
+            else if(trans_type==='investment'){
+                await this.orm.call(
+                    'cpm_odoo.finance_investment_record',
+                    'act_process_transaction',
+                    [
+                        trans_id
+                    ]
+                )
+            }
+            window.location.reload()
+        }
+    }
+
+    async act_delete_transaction(trans_type,trans_id){
+        if(confirm("Delete Transaction?")){
+            if(trans_type==='expense'){
+                await this.orm.call(
+                    'cpm_odoo.finance_expense_record',
+                    'unlink',
+                    [
+                        trans_id
+                    ]
+                )
+            }
+            else if(trans_type==='investment'){
+                await this.orm.call(
+                    'cpm_odoo.finance_investment_record',
+                    'unlink',
+                    [
+                        trans_id
+                    ]
+                )
+            }
+            window.location.reload()
+        }
     }
 }
 
@@ -821,6 +881,17 @@ class FinanceBudgetsTab extends Component {
     static formatCurrency = formatCurrency
 
     async act_add_investment_record(){
+        let display_investor_ids = (await this.orm.call(
+            "cpm_odoo.root_project",
+            'search_read',
+            [
+                [
+                    ['id','=',this.props.context_data.project_id]
+                ],
+                ["investor_ids"],0,1,""
+            ]
+        ))[0].investor_ids
+        console.log(display_investor_ids)
         await this.props.context_data.action.doAction({
             type: 'ir.actions.act_window',
             name: 'New Investment Record',
@@ -828,7 +899,10 @@ class FinanceBudgetsTab extends Component {
             view_mode: 'form',
             views: [[false, 'form']],
             target: 'new',
-            context: { 'default_project_finance_id': this.finance_id },  // Optional: default values for fields
+            context: { 
+                'default_project_finance_id': this.finance_id,
+                'display_investor_ids':display_investor_ids
+            },  // Optional: default values for fields
         });
     }
 
@@ -855,7 +929,6 @@ export class ProjectFinancePage extends Component {
         ProjectFinanceDashboardTab,
         FinanceBudgetsTab
     }
-    static page_name
 
     get pageComponent() {
         const renderPage = this.constructor.availablePages.find(page => page.id === this.currentPage);

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="cpm_odoo.planning_task_assign_contractor_attach_contract" model="ir.ui.view">
+            <field name="name">cpm_odoo.planning_task_assign_contractor_attach_contract</field>
+            <field name="model">cpm_odoo.planning_task_assign_contractor</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="contractor_id" readonly="True" string="Contractor" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
+                            <field name="contract_set_id" string="Contract Set" options="{'no_quick_create':True}" context="{'project_id':context.get('project_id'),'form_view_ref':'cpm_odoo.contract_set_create_form_view_2','default_contractor_id':contractor_id}">
+                                
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+    
+    </data>
+    
+
+</odoo>

@@ -148,6 +148,9 @@ class Workflow(models.Model):
         #check for unassigned tasks
         if(workflow.unassigned_task_count>0):
             raise ValidationError(f"The workflow {workflow.name} has unassigned tasks.")
+        for rec in workflow.task_ids:
+            if rec.unattached_contractor_count > 0:
+                raise ValidationError(f"The workflow {workflow.name} has tasks ({rec.name}) with contractors without attached contracts")
         #set active status
         if workflow.workflow_status =='draft':
             workflow.workflow_status = 'active'
@@ -216,7 +219,7 @@ class TaskAssignContractor(models.Model):
     )
     
     contract_set_id = fields.Many2one(
-        comodel_name = 'cpm_odoo.documents_contract_set', 
+        comodel_name = 'cpm_odoo.contracts_contract_set', 
         string='contract_set',
         ondelete="restrict",
         default=None
@@ -352,6 +355,18 @@ class Task(models.Model):
             record.assigned_contractor_count = len(record.assigned_contractor_ids)
         pass
     
+    unattached_contractor_count = fields.Integer(
+        string = 'Unattached Contract Contractor Count',
+        compute = '_compute_unattached_contractor_count',
+        store=True
+    )
+    
+    @api.depends('assigned_contractor_ids.contract_set_id')
+    def _compute_unattached_contractor_count(self):
+        for record in self:
+            record.unattached_contractor_count = sum([1 for rec in record.assigned_contractor_ids if rec.contract_set_id == None])
+        pass
+    
     @api.model
     def act_assign_contractors_to_task(self,task_id,contractor_ids):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
@@ -370,9 +385,10 @@ class Task(models.Model):
     @api.model
     def act_unassign_contractors_to_task(self,task_id,contractor_ids):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
-
+        
+        assigned_ids = [rec.id for rec in task.assigned_contractor_ids if rec.contractor_id.id in contractor_ids]
         task.write({
-            "assigned_contractor_ids":[[2,id] for id in contractor_ids]
+            "assigned_contractor_ids":[[2,id] for id in assigned_ids]
         })
 
         pass
@@ -724,7 +740,7 @@ class TaskExpense(models.Model):
         comodel_name = 'cpm_odoo.finance_expense_record', 
         string='expense',
         required=True,
-        ondelete = "restrict"
+        ondelete = "cascade"
     )
     
     expense_type = fields.Selection([

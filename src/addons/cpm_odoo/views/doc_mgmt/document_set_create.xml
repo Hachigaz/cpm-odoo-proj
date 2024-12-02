@@ -15,7 +15,7 @@
                             </group>
                             <group colspan="2">
                                 <field name="is_project_specific" string="Is Project Specific"></field>
-                                <field name="project_doc_mgmt_id" string="" readonly="True" invisible="True"></field>
+                                <field name="project_doc_mgmt_id" string="" readonly="True" invisible="True" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                             </group>
                         </group>
                     </sheet>

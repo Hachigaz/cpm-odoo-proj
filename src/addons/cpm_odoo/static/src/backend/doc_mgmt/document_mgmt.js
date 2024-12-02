@@ -1,9 +1,9 @@
 /** @odoo-module **/ 
-import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
-import { registry } from "@web/core/registry";
-import { ItemList, SearchBar } from "../components/components";
-import { formatDateTime } from "../components/component_utils"
+import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, clearPageInfo} from "../components/component_utils";
+import { registry } from "@web/core/registry"
+import { Component, onWillStart, onMounted, onWillUnmount, onWillDestroy, useEffect, useState, useRef} from "@odoo/owl";
+import { ItemList, ListFilter, SearchBar } from "../components/components";
 
 export class DocumentCategoryCard extends Component{
     static template = "cpm_odoo.DocumentCategoryCard"
@@ -36,110 +36,23 @@ export class DocumentSetCard extends Component{
             context: {document_set_id:document_set_id}
         });
     }
-}
 
-export class PlanningDocumentManagementTab extends Component{
-    static template = "cpm_odoo.PlanningDocumentManagementTab"
-    static components = {
-        DocumentSetCard,
-        DocumentCategoryCard
-    }
-    
-    setup(){
-        this.page_data = useState({
-            display_document_category_list:[],
-            document_set_list:[]
-        })
+    async act_delete_doc(doc){
+        if(!confirm(`Delete ${doc.file_name?doc.file_name:'document'}?`)){
+            return
+        }
 
-        this.loadData()
 
-        onWillStart(()=>{
-            
-        })
-
-        onMounted(()=>{
-            
-        })
-
-        useEffect(()=>{
-            
-        })
-    }
-
-    async loadData(){
-        this.page_data.display_document_category_list = await this.props.context_data.orm.call(
-            'cpm_odoo.documents_document_category',
-            'search_read',
+        this.orm.call(
+            "cpm_odoo.documents_document",
+            "unlink",
             [
-                [
-                    ['display','=',true]
-                ],
-                [],
-                0,8,"name"
+                doc.id
             ]
         )
-
-        
-        this.page_data.document_set_list = await this.props.context_data.orm.call(
-            'cpm_odoo.documents_document_set',
-            'search_read',
-            [
-                [
-                    
-                ],
-                [],
-                0,8,"updated_at desc,name asc"
-            ]
-        )
-    }
-
-    async act_add_document(){
-        await this.props.context_data.action.doAction({
-            type: 'ir.actions.act_window',
-            name: 'Create Document Set',
-            res_model: 'cpm_odoo.documents_document_set',  // Model name
-            view_mode: 'form',
-            views: [[false, 'form']],
-            target: 'new',
-            context: { 'default_field': 'value' },  // Optional: default values for fields
-        });
-    }
-
-    async act_add_category(){
-        await this.props.context_data.action.doAction({
-            type: 'ir.actions.act_window',
-            name: 'Create Document Category',
-            res_model: 'cpm_odoo.documents_document_category',  // Model name
-            view_mode: 'form',
-            views: [[false, 'form']],
-            target: 'new',
-            context: { 'default_field': 'value' },  // Optional: default values for fields
-        });
-    }
-
-    async act_show_more_document_categories(){
-        await this.props.context_data.action.doAction({
-            type: 'ir.actions.client',
-            tag: 'cpm_odoo.document_category_item_list',
-            context: {}
-        });
-    }
-
-    async act_show_more_document_sets(context_data){
-        await this.props.context_data.action.doAction({
-            type: 'ir.actions.client',
-            tag: 'cpm_odoo.document_set_item_list',
-            context: context_data
-        });
+        window.location.reload()
     }
 }
-
-class DocumentSetDownloadLatestDocBtn extends Component{
-    static template = "cpm_odoo.DocumentSetDownloadLatestDocBtn"
-    
-    
-}
-
 
 class DocumentSetDetailDocumentList extends ItemList{
     static template = "cpm_odoo.DocumentSetDetailDocumentList"
@@ -267,6 +180,24 @@ class DocumentSetDetailPage extends Component{
             }
         })
     }
+
+    async act_delete_doc_set(doc){
+        if(!confirm(`Delete document set?`)){
+            return
+        }
+
+
+        result = await this.orm.call(
+            "cpm_odoo.documents_document_set",
+            "unlink",
+            [
+                this.context.document_set_id
+            ]
+        )
+        if(result){
+            window.history.back()
+        }
+    }
 }
 
 registry.category("actions").add(DocumentSetDetailPage.clientActionName, DocumentSetDetailPage);
@@ -332,7 +263,8 @@ export class DocumentSetItemList extends ItemList{
     static template = "cpm_odoo.DocumentSetItemList"
     static components = {
         SearchBar,
-        DocumentSetCard
+        DocumentSetCard,
+        ListFilter
     }
     
 
@@ -352,8 +284,139 @@ export class DocumentSetItemList extends ItemList{
             this.page_data.extra_domain = this.props.extra_domain
         },
         ()=>[this.props.extra_domain])
+        
+        this.filter_data = [
+            {
+                col_name:"category_id",
+                item_list:[]
+            }
+        ]
+
+        onWillStart(async ()=>{
+            await this.loadData()
+        })
 
         super.setup()
+    }
+
+    async loadData(){
+        await this.loadFilterData()
+    }
+
+    async loadFilterData(){
+        this.filter_data[0].item_list = await this.orm.call(
+            "cpm_odoo.documents_document_category",
+            "search_read",
+            [
+                [
+
+                ],
+                [
+                    "id","name"
+                ],
+                0,0,
+                "name asc"
+            ]
+        )
+    }
+}
+
+class ProjectDocumentTab extends Component{
+    static page_name='cpm_odoo.ProjectDocumentTab'
+    static template="cpm_odoo.ProjectDocumentTab"
+
+    static components={
+        DocumentSetItemList
+    }
+}
+
+class GeneralDocumentTab extends Component{
+    static page_name='cpm_odoo.GeneralDocumentTab'
+    static template="cpm_odoo.GeneralDocumentTab"
+
+    static components={
+        DocumentSetItemList
+    }
+}
+
+export class DocumentManagementTab extends Component{
+    static page_name='cpm_odoo.DocumentManagementTab'
+    static template="cpm_odoo.DocumentManagementTab"
+    static components = {
+        ProjectDocumentTab,
+        GeneralDocumentTab
+    };
+    get pageComponent() {
+        const renderPage = this.constructor.availablePages.find(page => page.id === this.currentPage);
+        return renderPage.page
+    }
+
+    static availablePages = [
+        {
+            id:ProjectDocumentTab.page_name,
+            name:"Project Documents",
+            page:ProjectDocumentTab,
+            group_id:""
+        },
+        {
+            id:GeneralDocumentTab.page_name,
+            name:"General Documents",
+            page:GeneralDocumentTab,
+            group_id:""
+        }
+    ]
+
+    setup(){
+        this.currentPage = getPageContext().subpage_id;
+        if (this.currentPage == null){
+            this.currentPage=this.constructor.availablePages[0].id
+        }
+        
+    }
+
+
+    async callSubPage(id) {
+        moveToPage(false,id)
+    }
+
+    async act_add_document(){
+        await this.props.context_data.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Create Document Set',
+            res_model: 'cpm_odoo.documents_document_set',  // Model name
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context: { 'default_field': 'value' },  // Optional: default values for fields
+        });
+    }
+
+    async act_add_category(){
+        await this.props.context_data.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Create Document Category',
+            res_model: 'cpm_odoo.documents_document_category',  // Model name
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context: { 'default_field': 'value' },  // Optional: default values for fields
+        });
+    }
+
+    async act_show_more_document_categories(){
+        await this.props.context_data.action.doAction({
+            type: 'ir.actions.client',
+            tag: 'cpm_odoo.document_category_item_list',
+            context: {}
+        });
+    }
+
+    async act_show_more_document_sets(context_data){
+        await this.props.context_data.action.doAction({
+            type: 'ir.actions.client',
+            tag: 'cpm_odoo.document_set_item_list',
+            context: context_data
+        });
     }
 }
 

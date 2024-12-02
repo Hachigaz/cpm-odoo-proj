@@ -12,14 +12,14 @@
                     <sheet>
                         <group col="3" string="Task Info">
                             <group colspan="2">
-                                <field name="task_id" string="Task" readonly="True"></field>
+                                <field name="task_id" string="Task" readonly="True" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                                 <field name="title" string="Title"></field>
                                 <field name="description" string="Description"></field>
-                                <field name="category_id" string="Category"></field>
+                                <field name="category_id" string="Category" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                             </group>
                             <group colspan="1">
                                 <field name="amount" string="Amount" widget="monetary"></field>
-                                <field name="cur_id" string="Currency"></field>
+                                <field name="cur_id" string="Currency" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                                 <field name="created_by" readonly="True" string="Created By"></field>
                                 <field name="date_created" readonly="True" string="Date Created"></field>
                             </group>

@@ -1,9 +1,10 @@
 from odoo import models,fields,api
+from odoo.exceptions import ValidationError
 import json
 import base64
 
-class DocumentSet(models.Model):
-    _name = "cpm_odoo.documents_document_set"
+class DocumentSet_Abs(models.AbstractModel):
+    _name = "cpm_odoo.documents_document_set_abs"
     _description = "Document Set"
     
     name = fields.Char(
@@ -14,13 +15,6 @@ class DocumentSet(models.Model):
     
     description = fields.Text(
         string = 'description'
-    )
-    
-    category_id = fields.Many2one(
-        comodel_name = 'cpm_odoo.documents_document_category', 
-        string='Category',
-        ondelete = "restrict",
-        default=None
     )
     
     document_ids = fields.One2many(
@@ -103,21 +97,43 @@ class DocumentSet(models.Model):
     @api.model_create_multi
     def create(self, vals):
         for val in vals:
-            if(not val["is_project_specific"] or not self.env.context["default_is_project_specific"]):
+            if(val.get('is_project_specific') or self.env.context.get('default_is_project_specific')):
                 val["project_doc_mgmt_id"]=None
+            if self.env.context.get('project_id'):
+                project_id = self.env.context.get('project_id')
+                val['project_doc_mgmt_id'] = self.env['cpm_odoo.root_project'].browse(project_id).proj_doc_id.id
+                
         return super().create(vals)
     
+
+class DocumentSet(models.Model):
+    _name = "cpm_odoo.documents_document_set"
+    _description = "Document Set"
+    
+    _inherit=['cpm_odoo.documents_document_set_abs']
+    
+    category_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.documents_document_category', 
+        string='Category',
+        ondelete = "restrict",
+        default=None
+    )
+    
+    def unlink(self):
+        for record in self:
+            recs = self.env["cpm_odoo.planning_task"].search(
+                [
+                    ['attached_document_ids','in',record.id]
+                ]
+            )
+            if(len(recs)>0):
+                raise ValidationError(f"Cannot delete document set {record.name}, it is linked to task {recs[0].name}")
+        return super().unlink()
+    
 class Document(models.Model):
-    _name = "cpm_odoo.documents_document"
+    _name = "cpm_odoo.documents_document_abs"
     _description = "Document"
     _rec_name="file_name"
-    
-    document_set_id = fields.Many2one(
-        comodel_name = 'cpm_odoo.documents_document_set', 
-        string='document_set',
-        required=True,
-        ondelete = "cascade"
-    )
     
     file = fields.Binary(
         string = 'File',
@@ -175,6 +191,32 @@ class Document(models.Model):
             "url": str(base_url) + str(download_url),
             "target": "new",
         }
+    
+class Document(models.Model):
+    _name = "cpm_odoo.documents_document"
+    _description = "Document"
+    
+    _inherit="cpm_odoo.documents_document_abs"
+    
+    document_set_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.documents_document_set', 
+        string='document_set',
+        required=True,
+        ondelete = "cascade"
+    )
+    
+class Contract(models.Model):
+    _name = "cpm_odoo.contracts_contract"
+    _description = "Document"
+    
+    _inherit="cpm_odoo.documents_document_abs"
+    
+    contract_set_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.contracts_contract_set', 
+        string='contract_set',
+        required=True,
+        ondelete = "cascade"
+    )
         
     
 class DocumentCategory(models.Model):
@@ -221,11 +263,36 @@ class DocumentCategory(models.Model):
     #     pass
     
 class ContractSet(models.Model):
-    _name = "cpm_odoo.documents_contract_set"
+    _name = "cpm_odoo.contracts_contract_set"
     _description = "Contract Set"
     
-    _inherit = "cpm_odoo.documents_document_set"
+    _inherit = "cpm_odoo.documents_document_set_abs"
+    
     contractor_id = fields.Many2one(
         comodel_name = 'cpm_odoo.stakeholders_contractor', 
         string='contractor_id'
     )
+    
+    def write(self, vals):
+        for record in self:
+            if vals.get('contractor_id'):
+                for record in self:
+                    recs = self.env["cpm_odoo.planning_task_assign_contractor"].search(
+                        [
+                            ['contract_set_id','=',record.id]
+                        ]
+                    )
+                    if(len(recs)>0):
+                        raise ValidationError(f"Cannot change the contractor of the contract {record.name}, it is linked to task {recs[0].task_id.name}")
+        return super().write(vals)
+    
+    def unlink(self):
+        for record in self:
+            recs = self.env["cpm_odoo.planning_task_assign_contractor"].search(
+                [
+                    ['contract_set_id','=',record.id]
+                ]
+            )
+            if(len(recs)>0):
+                raise ValidationError(f"Cannot delete contract set {record.name}, it is linked to task {recs[0].task_id.name}")
+        return super().unlink()

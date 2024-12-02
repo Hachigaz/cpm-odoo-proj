@@ -49,6 +49,17 @@ export function getPageInfo(page_name){
     }
 }
 
+export function clearPageInfo(page_name){
+    sessionStorage.removeItem(`page_info:${page_name}`) 
+}
+
+export function formatSnakeStr(str){
+    return str
+    .split('_') // Split the string by underscores
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+    .join(' '); // Join the words back together with spaces
+}
+
 export function formatDate(date_str){
     const inputDate = date_str;
 

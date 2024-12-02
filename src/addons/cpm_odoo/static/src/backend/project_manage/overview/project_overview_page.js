@@ -2,8 +2,9 @@
 import { GanttDisplay, ItemList, SearchBar} from "../../components/components";
 import { useService } from "@web/core/utils/hooks";
 import { session } from "@web/session";
-import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, isInGroup, joinM2MDatas, categorizeDate} from "../../components/component_utils";
+import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, isInGroup, joinM2MDatas, categorizeDate, joinDatas} from "../../components/component_utils";
 import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
+import { formatCurrency } from "../finance/components";
 
 export class ProjectOverviewPage extends Component {
     static template = "cpm_odoo.ProjectOverviewPage";
@@ -11,6 +12,7 @@ export class ProjectOverviewPage extends Component {
     static formatDate = formatDate
     static isInGroup = isInGroup
     static categorizeDate = categorizeDate
+    static formatCurrency = formatCurrency
 
     setup(){
 
@@ -22,7 +24,8 @@ export class ProjectOverviewPage extends Component {
                 project_info:null,
                 recent_tasks:[],
                 statistics:{},
-                investor_list:[1,2,3,4],
+                investor_list:[],
+                investor_count:0,
                 issue_list:[]
             }
             await this.loadData()
@@ -69,8 +72,10 @@ export class ProjectOverviewPage extends Component {
                 0,0,[],true
             ]
         )
-
-        total_task_count = total_task_count[0].active_task_count?total_task_count[0].active_task_count:1
+        total_task_count = total_task_count[0]
+        if(total_task_count){
+            total_task_count = total_task_count.active_task_count?total_task_count.active_task_count:1
+        }
         
         let completed_task_count = await this.orm.call(
             "cpm_odoo.planning_workflow",
@@ -84,8 +89,11 @@ export class ProjectOverviewPage extends Component {
                 0,0,[],true
             ]
         )
+        if(completed_task_count[0]){
+            completed_task_count = completed_task_count[0]
+        }
 
-        completed_task_count = completed_task_count[0].completed_task_count?completed_task_count[0].completed_task_count:0
+        completed_task_count = completed_task_count.completed_task_count?completed_task_count.completed_task_count:0
 
 
         
@@ -96,6 +104,59 @@ export class ProjectOverviewPage extends Component {
             completed_task_count:completed_task_count?completed_task_count:0,
             project_progress:project_progress
         }
+
+        let investor_ids = (await this.orm.call(
+            "cpm_odoo.root_project",
+            "search_read",
+            [
+                [
+                    ['id','=',this.props.context_data.project_id]
+                ],
+                ['id',"investor_ids"],
+                0,1,[]
+            ]
+        ))[0].investor_ids
+
+        let dis_inv_ids = investor_ids.slice(0,3)
+
+        let investor_list = await this.orm.call(
+            "cpm_odoo.stakeholders_investor",
+            "search_read",
+            [
+                [
+                    ['id','in',dis_inv_ids]
+                ],
+                ['id',"name"],
+                0,3,[]
+            ]
+        )
+        
+        let total_invests = await this.orm.call(
+            "cpm_odoo.project_investor_investment_record",
+            "search_read",
+            [
+                [   
+                    ['project_finance_id','=',this.props.context_data.finance_id],
+                    ['investor_id','in',dis_inv_ids]
+                ],
+                ['id',"cur_id","total_investments","investor_id"],
+                0,3,[]
+            ]
+        )
+
+        await joinDatas(total_invests,this.orm,[
+            ["cur_id","res.currency",["id","symbol","position","decimal_places","rate"]]
+        ])
+
+        console.log(total_invests)
+
+        investor_list.forEach((arr,idx)=>{
+            let total_invest = total_invests.find(item=>item.investor_id[0]===arr.id)
+            investor_list[idx].investments=total_invest?total_invest:null
+        })
+
+        this.state_data.investor_list = investor_list
+        this.state_data.investor_count = investor_ids.length
     }
 
     async act_edit_project(){
