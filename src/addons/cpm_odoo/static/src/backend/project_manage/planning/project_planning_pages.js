@@ -1,5 +1,6 @@
 /** @odoo-module **/
 import { GanttDisplay, ItemList, SearchBar} from "../../components/components";
+import { PlanningDocumentManagementTab } from "../../doc_mgmt/document_mgmt";
 import { DocumentSetItemList } from "../../doc_mgmt/document_mgmt";
 import { useService } from "@web/core/utils/hooks";
 import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime} from "../../components/component_utils";
@@ -1114,7 +1115,8 @@ export class ProjectPlanningPage extends Component {
         PlanningOverview,
         PlanningWorkflows,
         PlanningDrafts,
-        PlanningUnassignedTasks
+        PlanningUnassignedTasks,
+        PlanningDocumentManagementTab
     }
     
     get subpageComponent() {
@@ -1136,18 +1138,24 @@ export class ProjectPlanningPage extends Component {
             group_id:"cpm_manage_project_plans"
         },
         {
+            id: "documents",
+            name:"Project Documents",
+            page:PlanningDocumentManagementTab,
+            group_id:"cpm_manage_project_plans"
+        },
+        {
             id: "manage_workflow",
             name:"Manage Workflow",
             page:PlanningManageWorkflow,
             group_id:"cpm_manage_project_plans",
-            disabled:getPageInfo(PlanningManageWorkflow.page_name)?false:true
+            hidden:true
         },
         {
             id: "manage_task",
             name:"Manage Task",
             page:PlanningManageTask,
             group_id:"cpm_manage_project_plans",
-            disabled:getPageInfo(PlanningManageTask.page_name)?false:true
+            hidden:true
         }
     ]
 
@@ -1156,6 +1164,7 @@ export class ProjectPlanningPage extends Component {
         if (this.currentPage == null){
             this.currentPage=this.availablePages[0].id
         }
+        
     }
 
 

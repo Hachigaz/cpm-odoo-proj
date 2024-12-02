@@ -1,6 +1,5 @@
 from odoo import models,fields,api
 from odoo.exceptions import ValidationError
-from datetime import datetime, timedelta
 
 class Workflow(models.Model):
     _name = "cpm_odoo.planning_workflow"
@@ -191,7 +190,7 @@ class Workflow(models.Model):
         store=True
     )
     
-    @api.depends('task_ids.assigned_contractor_count','task_ids.assigned_staff_count')
+    @api.depends('task_ids.task_status')
     def _compute_unassigned_task_count(self):
         for record in self:
             unassigned_task_count = sum(1 for task in record.task_ids if len(task.assigned_staff_ids) == 0 and len(task.assigned_contractor_ids) == 0)
@@ -309,27 +308,11 @@ class Task(models.Model):
             "assigned_staff_ids":[[4,id] for id in staff_ids]
         })
         
-        
         for staff in staff_recs:
-            if not self.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff.id):
-                staff.user_id.write({
-                    'groups_id':[(4,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
-                })
-        pass
-    
-    @api.model
-    def is_user_in_task(self,project_id,user_id):
-        recs = self.env["cpm_odoo.planning_task"].search_read(
-            [
-                ['assigned_staff_ids','in',user_id],
-                ['workflow_id.planning_id.project_id.id',"=",project_id]
-            ]
-        )
-        
-        if(len(recs)>0):
-            return True
-        else:
-            return False
+            staff.user_id.write({
+                'groups_id':[(4,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
+            })
+
         pass
     
     @api.model
@@ -343,10 +326,9 @@ class Task(models.Model):
         })
         
         for staff in staff_recs:
-            if self.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff.id):
-                staff.user_id.write({
-                    'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
-                })
+            staff.user_id.write({
+                'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
+            })
 
         pass
     
@@ -530,7 +512,7 @@ class Task(models.Model):
     def act_get_active_tasks(self,domain,count=0,cols=[]):
         task_recs = self.env["cpm_odoo.planning_task"].search_read(
             [
-                ('start_date','<=',fields.Date.today()),
+                ('start_date','<',fields.Date.today()),
                 ('task_status','=','active'),
                 ('workflow_id.workflow_status','=','active')
             ] + domain,

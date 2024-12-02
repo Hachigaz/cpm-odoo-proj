@@ -1,0 +1,43 @@
+<odoo>
+    <data>
+        <record id="cpm_odoo.view_supplier_tree" model="ir.ui.view">
+            <field name="name">stakeholders.supplier.tree</field>
+            <field name="model">cpm_odoo.stakeholders_supplier</field>
+            <field name="arch" type="xml">
+                <tree string="Suppliers">
+                    <field name="partner_id"/>
+                    <field name="description"/>
+                    <field name="address"/>
+                    <field name="phone"/>
+                    <field name="email"/>   
+                </tree>
+            </field>
+        </record>
+
+        <record id="cpm_odoo.view_supplier_form" model="ir.ui.view">
+            <field name="name">stakeholders.supplier.form</field>
+            <field name="model">cpm_odoo.stakeholders_supplier</field>
+            <field name="arch" type="xml">
+                <form string="New Supplier">
+                    <sheet>
+                        <group string="Supplier Info" col='3'>
+                            <group colspan='2'>
+                                <field name="partner_id"/>
+                                <field name="description"/>
+                            </group>
+                            <group colspan='1'>
+                                <field name="avatar_128" invisible="1"></field>
+                                <field name="image_1920" class="oe_avatar" widget='image' options="{'preview_image':'avatar_128'}"></field>
+                            </group>
+                        </group>
+                        <group string="Contact Info">
+                            <field name="address"/>
+                            <field name="phone" widget='phone'/>
+                            <field name="email" widget='email'/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

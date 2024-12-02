@@ -2,14 +2,14 @@
 <odoo>
 
     <data>
-        <record id="cpm_odoo.assigned_warehouse_view_kanban" model="ir.ui.view">
+        <record id="assigned_warehouse_view_kanban" model="ir.ui.view">
             <field name="name">assigned_warehouse.view.kanban</field>
             <field name="model">cpm_odoo.res_mgmt_warehouse_info</field>
             <field name="arch" type="xml">
                 <kanban string="Assigned Warehouses" create="False" edit="False" delete="False">
                     <field name="id"></field>
-                    <field name="name"></field>
-                    <field name="address"></field>
+                    <field name="name">Name</field>
+                    <field name="address">Description</field>
                     <templates>
                         <t t-name="kanban-box">
                             <div t-att-data-id="record.id" class="oe_kanban_card">
@@ -20,8 +20,8 @@
                                 </div>
                                 <div class="project_desc oe_kanban_content">
                                     <div class="description">
-                                        <t t-if="record.address.value">
-                                            <t t-esc="record.address"/> 
+                                        <t t-if="record.description.value">
+                                            <t t-esc="record.description"/> 
                                         </t>
                                         <t t-else="">
                                             No Description

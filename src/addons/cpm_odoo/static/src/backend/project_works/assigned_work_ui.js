@@ -1,11 +1,10 @@
 /** @odoo-module **/
+import { GanttDisplay, ItemList, SearchBar} from "../components/components";
 import { useService } from "@web/core/utils/hooks";
-import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, clearPageInfo} from "../components/component_utils";
+import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime} from "../components/component_utils";
 import { registry } from "@web/core/registry"
-import { session } from "@web/session";
-import { Component, onWillStart, onMounted, onWillUnmount, onWillDestroy, useEffect, useState, useRef} from "@odoo/owl";
+import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
 import { WorkOverviewPage } from "./work_overview_page";
-import { AssignedTaskDetailView } from "./assigned_task_view_ui";
 
 class AssignedWorkPage extends Component{
     static clientActionName = "cpm_odoo.assigned_work_ui"
@@ -23,7 +22,7 @@ class AssignedWorkPage extends Component{
 
     availablePages = [
         {
-            id:WorkOverviewPage.page_name,
+            id:"overview",
             name:"Overview",
             page:WorkOverviewPage,
             group_id:""
@@ -41,9 +40,9 @@ class AssignedWorkPage extends Component{
             group_id:""
         },
         {
-            id:AssignedTaskDetailView.page_name,
+            id:"assigned_task_View",
             name:"Task Detail",
-            page:AssignedTaskDetailView,
+            page:WorkOverviewPage,
             group_id:"",
             hidden:true
         }
@@ -64,55 +63,33 @@ class AssignedWorkPage extends Component{
                 page_id: this.currentPage,
                 subpage_id:null,
                 client_action : this.constructor.clientActionName,
-                user_id:session.uid
+                user_id:1,
+                staff_id:1
             })
             this.pageContext = getPageContext()
         }
-        this.orm = useService('orm')
 
-        onWillStart(async ()=>{
-            await this.loadData()
 
-            this.props.context_data = {
-                user_id:this.pageContext.user_id,
-                staff_id:this.staff_id
-            }
-
-        })
+        this.props.context_data = {
+            user_id:this.pageContext.user_id,
+            staff_id:this.pageContext.staff_id
+        }
         
         onMounted(()=>{
-            let el_btn = document.querySelector(`#main-side-menu #${this.currentPage}`)
-            if(el_btn){
-                el_btn.classList.toggle("active")
-            }
+            document.querySelector(`#main-side-menu #${this.currentPage}`).classList.toggle("active")
         })
-    }
-
-    async loadData(){
-        let staff_rec = (await (this.orm.call(
-            "cpm_odoo.human_res_staff",
-            "search_read",
-            [
-                [
-                    ["user_id",'=',this.pageContext.user_id]
-                ],
-                ["id"],
-                0,1,""
-            ]
-        )))[0]
-
-        if(staff_rec){
-            this.staff_id = staff_rec.id
-        }
-        else{
-            this.staff_id = 1
-        }
     }
 
     async callPage(id) {
-
         moveToPage(id,null)
     }
 }
 
 registry.category("actions").add(AssignedWorkPage.clientActionName, AssignedWorkPage);
+
+class AssignedTaskView extends Component{
+    static clientActionName = "cpm_odoo.assigned_task_view"
+    static template="cpm_odoo.AssignedWorkPage"
+}
+
+registry.category("actions").add(AssignedTaskView.clientActionName, AssignedTaskView);

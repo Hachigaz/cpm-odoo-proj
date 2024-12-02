@@ -566,6 +566,11 @@ class Project(models.Model):
             # })
         return records
     
+    rule_ids = fields.Many2many(
+        comodel_name = 'ir.rules', 
+        string='rule'
+    )
+    
     def unlink(self):
         for record in self:
             record.proj_mgmt_group_id.unlink()

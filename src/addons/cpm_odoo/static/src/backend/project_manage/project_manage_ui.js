@@ -16,8 +16,7 @@ class ProjectManageUI extends Component {
     static components = {
         ProjectOverviewPage,
         ProjectPlanningPage,
-        ProjectFinancePage,
-        PlanningDocumentManagementTab
+        ProjectFinancePage
     };
 
     get pageComponent() {
@@ -49,12 +48,6 @@ class ProjectManageUI extends Component {
             name:"Safety and Risks",
             page:ProjectFinancePage,
             group_id:"cpm_view_project_staffs"
-        },
-        {
-            id: "documents",
-            name:"Documents",
-            page:PlanningDocumentManagementTab,
-            group_id:"cpm_manage_project_plans"
         }
     ]
 

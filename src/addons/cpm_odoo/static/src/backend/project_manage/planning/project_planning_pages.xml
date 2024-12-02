@@ -6,12 +6,7 @@
                     <div class="btn-group">
                         <t t-foreach="availablePages" t-as="page" t-key="page.id">
                             <t t-if="page.hidden !== true">
-                                <t t-if="page.disabled">
-                                    <button type="button" class="btn btn-secondary me-1 disabled"><t t-esc="page.name"/></button>
-                                </t>
-                                <t t-else="">
-                                    <button type="button" class="btn btn-secondary me-1" t-on-click="() => callSubPage(page.id)"><t t-esc="page.name"/></button>
-                                </t>
+                                <button type="button" class="btn btn-secondary me-1" t-on-click="() => callSubPage(page.id)"><t t-esc="page.name"/></button>
                             </t>
                         </t>
                     </div>

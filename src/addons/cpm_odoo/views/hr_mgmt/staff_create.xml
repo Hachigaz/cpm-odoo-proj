@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <form string="">
                     <sheet>
-                        <group name="staff_info" string="Staff Info" col="3">
+                        <group name="staff_info" string="Staff Info" col="3" class="bg-[#000]">
                             <group name="name" colspan="2">
                                 <field name="first_name">First Name</field>
                                 <field name="last_name">Last Name</field>
