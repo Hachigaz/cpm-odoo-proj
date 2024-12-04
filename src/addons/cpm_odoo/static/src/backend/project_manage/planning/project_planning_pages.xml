@@ -548,18 +548,27 @@
                                                     </div>
                                                     <div class="col-9 d-flex align-items-center">
                                                         <div class="staff-info-wrapper rounded px-2 py-2 w-100 h-100">
-                                                            <h5 class="card-title">
+                                                            <h5 class="card-title fs-5">
                                                                 <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
                                                                 <t t-esc="staff.first_name + ' ' +staff.last_name"/>
                                                             </h5>
-                                                            <span class="card-text">
+                                                            <div class="card-text mb-2">
                                                                 <t t-if="staff.department_id">
                                                                     <t t-esc="staff.department_id[1]"/>
                                                                 </t>
                                                                 <t t-else="">
                                                                     No Department.
                                                                 </t>
-                                                            </span>
+                                                            </div>
+                                                            <div class="card-text d-flex align-items-center">
+                                                                <span class="me-2"><t t-esc="staff.mem_role"/></span>
+                                                                <t t-if="staff.mem_role==='Head Member'">
+                                                                    <span class="btn btn-sm btn-link" t-on-click="()=>{this.act_unassign_task_head_member(staff.id)}">Unassign</span>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <span class="btn btn-sm btn-link" t-on-click="()=>{this.act_assign_task_head_member(staff.id)}">Assign as Leader</span>
+                                                                </t>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -642,7 +651,7 @@
                                                                     </t>
                                                                 </p>
                                                                 <t t-if="!contractor.contract_set_id">
-                                                                    <div class="mb-2">
+                                                                    <div class="mb-2 text-danger">
                                                                         <i class="fa-solid fa-triangle-exclamation"></i>
                                                                         <span class="">
                                                                             No Contract Attached

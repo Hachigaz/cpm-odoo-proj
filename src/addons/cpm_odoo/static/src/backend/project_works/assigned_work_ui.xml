@@ -8,9 +8,9 @@
             <script type="text/javascript" src="cpm_odoo/static/src/frontend/cmp/form_reload.js"></script>
         </xpath>
         
-        <div class="d-flex" id="wrapper">
+        <div class="d-flex h-100" id="wrapper">
             <!-- Main content -->
-            <div class="container-fluid p-0">
+            <div class="container-fluid p-0 h-100 d-flex flex-column" style="overflow-y:auto">
                 <!-- Top Navigation -->
                 <nav class="navbar navbar-expand-lg bg-light">
                     <div class="container-fluid">
@@ -18,7 +18,7 @@
                         <div class="">
                             <ul class="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Logout</a>
+                                    <!-- <a class="nav-link" href="#">Logout</a> -->
                                 </li>
                             </ul>
                         </div>

@@ -196,6 +196,14 @@ export class ItemList extends Component{
             },
             ()=>[this.page_data.extra_domain])
         }
+
+        if (this.props.page_data){
+            let page_data = this.props.page_data
+            if(page_data.item_display_count)
+                this.page_data.item_display_count = page_data.item_display_count
+            if(page_data.page_display_count)
+                this.page_data.page_display_count = page_data.page_display_count
+        }
     }
 
     setup(){
@@ -273,6 +281,7 @@ export class ItemList extends Component{
             this.get_page_list()
             if(this.page_data.updated_at<now){
                 this.page_data.updated_at=now
+                await this.append_to_list(item_list)
                 this.page_data.item_list = item_list
             }
         }
@@ -352,6 +361,10 @@ export class ItemList extends Component{
         }
         
         this.page_data.domain = new_domain
+    }
+
+    async append_to_list(item_list){
+
     }
 
     get_page_list(){

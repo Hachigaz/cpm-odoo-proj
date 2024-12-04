@@ -3,14 +3,14 @@
     <data>
         <record id="cpm_odoo.stakeholders_contractor_create_view_form" model="ir.ui.view">
             <field name="name">model_name.view.form</field>
-            <field name="model">cpm_odoo.stakeholders_contractor</field>
+            <field name="model">cpm_odoo.stakeholders_investor</field>
             <field name="arch" type="xml">
-                <form string="New Contractor">
+                <form string="New Investor">
                     <sheet>
-                        <group string="Contractor Info" col='3'>
+                        <group string="Investor Info" col='3'>
                             <group colspan='2'>
-                                <field name="name">Contractor Name</field>
-                                <field name="description">Description</field>
+                                <field name="name" string="Investor Name"></field>
+                                <field name="description" string="Description"></field>
                             </group>
                             <group colspan='1'>
                                 <field name="avatar_128" invisible="1"></field>
@@ -18,9 +18,9 @@
                             </group>
                         </group>
                         <group string="Contact Info">
-                            <field name="address">Address</field>
-                            <field name="phone" widget='phone'>Phone Number</field>
-                            <field name="email" widget='email'>Email</field>
+                            <field name="address" string="Address"></field>
+                            <field name="phone" widget='phone' string="Phone Number"></field>
+                            <field name="email" widget='email' string="Email"></field>
                         </group>
                     </sheet>
                 </form>

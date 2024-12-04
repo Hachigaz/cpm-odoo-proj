@@ -78,6 +78,7 @@ Long description of module's purpose
         'views/stakeholders/investor_view.xml',
         'views/stakeholders/stackholder_acts.xml',
         'views/stakeholders/contractor_view.xml',
+        'views/stakeholders/contractor_category_create.xml',
         'views/stakeholders/supplier_view.xml',
         'views/stakeholders/other_contact_view.xml',
 
@@ -89,9 +90,6 @@ Long description of module's purpose
         # 'init_res/dump/cpm_odoo.root_project_finance.csv',
         # 'init_res/dump/cpm_odoo.root_project_doc_mgmt.csv',
         # 'init_res/dump/cpm_odoo.root_project.csv',
-        'init_res/cpm_odoo.stakeholders_contractor_category.csv',
-        'init_res/cpm_odoo.stakeholders_contractor.csv',
-        'init_res/cpm_odoo.stakeholders_investor.csv',
         'init_res/cpm_odoo.human_res_department.csv',
         'init_res/cpm_odoo.human_res_staff.csv',
         'init_res/cpm_odoo.documents_document_category.csv',
