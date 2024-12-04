@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
     <t t-name="cpm_odoo.AssignedTaskDetailView">
-        <div class="container my-4">
+        <div class="container my-4 h-100">
             <!-- Task Header -->
             <div class="row border-bottom pb-3 mb-4">
                 <div class="col-md-8">
                     <h2 class="mb-1">
-                        Task Title
+                        <t t-esc="this.page_data.task_info.name"/>
                     </h2>
                     <p class="text-muted mb-0">
-                        Assigned to: <strong>Staff Name</strong>
+                        Assigned to <strong><t t-esc="this.page_data.task_info.assigned_staff_ids.length + this.page_data.task_info.assigned_contractor_ids.length"/></strong> members.
                     </p>
-                    <p class="text-muted">Due Date: <strong>December 10, 2024</strong></p>
+                    <p class="text-muted">Due Date: <strong><t t-esc="this.constructor.formatDate(this.page_data.task_info.exp_end)"/></strong></p>
                 </div>
                 <div class="col-md-4 text-md-end">
                     <div class="btn-list">
@@ -24,18 +24,20 @@
             <div class="row mb-4">
                 <div class="col-md-6">
                 <h5>Task Overview</h5>
-                <p>Description of the task, detailing the objectives, scope, and requirements.</p>
+                <p>
+                    <t t-set="description" t-value="this.page_data.task_info.description?this.page_data.task_info.description:'No Description'"/>
+                    <t t-esc="description"/>    
+                </p>
                 <div class="d-flex align-items-center">
                     <span class="me-2">Status:</span>
-                    <span class="badge bg-primary">In Progress</span>
+                    <span t-att-class="`badge fw-bold ${this.page_data.task_info.task_status==='active'?'bg-warning':'bg-success'}`"><t t-esc="this.constructor.formatSnakeStr(this.page_data.task_info.task_status)"/></span>
                 </div>
                 </div>
                 <div class="col-md-6">
                 <h5>Details</h5>
                 <ul class="list-unstyled mb-0">
-                    <li><strong>Priority:</strong> High</li>
-                    <li><strong>Estimated Hours:</strong> 15</li>
-                    <li><strong>Created On:</strong> November 27, 2024</li>
+                    <li><strong>Priority:</strong> <t t-esc="this.constructor.formatSnakeStr(this.page_data.task_info.priority)"/></li>
+                    <li><strong>Created On:</strong> <t t-esc="this.constructor.formatDate(this.page_data.task_info.date_created)"/></li>
                 </ul>
                 </div>
             </div>
@@ -78,54 +80,87 @@
                         </div>
                         <ul class="list-group">
                             <t t-if="this.page_data.checklist.length>0">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="col-3">
+                                        Name
+                                    </div>
+                                    <div class="col-2">
+                                        Members
+                                    </div>
+                                    <div class="col-2">
+                                        Due
+                                    </div>
+                                    <div class="col-2">
+                                        Status
+                                    </div>
+                                    <div class="col-2">
+
+                                    </div>
+                                </li>
                                 <t t-foreach="this.page_data.checklist" t-as="item" t-key="item.id">
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div class="">
+                                        <div class="col-3">
                                             <t t-esc="item.title"/>
                                         </div>
-                                        <div class="d-flex align-items-center">
-                                            <div class="d-flex me-2">
-                                                <t t-if="item.assigned_staffs || item.assigned_contractors">
-                                                    <div class="me-1">
-                                                        <t t-foreach="item.assigned_staffs" t-as="mem" t-key="mem_index">
-                                                            <div class="img-wrapper" t-att-style="`width:40px;height:40px;${mem_index>0?'margin-left:-30px':''}`">
-                                                                <img
-                                                                    t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=${mem}&amp;field=avatar_256`" alt="Image"
-                                                                    style="width: 100%;aspect-ratio:1/1"
-                                                                    class="img-fluid rounded-circle"
-                                                                />
-                                                            </div>
-                                                        </t>
-                                                    </div>
-                                                    <div class="me-1">
-                                                        <t t-foreach="item.assigned_contractors" t-as="mem" t-key="mem_index">
-                                                            <div class="img-wrapper" t-att-style="`width:40px;height:40px;${mem_index>0?'margin-left:-30px':''}`">
-                                                                <img
-                                                                    t-att-src="`web/image/?model=cpm_odoo.stakeholders_contractor&amp;id=${mem}&amp;field=avatar_256`" alt="Image"
-                                                                    style="width: 100%;aspect-ratio:1/1"
-                                                                    class="img-fluid rounded-circle"
-                                                                />
-                                                            </div>
-                                                        </t>
+                                        <div class="col-2 d-flex me-2">
+                                            <t t-if="item.assigned_staffs || item.assigned_contractors">
+                                                <t t-set="assigned_staffs" t-value="item.assigned_staffs.slice(0,4)"/>
+                                                <t t-set="assigned_contractors" t-value="item.assigned_contractors.slice(0,4)"/>
+                                                <t t-foreach="assigned_staffs" t-as="mem" t-key="mem_index">
+                                                    <div class="img-wrapper" t-att-style="`width:40px;height:40px;${mem_index>0?'margin-left:-24px':''}`">
+                                                        <img
+                                                            t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=${mem}&amp;field=avatar_256`" alt="Image"
+                                                            style="width: 100%;aspect-ratio:1/1"
+                                                            class="img-fluid rounded-circle"
+                                                        />
                                                     </div>
                                                 </t>
-                                                <t t-else="">
-
+                                                <t t-foreach="assigned_contractors" t-as="mem" t-key="mem_index">
+                                                    <div class="img-wrapper" t-att-style="`width:40px;height:40px;${mem_index>0 || assigned_staffs.length>0?'margin-left:-24px':''}`">
+                                                        <img
+                                                            t-att-src="`web/image/?model=cpm_odoo.stakeholders_contractor&amp;id=${mem}&amp;field=avatar_256`" alt="Image"
+                                                            style="width: 100%;aspect-ratio:1/1"
+                                                            class="img-fluid rounded-circle"
+                                                        />
+                                                    </div>
                                                 </t>
-                                            </div>
-                                            <div class="">
-                                                <t t-if="item.is_completed">
-                                                    <span class="badge bg-success bg-gradient text-white">Completed</span>
-                                                </t>
-                                                <t t-else="">
-                                                    <span class="badge bg-warning bg-gradient">In Progress</span>
-                                                </t>
-                                            </div>
+                                            </t>
+                                            <t t-else="">
+                                                Unassigned
+                                            </t>
                                         </div>
-                                        <div class="">
+                                        <div class="col-2">
+                                            <t t-esc="this.constructor.formatDate(item.due_date)"/>
+                                        </div>
+                                        <div class="col-2">
+                                            <t t-if="item.is_completed">
+                                                <span class="badge bg-success bg-gradient text-white">Completed</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge bg-warning bg-gradient">In Progress</span>
+                                            </t>
+                                        </div>
+                                        <div class="col-2 d-flex justify-content-end">
                                             <t t-if="!item.is_completed">
-                                                <div class="btn btn-sm btn-secondary" t-on-click="()=>{this.mark_completed(item.id)}">
+                                                <!-- <div class="btn btn-sm btn-secondary" t-on-click="()=>{this.mark_completed(item.id)}">
                                                     Mark Completed
+                                                </div> -->
+                                                <div class="btn btn-sm btn-primary px-3 py-2" t-on-click="()=>{this.mark_completed(item.id)}">
+                                                    <i class="fa-solid fa-check"></i>
+                                                </div>
+                                                <!-- <div class="btn btn-sm btn-danger ms-2" t-on-click="()=>{this.mark_completed(item.id)}">
+                                                    Delete
+                                                </div> -->
+                                                <div class="btn btn-sm btn-danger ms-2 px-3 py-2" t-on-click="()=>{this.mark_completed(item.id)}">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </div>
+                                            </t>
+                                            <t t-else="">
+                                                <!-- <div class="btn btn-sm btn-secondary" t-on-click="()=>{this.mark_reset(item.id)}">
+                                                    Revert
+                                                </div> -->
+                                                <div class="btn btn-sm btn-primary px-3 py-2" t-on-click="()=>{this.mark_reset(item.id)}">
+                                                    <i class="fa-solid fa-rotate-left"></i>
                                                 </div>
                                             </t>
                                         </div>
@@ -133,9 +168,9 @@
                                 </t>
                             </t>
                             <t t-else="">
-                                <li class="text-center fs-4">
+                                <div class="text-center fs-4">
                                     No Record
-                                </li>
+                                </div>
                             </t>
                         </ul>
                     </div>
@@ -143,30 +178,27 @@
                     <!-- Attachments -->
                     <div class="tab-pane fade" id="attachments">
                         <h5>Attachments</h5>
-                        <div class="d-flex flex-wrap gap-3">
-                            <div>
-                            <i class="bi bi-file-earmark"></i> <a href="#">Document.pdf</a>
-                            </div>
-                            <div>
-                            <i class="bi bi-image"></i> <a href="#">Image.jpg</a>
-                            </div>
-                        </div>
+                        <DocumentSetItemList extra-domain="[['id','in',this.page_data.task_info.attached_document_ids]]" page_data="{item_display_count:12}">
+                        
+                        </DocumentSetItemList>
                     </div>
 
                     <!-- Comments -->
                     <div class="tab-pane fade" id="comments">
                         <h5>Comments</h5>
-                        <textarea class="form-control mb-3" rows="3" placeholder="Add a comment..."></textarea>
-                        <button class="btn btn-primary btn-sm">Post Comment</button>
+                        <textarea class="form-control mb-3" rows="3" placeholder="Add a comment..." t-ref="comment-text-area"></textarea>
+                        <button class="btn btn-primary btn-sm" t-on-click="()=>{this.act_add_comment()}">Post Comment</button>
                         <ul class="list-unstyled mt-3">
-                            <li class="border-bottom pb-2 mb-2">
-                            <strong>User 1:</strong> Comment details here.
-                            <small class="text-muted d-block">2 hours ago</small>
-                            </li>
-                            <li>
-                            <strong>User 2:</strong> Another comment.
-                            <small class="text-muted d-block">1 day ago</small>
-                            </li>
+                            <t t-foreach="this.page_data.comments" t-as="comment" t-key="comment_index">
+                                <li class="mb-2 p-2 border-bottom">
+                                    <div class="mb-2">
+                                        <strong>
+                                            <t t-esc="comment.created_by[1]"/>
+                                        </strong> <t t-esc="comment.comment"/>
+                                    </div>
+                                    <small class="text-muted d-block"><t t-esc="this.constructor.formatDateTime(comment.date_created)"/></small>
+                                </li>
+                            </t>
                         </ul>
                     </div>
 
@@ -175,8 +207,18 @@
                         <h5>History</h5>
                         <ul class="list-unstyled">
                             <t t-foreach="this.page_data.history_log" t-as="log" t-key="log.id">
-                                <li>
-                                    <i class="fa-regular fa-clock"></i> <t t-esc="log.title"/>
+                                <li class="d-flex align-items-center">
+                                    <i class="fa-regular fa-clock me-2"></i>
+                                    <t t-if="log.staff_id">
+                                        <div class="img-wrapper me-1" style="width:25px;height:25px;">
+                                            <img
+                                                t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=${log.staff_id}&amp;field=avatar_256`" alt="Image"
+                                                style="width: 100%;aspect-ratio:1/1"
+                                                class="img-fluid rounded-circle"
+                                            />
+                                        </div>
+                                    </t>
+                                    <t t-esc="log.title"/>
                                 </li>
                             </t>
                             <!-- <li>

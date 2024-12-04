@@ -9,9 +9,9 @@
                     <sheet>
                         <group string="Contractor Info" col='3'>
                             <group colspan='2'>
-                                <field name="name">Contractor Name</field>
-                                <field name="description">Description</field>
-                                <field name="category_id">Contractor Type</field>
+                                <field name="name" string="Contractor Name"></field>
+                                <field name="description" string="Description"></field>
+                                <field name="contractor_category_ids" string="Types"></field>
                             </group>
                             <group colspan='1'>
                                 <field name="avatar_128" invisible="1"></field>
@@ -19,9 +19,9 @@
                             </group>
                         </group>
                         <group string="Contact Info">
-                            <field name="address">Address</field>
-                            <field name="phone" widget='phone'>Phone Number</field>
-                            <field name="email" widget='email'>Email</field>
+                            <field name="address" string="Address"></field>
+                            <field name="phone" widget='phone' string="Phone Number"></field>
+                            <field name="email" widget='email' string="Email"></field>
                         </group>
                     </sheet>
                 </form>

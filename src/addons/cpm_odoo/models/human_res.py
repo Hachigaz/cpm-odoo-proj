@@ -77,7 +77,7 @@ class Staff(models.Model):
 
     @api.model
     def find_staff_by_user_id(self,uid):
-        staff_rec = self.env["cpm_odoo.human_res_staff"].search_read(
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search_read(
             [
                 ['user_id','=',uid]
             ],
@@ -88,6 +88,22 @@ class Staff(models.Model):
         staff_rec = staff_rec[0] if staff_rec else None
         
         return staff_rec
+    
+    def act_check_in_group(self,xml_id):
+        result = []
+        for record in self:
+            if record.sudo().user_id.has_group(xml_id):
+                result.append({
+                    'staff_id':record.id,
+                    'is_in_group':True
+                })
+            else:
+                result.append({
+                    'staff_id':record.id,
+                    'is_in_group':False
+                })
+                
+        return result
     
 class Department(models.Model):
     _name = 'cpm_odoo.human_res_department'

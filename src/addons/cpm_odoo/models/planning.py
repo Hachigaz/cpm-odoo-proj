@@ -236,6 +236,10 @@ class TaskAssignContractor(models.Model):
     )
     
     contractor_name = fields.Char('contractor_name',related="contractor_id.name")
+    # contractor_category_ids = fields.Many2many(
+    #     'contractor_category_ids',
+    #     related="contractor_id.contractor_category_ids"
+    # )
     
     @api.constrains('contract_set_id')
     def _constrains_contract_set_id(self):
@@ -403,12 +407,14 @@ class Task(models.Model):
         cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
         task.add_log(
             f"{', '.join(staff.name for staff in staff_recs)} was assigned to the task.",
-            cur_staff.id if cur_staff else None
+            cur_staff.get('id') if cur_staff else None
         )
     
     @api.model
     def act_unassign_staffs_to_task(self,task_id,staff_ids):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
+        
+        task.act_unassign_task_head_member(staff_ids)
         
         staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
 
@@ -421,7 +427,7 @@ class Task(models.Model):
         cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
         task.add_log(
             f"{', '.join(staff.name for staff in staff_recs)} was unassigned from the task.",
-            cur_staff.id if cur_staff else None
+            cur_staff.get('id') if cur_staff else None
         )
         
         for staff in staff_recs:
@@ -429,6 +435,40 @@ class Task(models.Model):
                 staff.user_id.write({
                     'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
                 })
+        pass
+    
+    def act_assign_task_head_member(self,staff_ids):
+        staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
+        for record in self:
+            for staff_rec in staff_recs:
+                if not record.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff_rec.id):
+                    raise ValidationError(f'Cannot set {staff_rec.name} as head task member, they are not assigned to the task {record.name}.')
+        
+        head_mem_gr = self.env.ref('cpm_gr.project_head_mem_gr')
+        for staff in staff_recs:
+            staff.user_id.write({
+                'groups_id':[(4,head_mem_gr.id)]
+            })
+            
+        cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+        task.add_log(
+            f"{', '.join(staff.name for staff in staff_recs)} was appointed to be task leader.",
+            cur_staff.get('id') if cur_staff else None
+        )
+        pass
+        
+    def act_unassign_task_head_member(self,staff_ids):
+        head_mem_gr = self.env.ref('cpm_gr.project_head_mem_gr')
+        for staff in staff_recs:
+            staff.user_id.write({
+                'groups_id':[(3,head_mem_gr.id)]
+            })
+            
+        cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+        task.add_log(
+            f"{', '.join(staff.name for staff in staff_recs)} was dismissed from task leader role.",
+            cur_staff.get('id') if cur_staff else None
+        )
         pass
     
     @api.model
@@ -720,18 +760,18 @@ class Task(models.Model):
             staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
             rec.add_log(
                 f"{staff_rec.name if staff_rec else ''} created the task",
-                staff_rec.id if staff_rec else None)
+                staff_rec.get('id') if staff_rec else None
+            )
 
         return recs
     
     def write(self, vals):
         for rec in self:
             if rec.workflow_id.workflow_status != 'draft':
-                for val in vals:
-                    if val["start_date"] or val["exp_end"]:
-                        raise ValidationError(f"Cannot change date of non-draft status task: Task {rec.name}")
+                if vals.get("start_date") or vals.get("exp_end"):
+                    raise ValidationError(f"Cannot change date of non-draft status task: Task {rec.name}")
         return super().write(vals)
-    
+
     def add_log(self,title,staff_id):
         for record in self:
             record.sudo().write({
@@ -752,6 +792,11 @@ class Task(models.Model):
         ],
         string='priority',
         default="normal"
+    )
+    
+    date_created = fields.Date(
+        'date_created',
+        default=fields.Date.today()
     )
         
     task_note_ids = fields.One2many(
@@ -791,7 +836,7 @@ class TaskCategory(models.Model):
     
 class TaskNoteCategory(models.Model):
     _name = 'cpm_odoo.planning_task_note_category'
-    _description = "Expense Category"
+    _description = "Task Note Category"
     # _rec_name = "encoded_name"
     
     name = fields.Char(
@@ -880,22 +925,22 @@ class TaskChecklistItem(models.Model):
     )
     
     def mark_completed(self):
-        staff_rec = next((rec for rec in self.assigned_staffs if self.env.user.id == rec.staff_id.user_id))
         self.is_completed = True
+        staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
         self.task_id.add_log(
             f"Marked the task checklist {self.title} as completed",
-            staff_rec
+            staff_rec.get('id') if staff_rec else None
         )
         return True
         
     
     def mark_reset(self):
-        staff_rec = next((rec for rec in self.assigned_staffs if self.env.user.id == rec.staff_id.user_id))
+        staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
         self.is_completed = False
 
         self.task_id.add_log(
             f"Marked the task checklist {self.title} as incomplete",
-            staff_rec
+            staff_rec.get('id') if staff_rec else None
         )
         return True
     
@@ -907,10 +952,50 @@ class TaskChecklistItem(models.Model):
     @api.constrains('due_date')
     def _constrains_due_date(self):
         if(self.due_date<self.task_id.start_date):
-            raise ValidationError('Due Date cannot be before the task start date ({self.task_id.start_date}).')
+            raise ValidationError(f'Due Date cannot be before the task start date (f{self.task_id.start_date}).')
         if(self.due_date > self.task_id.exp_end):
-            raise ValidationError('Due Date cannot be after the task expected due date ({self.task_id.exp_end}).')
+            raise ValidationError(f'Due Date cannot be after the task expected due date (f{self.task_id.exp_end}).')
         pass
+    
+    @api.constrains('assigned_staffs','assigned_contractors')
+    def _constrains_assigned_mems(self):
+        if len(self.assigned_staffs) + len(self.assigned_contractors) == 0:
+            raise ValidationError(f"Checklist must have staffs or contractors assigned to it.")
+        pass
+    
+    task_mem_gr_id = fields.Many2one(
+        'res.groups', 
+        string='task_mem_gr',
+        ondelete="cascade"
+    )
+    
+    task_head_gr_id = fields.Many2one(
+        'res.groups', 
+        string='task_head_gr',
+        ondelete="cascade"
+    )
+    
+    @api.model_create_multi
+    def create(self, vals):
+        staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+        self.task_id.add_log(
+            f"Created checklist {', '.join(val.get('title') for val in vals)}",
+            staff_rec.get('id') if staff_rec else None
+        )
+        return super().create(vals)
+    
+    def unlink(self):
+        for record in self:
+            if self.is_completed:
+                raise ValidationError("Cannot delete checklist item that has completed")
+        
+        staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+        self.task_id.add_log(
+            f"Deleted checklist {', '.join(rec.title for rec in self)}",
+            staff_rec.get('id') if staff_rec else None
+        )
+        
+        return super().unlink()
     
 class TaskHistoryLogItem(models.Model):
     _name = 'cpm_odoo.task_history_log'
@@ -942,7 +1027,7 @@ class TaskHistoryLogItem(models.Model):
 
 class TaskNote(models.Model):
     _name = 'cpm_odoo.planning_task_note'
-    _description = "Task Notes"
+    _description = "Task Note"
     
     task_id = fields.Many2one(
         comodel_name = 'cpm_odoo.planning_task',
@@ -972,6 +1057,44 @@ class TaskNote(models.Model):
         string='Posted By',
         required = True
     )
+    
+class TaskComment(models.Model):
+    _name = 'cpm_odoo.planning_task_comment'
+    _description = "Task Note"
+    
+    task_id = fields.Many2one(
+        comodel_name = 'cpm_odoo.planning_task',
+        string='Task',
+        required=True,
+        ondelete = 'cascade'
+    )
+    
+    comment = fields.Text(
+        string = 'Comment'
+    )
+    
+    date_created = fields.Datetime(
+        string = 'Date Posted',
+        default = fields.Datetime.now(),
+        required = True
+    )
+    
+    created_by = fields.Many2one(
+        comodel_name = 'cpm_odoo.human_res_staff', 
+        string='Posted By',
+        required = True
+    )
+    
+    @api.model_create_multi
+    def create(self, vals):
+        for val in vals:
+            staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+            if staff_rec:
+                val['created_by'] = staff_rec['id']
+            else:
+                raise ValidationError("Cannot find staff from current user")
+            
+        return super().create(vals)
 
 class TaskExpense(models.Model):
     _name = 'cpm_odoo.planning_task_expense'

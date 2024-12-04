@@ -75,8 +75,13 @@ Long description of module's purpose
         'views/issue/issue_overview.xml',
         'views/issue/issue_select_view.xml',
         
-        'views/stakeholders/contractor_create.xml',
-        
+        'views/stakeholders/investor_view.xml',
+        'views/stakeholders/stackholder_acts.xml',
+        'views/stakeholders/contractor_view.xml',
+        'views/stakeholders/contractor_category_create.xml',
+        'views/stakeholders/supplier_view.xml',
+        'views/stakeholders/other_contact_view.xml',
+
         'views/res_mgmt/res_mgmt_acts.xml',
         'views/res_mgmt/views/warehouse_info/warehouse_info_create.xml',
         'views/res_mgmt/views/warehouse_info/assigned_warehouse_kanban.xml',
