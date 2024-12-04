@@ -41,18 +41,5 @@
           action="cpm_odoo.issue_dashboard_act"
           groups="cpm_gr.manage_issues"
         />
-
-        <record id="cpm_odoo.safety_mesures_act" model="ir.actions.act_window">
-          <field name="name">Safety Measures</field>
-          <field name="res_model">cpm_odoo.safety_mgmt</field>
-          <field name="views">form</field>
-        </record>
-
-        <menuitem
-          id="cpm_odoo.safety_mesures_menu"
-          parent="cpm_odoo.issue_root"
-          name="Safety Measures"
-          action="cpm_odoo.safety_mesures_act"
-        />
     </data>
 </odoo>
