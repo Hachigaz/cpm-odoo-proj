@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <record id="cpm_odoo.view_material_tree" model="ir.ui.view">
+            <field name="name">res_mgmt.material.tree</field>
+            <field name="model">cpm_odoo.res_mgmt_material</field>
+            <field name="arch" type="xml">
+                <tree string="Material">
+                    <field name="name"/>
+                    <field name="mat_type_id"/>
+                    <field string="Suppliers" name="supplier_ids" widget="many2many_tags" options="{'color_field': 'color'}"/> 
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

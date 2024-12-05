@@ -35,5 +35,27 @@
         </record>
 
         <menuitem sequence="30" name="Test" parent="cpm_odoo.warehouse_root" id="cpm_odoo.warehouse_test" action="cpm_odoo.test_page"/>
+
+        <menuitem sequence="40" name="Equipment and Material" parent="cpm_odoo.warehouse_root" id="cpm_odoo.equipment_material_root"/>
+
+        <!-- Equipment Menu -->
+        <record id="cpm_odoo.equipment_act" model="ir.actions.act_window">
+            <field name="name">Equipment</field>
+            <field name="res_model">cpm_odoo.res_mgmt_equipment</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">main</field>
+            <field name="views">[('cpm_odoo.view_equipment_tree', 'tree'), ('cpm_odoo.view_equipment_form', 'form')]</field>
+        </record>
+
+        <menuitem sequence="10" name="Equipment" parent="cpm_odoo.equipment_material_root" id="cpm_odoo.equipment_menuitem" action="cpm_odoo.equipment_act"/>
+
+        <!-- Material Menu -->
+        <record id="cpm_odoo.material_act" model="ir.actions.act_window">
+            <field name="name">Material</field>
+            <field name="res_model">cpm_odoo.res_mgmt_material</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem sequence="20" name="Material" parent="cpm_odoo.equipment_material_root" id="cpm_odoo.material_menuitem" action="cpm_odoo.material_act"/>
     </data>
 </odoo>
