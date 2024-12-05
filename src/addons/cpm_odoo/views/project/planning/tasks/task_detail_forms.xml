@@ -16,7 +16,8 @@
             <field name="model">cpm_odoo.planning_task_assign_contractor</field>
             <field name="arch" type="xml">
                 <tree string="">
-                                            <field name="contractor_name" string="Name"></field>
+                    <field name="contractor_name" string="Name"></field>
+                    <!-- <field name="contractor_category_ids" string="Name" widget="many2many_tags"></field> -->
                 </tree>
             </field>
         </record>
@@ -28,8 +29,10 @@
                     <sheet>
                         <group>
                             <group>
+                                <field name="task_id" string="Task" style="pointer-events:none;" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                                 <field name="title" string="Title"></field>
                                 <field name="description" string="Description"></field>
+                                <field name="due_date" string="Due Date"></field>
                             </group>
                             <group>
                                 <field 
@@ -51,6 +54,7 @@
                                     >
                                         <tree create="False" edit="False" delete="False">
                                             <field name="contractor_name" string="Name"></field>
+                                            <!-- <field name="contractor_category_ids" string="Name" widget="many2many_tags"></field> -->
                                         </tree>
                                 </field>
                             </group>

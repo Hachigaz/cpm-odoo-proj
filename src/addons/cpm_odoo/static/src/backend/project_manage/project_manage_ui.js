@@ -47,12 +47,6 @@ class ProjectManageUI extends Component {
             group_id:"cpm_view_project_finances"
         },
         {
-            id:"safety_and_risks",
-            name:"Safety and Risks",
-            page:ProjectFinancePage,
-            group_id:"cpm_view_project_staffs"
-        },
-        {
             id: "documents",
             name:"Documents",
             page:DocumentManagementTab,

@@ -35,7 +35,7 @@ class Risk(models.Model):
     project_id = fields.Many2one(
         comodel_name = "cpm_odoo.root_project",
         string = "Project",
-        required = True
+        default=None
     )
 
     def action_view_solutions(self):
@@ -62,17 +62,28 @@ class Risk(models.Model):
     
 class RiskCategory(models.Model):
     _name = "cpm_odoo.risk_mgmt_category"
-    _description = "Model"
+    _description = "Risk Category"
     
     name = fields.Char(
-        string = 'name',
-        size=128,
-        required=True
+        string = 'Name',
+        required=True,
+        size = 256
+    )
+    
+    description = fields.Text(
+        string = 'Description'
+    )
+    
+    color = fields.Char(
+        string = 'Category Color',
+        required=True,
+        size=24,
+        default = "#FF5733"
     )
     
 class Solution(models.Model):
     _name = "cpm_odoo.risk_mgmt_solution"
-    _description = "Model"
+    _description = "Solution"
 
     name = fields.Char(
         string = 'Name',
@@ -134,16 +145,17 @@ class Issue(models.Model):
         default = "not_resolved"
     )
 
-    created_at = fields.Datetime(
+    created_at = fields.Date(
         string='Created At',
         store=True,
-        default=fields.Datetime.now
+        default=datetime.today()
     )
 
     staff_id = fields.Many2one(
         comodel_name ='cpm_odoo.human_res_staff', 
         string='Staff',
         default=lambda self: self._default_staff_id(),
+        store=True
     )
 
     resolved_date = fields.Date(
@@ -153,7 +165,16 @@ class Issue(models.Model):
     )
 
     is_editable = fields.Boolean(
-        compute="_compute_is_editable", string="Is Editable", store=False)
+        compute="_compute_is_editable", 
+        string="Is Editable", 
+        store=False
+    )
+        
+    resolved_date = fields.Date(
+        compute = "_compute_get_date",
+        string = "Resolved Date",
+        store=True
+    )
 
     @api.model
     def _default_staff_id(self):
@@ -211,13 +232,54 @@ class Issue(models.Model):
                 record.resolved_date = datetime.today()
             else:
                 record.resolved_date = False
+                
+                
+    @api.model
+    def act_create_staff_leave(self,task_id):
+        task_rec =  self.env["cpm_odoo.planning_task"].sudo().browse(task_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().find_staff_by_user_id(self.env.user.id)
+        if task_rec and staff_rec:
+            result = {
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'name': 'Create Staff Leave',
+                'res_model': 'cpm_odoo.risk_mgmt_issue',
+                # 'domain': [],
+                'view_id':self.env.ref("cpm_odoo.issue_staff_leave_form").id,
+                'views':[(self.env.ref("cpm_odoo.issue_staff_leave_form").id,'form')],
+                'context': {
+                    'default_title':f"{staff_rec['name']} Leave",
+                    'default_description':f"{staff_rec['name']} leave from date ___ to ___ on task {task_rec.name}",
+                    'default_staff_id':staff_rec['id'],
+                    'default_level':'minor',
+                    'default_category_id':self.env.ref("cpm_iss_cat.hr_issues").id
+                },
+                'target': 'new'
+            }
+            
+            return result
+        else:
+            raise ValidationError("Cannot")
+            return False
+
 
 class IssueCategory(models.Model):
     _name = "cpm_odoo.risk_mgmt_issue_category"
     _description = "Model"
     
     name = fields.Char(
-        string = 'name',
-        size=128,
-        required=True
+        string = 'Name',
+        required=True,
+        size = 256
+    )
+    
+    description = fields.Text(
+        string = 'Description'
+    )
+    
+    color = fields.Char(
+        string = 'Category Color',
+        required=True,
+        size=24,
+        default = "#FF5733"
     )

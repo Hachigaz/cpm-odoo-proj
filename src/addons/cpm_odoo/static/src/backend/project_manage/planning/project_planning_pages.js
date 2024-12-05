@@ -2,7 +2,7 @@
 import { GanttDisplay, ItemList, SearchBar} from "../../components/components";
 import { DocumentSetItemList } from "../../doc_mgmt/document_mgmt";
 import { useService } from "@web/core/utils/hooks";
-import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, joinM2MDatas, formatSnakeStr} from "../../components/component_utils";
+import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, joinM2MDatas, formatSnakeStr, isInGroup, isInGroup2} from "../../components/component_utils";
 import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
 import { formatCurrency } from "../finance/components";
 
@@ -537,15 +537,13 @@ class PlanningStaffList extends ItemList{
         SearchBar
     }
 
-    
-
     setup(){
         // console.log(this.props.extra_domain)
         super.init()
 
         this.page_data.model_name = "cpm_odoo.human_res_staff"
         this.page_data.column_list = []//columns to get from model
-        this.page_data.order_by_str = "department_id asc,first_name asc,last_name asc"
+        this.page_data.order_by_str = "department_id asc,name asc"
         this.page_data.item_display_count=24
         this.page_data.page_display_count=7
         
@@ -557,6 +555,44 @@ class PlanningStaffList extends ItemList{
             this.page_data.extra_domain = this.props.extra_domain
         },
         ()=>[this.props.extra_domain])
+    }
+
+    async append_to_list(item_list){
+        let result = await isInGroup2(item_list.map(obj=>obj.id),'cpm_gr.project_head_mem_gr',this.orm)
+        for (const [idx,item] of item_list.entries()){
+            let val = result.find(obj=>obj.staff_id===item.id)
+            item_list[idx].mem_role = val.is_in_group?"Head Member":"Member"
+        }
+    }
+
+    async act_assign_task_head_member(staff_id){
+        let result = this.orm.call(
+            "cpm_odoo.planning_task",
+            "act_assign_task_head_member",
+            [
+                this.props.task_info.id,
+                [staff_id]
+            ]
+        )
+
+        if(result){
+            window.location.reload()
+        }
+    }
+
+    async act_unassign_task_head_member(staff_id){
+        let result = this.orm.call(
+            "cpm_odoo.planning_task",
+            "act_unassign_task_head_member",
+            [
+                this.props.task_info.id,
+                [staff_id]
+            ]
+        )
+
+        if(result){
+            window.location.reload()
+        }
     }
 }
 

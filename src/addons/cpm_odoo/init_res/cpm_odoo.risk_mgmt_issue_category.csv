@@ -1,0 +1,13 @@
+id,name,description,color
+cpm_iss_cat.schedule,"Schedule Issues","Delays or changes in the project timeline due to unforeseen factors",#FF5733
+cpm_iss_cat.cost,"Cost Issues","Problems related to budget overruns or financial shortfalls",#FFC300
+cpm_iss_cat.quality,"Quality Issues","Defects or failures in construction quality that need immediate correction",#C70039
+cpm_iss_cat.safety,"Safety Issues","Incidents or concerns related to worker safety on-site",#900C3F
+cpm_iss_cat.legal,"Legal Issues","Problems related to contracts, permits, or legal disputes",#581845
+cpm_iss_cat.resource,"Resource Issues","Shortages or unavailability of materials, equipment, or labor",#9C27B0
+cpm_iss_cat.communication,"Communication Issues","Lack of clear communication between stakeholders, leading to errors",#00BCD4
+cpm_iss_cat.permit,"Permit Issues","Delays or problems related to obtaining the necessary permits or approvals",#FFC0CB
+cpm_iss_cat.subcontractor,"Subcontractor Issues","Problems with subcontractor performance, delays, or disputes",#FFEB3B
+cpm_iss_cat.environmental,"Environmental Issues","Concerns related to environmental impact, waste, or sustainability",#DAF7A6
+cpm_iss_cat.hr_issues,HR Issues,"Issues related to HR.",#FFD700
+cpm_iss_cat.other,"Other Issues","Other issues",#C0A8F1

@@ -22,8 +22,9 @@
                     <sheet>
                         <group string="Contractor Info" col='3'>
                             <group colspan='2'>
-                                <field name="partner_id"/>
-                                <field name="description"/>
+                                <field name="name" string="Contractor Name"></field>
+                                <field name="description" string="Description"></field>
+                                <field name="category_id" string="Contractor Type"></field>
                             </group>
                             <group colspan='1'>
                                 <field name="avatar_128" invisible="1"></field>
@@ -31,9 +32,9 @@
                             </group>
                         </group>
                         <group string="Contact Info">
-                            <field name="address"/>
-                            <field name="phone" widget='phone'/>
-                            <field name="email" widget='email'/>
+                            <field name="address" string="Address"></field>
+                            <field name="phone" widget='phone' string="Phone Number"></field>
+                            <field name="email" widget='email' string="Email"></field>
                         </group>
                     </sheet>
                 </form>

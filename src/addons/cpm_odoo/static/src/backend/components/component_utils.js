@@ -221,3 +221,16 @@ export async function isInGroup(user_id,gr_xml_id,orm){
     )
     return result
 }
+
+
+export async function isInGroup2(staff_ids,gr_xml_id,orm){
+    let result = await orm.call(
+        "cpm_odoo.human_res_staff",
+        "act_check_in_group",
+        [
+            staff_ids,
+            gr_xml_id
+        ]
+    )
+    return result
+}

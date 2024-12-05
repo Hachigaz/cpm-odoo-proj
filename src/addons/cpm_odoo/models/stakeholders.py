@@ -26,25 +26,13 @@ class Stakeholder(models.AbstractModel):
         size = 1024
     )
     
-    phone = fields.Char(
-        string='Phone',
-        related='partner_id.phone',  # Sử dụng trường liên quan từ res.partner
-        store=True
-    )
-    
-    email = fields.Char(
-        string='Email',
-        related='partner_id.email',  # Sử dụng trường liên quan từ res.partner
-        store=True
-    )
-    
 class Contractor(models.Model):
     _name = "cpm_odoo.stakeholders_contractor"
     _description = "Model"
     
     _inherit = "cpm_odoo.stakeholders_stakeholder"
     
-    category_ids = fields.Many2many(
+    contractor_category_ids = fields.Many2many(
         comodel_name = 'cpm_odoo.stakeholders_contractor_category', 
         string='Category',
         relation='cpm_odoo_contractor_cate_contractor',
@@ -67,12 +55,6 @@ class ContractorCategory(models.Model):
         required=True,
         size=24,
         default = "#FF5733"
-    )
-    
-    display = fields.Boolean(
-        string = 'Display',
-        required=True,
-        default=False
     )
     
 class Investor(models.Model):

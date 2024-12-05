@@ -1,0 +1,16 @@
+id,name,description,address
+cpm_oth_cont.arch_design,Arch Design Consultancy,Architecture and design consultancy for construction projects, 100 Arch Blvd, Design City
+cpm_oth_cont.engi_consult,Engineering Consulting Services,Structural engineering consulting and project assessment, 200 Engineer St, Techpark
+cpm_oth_cont.safe_build,Safe Build Consulting,Construction safety consultants ensuring regulatory compliance, 300 Safety Rd, Guardtown
+cpm_oth_cont.plan_crest,Plan Crest Project Planning,Project planning and scheduling consultancy, 400 Planner St, Cityhub
+cpm_oth_cont.permis_pro,Permit Professional Services,Construction permit and regulatory compliance consulting, 500 Permit Ln, Lawfield
+cpm_oth_cont.survey_xperts,Survey Xperts,Land surveying and topographical mapping services, 600 Survey Ave, Surveycity
+cpm_oth_cont.enviro_safe,Enviro Safe Consulting,Environmental and sustainability consultants for construction projects, 700 Greenway Dr, EcoCity
+cpm_oth_cont.legal_build,Legal Build Advisory,Legal advisory services specializing in construction law, 800 Law St, Legalcity
+cpm_oth_cont.cost_crest,Cost Crest Consultants,Cost management and budgeting consultants for construction projects, 900 Budget Blvd, Moneytown
+cpm_oth_cont.design_plus,Design Plus Interiors,Interior design consultancy for construction projects, 101 Interior Rd, Designville
+cpm_oth_cont.perm_tech,Permit Tech Solutions,Technology solutions for construction project management, 202 Tech Blvd, Innovatown
+cpm_oth_cont.health_guard,Health Guard Experts,Occupational health and safety experts for construction sites, 303 Health St, Carecity
+cpm_oth_cont.quality_check,Quality Check Consulting,Quality assurance consultants for construction project inspections, 404 Inspect Ave, Checkcity
+cpm_oth_cont.build_logix,Build Logix Solutions,Construction project management software and data analytics, 505 Data Ln, Smartcity
+cpm_oth_cont.compli_experts,Compliance Experts Consulting,Regulatory compliance consulting for construction projects, 606 Comply Blvd, Lawtown

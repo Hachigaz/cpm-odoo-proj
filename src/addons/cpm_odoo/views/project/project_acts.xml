@@ -30,6 +30,7 @@
       <field name="res_model">cpm_odoo.root_project</field>
       <field name="view_mode">kanban</field>
       <field name="views">(cpm_odoo.proj_project_select_overview_view_kanban,kanban)</field>
+      <field name="domain">[['proj_mgmt_group_id.users','in',uid]]</field>
     </record>
     <menuitem 
       sequence='10' parent='cpm_odoo.proj_root' 

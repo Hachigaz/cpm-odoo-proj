@@ -69,20 +69,6 @@ Long description of module's purpose
         'views/res_mgmt/views/imports/eqp_import_record_create.xml',
         'views/res_mgmt/views/exports/mat_export_record_create.xml',
         'views/res_mgmt/views/exports/eqp_export_record_create.xml',
-        
-        'views/stakeholders/contractor_create.xml',
-        
-        'views/res_mgmt/res_mgmt_acts.xml',
-        'views/res_mgmt/views/warehouse_info/warehouse_info_create.xml',
-        'views/res_mgmt/views/warehouse_info/assigned_warehouse_kanban.xml',
-        'views/res_mgmt/views/mat/material_create.xml',
-        'views/res_mgmt/views/mat/material_type_create.xml',
-        'views/res_mgmt/views/eqp/equipment_create.xml',
-        'views/res_mgmt/views/eqp/equipment_type_create.xml',
-        'views/res_mgmt/views/imports/mat_import_record_create.xml',
-        'views/res_mgmt/views/imports/eqp_import_record_create.xml',
-        'views/res_mgmt/views/exports/mat_export_record_create.xml',
-        'views/res_mgmt/views/exports/eqp_export_record_create.xml',
 
         'views/issue/issue_acts.xml',
         'views/issue/issue_create.xml',
@@ -104,10 +90,16 @@ Long description of module's purpose
         'init_res/cpm_odoo.res_mgmt_equipment.csv',
         'init_res/cpm_odoo.res_mgmt_mat_type.csv',
         'init_res/cpm_odoo.res_mgmt_material.csv',
+        'init_res/cpm_odoo.res_mgmt_material.csv',
+        
+        'init_res/cpm_odoo.risk_mgmt_category.csv',
+        'init_res/cpm_odoo.risk_mgmt_issue_category.csv',
+        
         'init_res/cpm_odoo.stakeholders_contractor_category.csv',
         'init_res/cpm_odoo.stakeholders_contractor.csv',
         'init_res/cpm_odoo.stakeholders_investor.csv',
         'init_res/cpm_odoo.stakeholders_supplier.csv',
+        'init_res/cpm_odoo.stakeholders_other_contacts.csv',
     ],
     'assets': {
         'web.assets_backend': [
