@@ -158,6 +158,12 @@ class Issue(models.Model):
         store=True
     )
 
+    resolved_date = fields.Date(
+        compute = "_compute_get_date",
+        string = "Resolved Date",
+        store=True
+    )
+
     is_editable = fields.Boolean(
         compute="_compute_is_editable", 
         string="Is Editable", 

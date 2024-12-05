@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_issue">
+         <t t-call="web.html_container">
+            <h2>Issues Report</h2>
+            <t t-foreach="report_data.items()" t-as="month_data">
+                <div class="page">
+                    <h3>Month: <t t-esc="month_data[0]"/></h3> <!-- Tháng và năm -->
+                    <table class="table table-sm table-bordered" style="border: solid 2px black !important; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%; border: 1px solid black;"><strong>Level</strong></th>
+                                <th style="width: 30%; border: 1px solid black;"><strong>Count</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Lặp qua các level trong từng tháng -->
+                            <t t-foreach="month_data[1].items()" t-as="level_data">
+                                <tr>
+                                    <td style="border: 1px solid black; text-align:center; text-transform: capitalize;"><t t-esc="level_data[0]"/></td>  <!-- Level -->
+                                    <td style="border: 1px solid black; text-align:center;"><t t-esc="level_data[1]"/></td>  <!-- Số lượng -->
+                                </tr>
+                            </t>
+                            <tr>
+                                <td style="border: 1px solid black; text-align:center;"><strong>Total: </strong></td>
+                                <td style="border: 1px solid black; text-align:center;"><t t-esc="total_by_month.get(month_data[0], 0)"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template> 
+</odoo>

@@ -101,6 +101,7 @@ Long description of module's purpose
         'views/issue/issue_overview.xml',
         'views/issue/issue_select_view.xml',
         'views/issue/issue_dashboard.xml',
+        'views/issue/issue_report_template.xml',
         
         # 'init_res/dump/cpm_odoo.root_project_hrm.csv',
         # 'init_res/dump/cpm_odoo.root_project_planning.csv',
