@@ -12,7 +12,7 @@
     <!-- ======== hr staffs menus -->
     <!-- ============================================== -->
     <record id="cpm_odoo.hr_mgmt_staff_overview_act" model="ir.actions.act_window">
-        <field name="name">Action Name</field>
+        <field name="name">Employee</field>
         <field name="res_model">cpm_odoo.human_res_staff</field>
         <field name="views">(cpm_odoo.hr_mgmt_staff_create_view_form,form)</field>
     </record>
@@ -27,7 +27,7 @@
     <!-- ============================================== -->
     <!-- ======== hr department menus -->
     <!-- ============================================== -->
-    <record id="cpm_odoo.hr_mgmt_department_overview_act" model="ir.actions.act_window">
+    <!-- <record id="cpm_odoo.hr_mgmt_department_overview_act" model="ir.actions.act_window">
         <field name="name">Action Name</field>
         <field name="res_model">cpm_odoo.planning_workflow</field>
         <field name="view_mode">form</field>
@@ -38,7 +38,13 @@
         name="Departments" id="cpm_odoo.hr_mgmt_department_overview" 
         action="cpm_odoo.hr_mgmt_department_overview_act"
     />
+    </data> -->
+    <record id="cpm_odoo.action_department" model="ir.actions.act_window">
+        <field name="name">Departments</field>
+        <field name="res_model">cpm_odoo.human_res_department</field>
+        <field name="view_mode">tree,form</field>
+        <field name="views">[('cpm_odoo.human_res_department_view_tree', 'tree'), ('cpm_odoo.view_department_form', 'form')]</field>
+    </record>
+    <menuitem id="cpm_odoo.menu_department_root" name="Department" parent="cpm_odoo.hr_mgmt_root" action="cpm_odoo.action_department" sequence="20"/>
     </data>
-    
-
 </odoo>
