@@ -512,6 +512,21 @@ class PlanningManageWorkflow extends Component{
         }
     }
 
+    async act_delete_workflow(){
+        if(!confirm("Submit workflow?")){
+            return
+        }
+        const result = await this.props.context_data.orm.call(
+            "cpm_odoo.planning_workflow",
+            "unlink",
+            [this.pageInfo.workflow_id]
+        )
+
+        if(result){
+            window.location.reload()
+        }
+    }
+
     async act_edit_general_info(){
         await this.action.doAction({
             type: 'ir.actions.act_window',

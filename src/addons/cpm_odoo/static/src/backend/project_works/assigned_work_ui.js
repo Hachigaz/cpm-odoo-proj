@@ -29,23 +29,11 @@ class AssignedWorkPage extends Component{
             group_id:""
         },
         {
-            id:"current_work",
-            name:"Current Work",
-            page:WorkOverviewPage,
-            group_id:""
-        },
-        {
-            id:"upcoming_work",
-            name:"Upcoming Work",
-            page:WorkOverviewPage,
-            group_id:""
-        },
-        {
             id:AssignedTaskDetailView.page_name,
             name:"Task Detail",
             page:AssignedTaskDetailView,
             group_id:"",
-            hidden:true
+            disabled:getPageInfo(AssignedTaskDetailView.page_name)?false:true
         }
     ]
 

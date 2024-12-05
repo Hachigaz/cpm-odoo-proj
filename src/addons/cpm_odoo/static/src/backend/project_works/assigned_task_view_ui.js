@@ -191,7 +191,7 @@ export class AssignedTaskDetailView extends Component{
         this.page_data.history_log=history_log?history_log:[]
     }
 
-    async act_create_task_issue(){
+    async act_create_staff_leave(){
         let result = await this.orm.call(
             "cpm_odoo.risk_mgmt_issue",
             "act_create_staff_leave",
@@ -203,17 +203,22 @@ export class AssignedTaskDetailView extends Component{
         if(result){
             this.action.doAction(result)
         }
-        // await this.action.doAction({
-        //     type: 'ir.actions.act_window',
-        //     name: 'Issue',
-        //     res_model: 'cpm_odoo.risk_mgmt',
-        //     view_mode: 'form',
-        //     views: [[false, 'form']],
-        //     target: 'new',
-        //     context:{
-        //         'default_task_id':this.page_data.task_id
-        //     }
-        // });
+    }
+
+    async act_create_task_issue(){
+        console.log(this.page_data.task_info.project_id)
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Issue',
+            res_model: 'cpm_odoo.risk_mgmt_issue',
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context:{
+                'default_task_id':this.page_data.task_id,
+                'default_project_id':this.page_data.task_info.project_id[0]
+            }
+        });
     }
 
 

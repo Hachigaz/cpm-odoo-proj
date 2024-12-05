@@ -148,7 +148,6 @@ export class ProjectOverviewPage extends Component {
             ["cur_id","res.currency",["id","symbol","position","decimal_places","rate"]]
         ])
 
-        // console.log(total_invests)
 
         investor_list.forEach((arr,idx)=>{
             let total_invest = total_invests.find(item=>item.investor_id[0]===arr.id)
@@ -157,6 +156,25 @@ export class ProjectOverviewPage extends Component {
 
         this.state_data.investor_list = investor_list
         this.state_data.investor_count = investor_ids.length
+
+
+
+        let issue_list = await this.orm.call(
+            "cpm_odoo.risk_mgmt_issue",
+            "search_read",
+            [
+                [
+                    ["project_id",'=',this.props.context_data.project_id],
+                    ['level','!=','minor'],
+                    ['status','!=','resolved']
+                ],
+                [],
+                0,0,"created_at asc"
+            ]
+        )
+
+        this.state_data.issue_list = issue_list
+        console.log(issue_list)
     }
 
     async act_edit_project(){

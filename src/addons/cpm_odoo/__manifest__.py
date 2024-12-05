@@ -56,7 +56,11 @@ Long description of module's purpose
         'views/hr_mgmt/staff_create.xml',
         'views/hr_mgmt/staff_view.xml',
         
-        'views/stakeholders/contractor_create.xml',
+        'views/stakeholders/contractor_category_create.xml',
+        'views/stakeholders/contractor_view.xml',
+        'views/stakeholders/investor_view.xml',
+        'views/stakeholders/supplier_view.xml',
+        'views/stakeholders/stackholder_acts.xml',
         
         'views/res_mgmt/res_mgmt_acts.xml',
         'views/res_mgmt/views/warehouse_info/warehouse_info_create.xml',

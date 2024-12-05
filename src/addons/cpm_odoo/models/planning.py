@@ -266,6 +266,11 @@ class Task(models.Model):
     _name = "cpm_odoo.planning_task"
     _description = "Task"
     
+    project_id = fields.Many2one(
+        related="workflow_id.planning_id.project_id", 
+        string='project'
+    )
+    
     workflow_id = fields.Many2one(
         comodel_name = 'cpm_odoo.planning_workflow',
         string = 'Workflow',
@@ -788,7 +793,7 @@ class Task(models.Model):
     def write(self, vals):
         for rec in self:
             if rec.workflow_id.workflow_status != 'draft':
-                if vals.get("start_date") or vals.get("exp_end"):
+                if vals.get("start_date") or vals.get("exp_end") or vals.get('depends_on'):
                     raise ValidationError(f"Cannot change date of non-draft status task: Task {rec.name}")
         return super().write(vals)
 

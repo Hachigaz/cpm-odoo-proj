@@ -485,6 +485,40 @@ class Project(models.Model):
         column2="sid"
     )
     
+    finance_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='finance_group_id',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
+    planning_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='planning_group_id',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
+    document_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='document_group_id',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
+    contract_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='contract_group_id',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
+    proj_finance_group_ids = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='head_mgmt_group',
+        readonly=True,
+        ondelete="restrict"
+    )
     # @api.onchange('head_manager_ids')
     # def _onchange_head_manager_ids(self):
     #     if(self.sudo().id):

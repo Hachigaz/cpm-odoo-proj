@@ -355,6 +355,9 @@
                         <button type="button" class="btn btn-outline-secondary ms-2" t-on-click="(event)=>{this.act_submit_workflow()}">
                             Submit Workflow
                         </button>
+                        <button type="button" class="btn btn-outline-danger ms-2" t-on-click="(event)=>{this.act_delete_workflow()}">
+                            Delete Workflow
+                        </button>
                     </t>
                 </div>
             </div>
@@ -376,12 +379,6 @@
                                 Schedule
                             </div>
                         </li>
-                        <li class="nav-item user-select-none">
-                            <div class="nav-link" data-bs-toggle="tab" data-bs-target=".task-tabs #unassigned-task-list" role="tab">
-                                Unassigned Tasks
-                            </div>
-                        </li>
-
                     </ul>
                 </div>
                 <div class="col-md-10 h-100">
@@ -499,10 +496,6 @@
                         <div class="tab-pane fade" id="workflow-task-schedule" role="tabpanel">
                             <h4>Schedule</h4>
                             <PlanningTaskGraph state_data="{task_list: page_data.task_list}" context_params="{display_size:{height:'60vh'}}"/>
-                        </div>
-                        <div class="tab-pane fade" id="unassigned-task-list" role="tabpanel">
-                            <h4>Unassigned Tasks</h4>
-                            <p>This is the content for the tab.</p>
                         </div>
                     </div>
                 </div>

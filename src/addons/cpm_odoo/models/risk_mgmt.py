@@ -169,6 +169,12 @@ class Issue(models.Model):
         string = "Resolved Date",
         store=True
     )
+    
+    project_id = fields.Many2one(
+        comodel_name = "cpm_odoo.root_project",
+        string = "Project",
+        default=None
+    )
 
     @api.model
     def _default_staff_id(self):
@@ -210,7 +216,7 @@ class Issue(models.Model):
     
     def write(self, vals):
         for record in self:
-            if record.status != 'not_resolved' and self.env.user.has_group('cpm_gr.user_issues'):
+            if record.status != 'not_resolved' and self.env.user.has_group('cpm_gr.user_issues') and not set(vals.keys())=={'status'}:
                 raise ValidationError("You cannot edit issue with resolved or in progress status.")
         return super().write(vals)
     
@@ -246,7 +252,8 @@ class Issue(models.Model):
                     'default_description':f"{staff_rec['name']} leave from date ___ to ___ on task {task_rec.name}",
                     'default_staff_id':staff_rec['id'],
                     'default_level':'minor',
-                    'default_category_id':self.env.ref("cpm_iss_cat.hr_issues").id
+                    'default_category_id':self.env.ref("cpm_iss_cat.hr_issues").id,
+                    'default_project_id':task_rec.project_id.id
                 },
                 'target': 'new'
             }

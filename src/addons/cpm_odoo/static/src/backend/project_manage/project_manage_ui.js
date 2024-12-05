@@ -57,6 +57,24 @@ class ProjectManageUI extends Component {
             name:"Contracts",
             page:ContractManagementTab,
             group_id:"cpm_manage_project_plans"
+        },
+        {
+            id: "risks_and_issues",
+            name:"Risks and Issues",
+            page:ContractManagementTab,
+            group_id:"cpm_manage_project_plans"
+        },
+        {
+            id: "stakeholders",
+            name:"Stakeholders",
+            page:ContractManagementTab,
+            group_id:"cpm_manage_project_plans"
+        },
+        {
+            id: "quality_controls",
+            name:"Qualty Controls",
+            page:ContractManagementTab,
+            group_id:"cpm_manage_project_plans"
         }
     ]
 
