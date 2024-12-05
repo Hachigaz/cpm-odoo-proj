@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_issue">
+         <t t-call="web.html_container">
+            <div class="page" >
+                <h2 style="text-align: center;">Project Financial Report</h2>
+
+                <div class="page-content" style="margin-top: 20px">
+                    <div>
+                        <span>
+                            <strong>Project Name:</strong>
+                        </span>
+                        <span>Project 1</span>
+                    </div>
+                    <div>
+                        <span>
+                            <strong>Project ID: </strong>
+                        </span>
+                        <span>#1</span>
+                    </div>
+                    <div>
+                        <span>
+                            <strong>Project By: </strong>
+                        </span>
+                        <span>Admin</span>
+                    </div>
+                    <div>
+                        <span>
+                            <strong>Period: </strong>
+                        </span>
+                        <span>From 6/12/2024 To 30/12/2024</span>
+                    </div>
+                </div>
+                
+                <hr style="margin-top: 100px;"></hr>
+
+                <h2 style="text-align: center;">Current Budget Overview</h2>
+
+                <div class="page-content" style="margin-top: 20px">
+                    <div>
+                        <span>
+                            <strong>Total Current Budget: </strong>
+                        </span>
+                        <span>1.000.000</span>
+                    </div>
+                    <div>
+                        <span>
+                            <strong>Total Expenses: </strong>
+                        </span>
+                        <span>500.000</span>
+                    </div>
+                    <div>
+                        <span>
+                            <strong>Remaining Budget: </strong>
+                        </span>
+                        <span>500.000</span>
+                    </div>
+                </div>
+
+                <hr style="margin-top: 100px;"></hr>
+
+                <h2 style="text-align: center;">Expenses Breakdown</h2>
+
+                <table class="table table-sm table-bordered" style="border: solid 1px black !important; width: 100%;">
+                    <thead style="background-color: #b8e1ff;">
+                        <tr>
+                            <th style="width: 40%; border: 1px solid black;"><strong>Category</strong></th>
+                            <th style="width: 30%; border: 1px solid black;"><strong>Date</strong></th>
+                            <th style="width: 30%; border: 1px solid black;"><strong>Amount</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid black; text-align:center;">Labor</td>
+                            <td style="border: 1px solid black; text-align:center;">7/12/2024</td>
+                            <td style="border: 1px solid black; text-align:center;">100</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; text-align:center;">Materials</td>
+                            <td style="border: 1px solid black; text-align:center;">7/12/2024</td>
+                            <td style="border: 1px solid black; text-align:center;">100</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; text-align:center;">Equipment</td>
+                            <td style="border: 1px solid black; text-align:center;">7/12/2024</td>
+                            <td style="border: 1px solid black; text-align:center;">100</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; text-align:center;">Miscellaneous</td>
+                            <td style="border: 1px solid black; text-align:center;">7/12/2024</td>
+                            <td style="border: 1px solid black; text-align:center;">100</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template> 
+</odoo>
