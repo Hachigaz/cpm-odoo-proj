@@ -69,11 +69,6 @@ Long description of module's purpose
         'views/res_mgmt/views/imports/eqp_import_record_create.xml',
         'views/res_mgmt/views/exports/mat_export_record_create.xml',
         'views/res_mgmt/views/exports/eqp_export_record_create.xml',
-
-        'views/issue/issue_acts.xml',
-        'views/issue/issue_create.xml',
-        'views/issue/issue_overview.xml',
-        'views/issue/issue_select_view.xml',
         
         'views/stakeholders/contractor_create.xml',
         
@@ -93,7 +88,8 @@ Long description of module's purpose
         'views/issue/issue_create.xml',
         'views/issue/issue_overview.xml',
         'views/issue/issue_select_view.xml',
-        'views/issue/issue_dasboard.xml',
+        'views/issue/issue_dashboard.xml',
+        'views/issue/issue_report_template.xml',
         
         # 'init_res/dump/cpm_odoo.root_project_hrm.csv',
         # 'init_res/dump/cpm_odoo.root_project_planning.csv',

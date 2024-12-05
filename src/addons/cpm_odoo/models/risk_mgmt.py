@@ -1,6 +1,6 @@
 from odoo import models, fields, api 
 from odoo.exceptions import ValidationError
-
+from datetime import datetime
 class Risk(models.Model):
     _name = "cpm_odoo.risk_mgmt"
     _description = "Model"
@@ -146,6 +146,12 @@ class Issue(models.Model):
         default=lambda self: self._default_staff_id(),
     )
 
+    resolved_date = fields.Date(
+        compute = "_compute_get_date",
+        string = "Resolved Date",
+        store=True
+    )
+
     is_editable = fields.Boolean(
         compute="_compute_is_editable", string="Is Editable", store=False)
 
@@ -198,6 +204,13 @@ class Issue(models.Model):
         for record in self:
             record.is_editable = self.env.user.has_group('cpm_gr.user_issues')
 
+    @api.depends('status')
+    def _compute_get_date(self):
+        for record in self:
+            if record.status == 'resolved':
+                record.resolved_date = datetime.today()
+            else:
+                record.resolved_date = False
 
 class IssueCategory(models.Model):
     _name = "cpm_odoo.risk_mgmt_issue_category"
