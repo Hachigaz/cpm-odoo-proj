@@ -401,6 +401,14 @@ class Project(models.Model):
         column2="uid"
     )
     
+    proj_mgmt_uids = fields.Many2many(
+        'res.users', 
+        string='proj_mgmt_uids',
+        relation='cpm_odoo_proj_mgmt_ids_tab_uids',
+        column1="pid",
+        column2="uid"
+    )
+    
     proj_mem_group_id = fields.Many2one(
         comodel_name = 'res.groups', 
         string='proj_mem_group',
@@ -417,9 +425,11 @@ class Project(models.Model):
     )
     
     def add_staff_to_mgmt(self,staff_id):
+        staff_rec = self.env["cpm_odoo.human_res_staff"].browse(staff_id)
         for record in self:
             record.write({
-                'proj_mgmt_ids':[(4,staff_id)]
+                'proj_mgmt_ids':[(4,staff_rec.id)],
+                'proj_mgmt_uids':[(4,staff_rec.user_id)]
             })
             staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
             staff_rec.write({
@@ -427,9 +437,11 @@ class Project(models.Model):
             })
     
     def rem_staff_from_mgmt(self,staff_id):
+        staff_rec = self.env["cpm_odoo.human_res_staff"].browse(staff_id)
         for record in self:
             record.write({
-                'proj_mgmt_ids':[(3,staff_id)]
+                'proj_mgmt_ids':[(3,staff_rec.id)],
+                'proj_mgmt_uids':[(3,staff_rec.user_id)]
             })
             staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
             staff_rec.write({
@@ -473,23 +485,23 @@ class Project(models.Model):
         column2="sid"
     )
     
-    @api.onchange('head_manager_ids')
-    def _onchange_head_manager_ids(self):
-        if(self.sudo().id):
-            p_rec = self.sudo()
-            # Get old and new records
-            old_records = p_rec._origin.many2many_field
-            new_records = p_rec.many2many_field
+    # @api.onchange('head_manager_ids')
+    # def _onchange_head_manager_ids(self):
+    #     if(self.sudo().id):
+    #         p_rec = self.sudo()
+    #         # Get old and new records
+    #         old_records = p_rec._origin.head_manager_ids
+    #         new_records = p_rec.head_manager_ids
 
-            # Determine changes
-            added_records = new_records - old_records
-            removed_records = old_records - new_records
+    #         # Determine changes
+    #         added_records = new_records - old_records
+    #         removed_records = old_records - new_records
             
-            for rec in added_records:
-                p_rec.add_head_manager(rec.id)
+    #         for rec in added_records:
+    #             p_rec.add_head_manager(rec.id)
             
-            for rec in removed_records:
-                p_rec.rem_head_manager(rec.id)
+    #         for rec in removed_records:
+    #             p_rec.rem_head_manager(rec.id)
         
     def add_head_manager(self,staff_id):
         for record in self:

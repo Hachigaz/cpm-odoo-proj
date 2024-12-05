@@ -1,6 +1,7 @@
 from odoo import models,fields,api
 from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
+import json
 
 class Workflow(models.Model):
     _name = "cpm_odoo.planning_workflow"
@@ -416,17 +417,16 @@ class Task(models.Model):
         
         task.act_unassign_task_head_member(staff_ids)
         
-        staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
-
-        task.write({
-            "assigned_staff_ids":[(0,0,{
-                "staff_id":id
-            }) for id in staff_ids]
-        })
+        staff_recs = self.env["cpm_odoo.planning_task_assign_staff"].search(
+            [
+                ['task_id','=',task.id],
+                ['staff_id','in',staff_ids]
+            ]
+        )
         
         cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
         task.add_log(
-            f"{', '.join(staff.name for staff in staff_recs)} was unassigned from the task.",
+            f"{', '.join(staff.staff_id.name for staff in staff_recs)} was unassigned from the task.",
             cur_staff.get('id') if cur_staff else None
         )
         
@@ -435,13 +435,20 @@ class Task(models.Model):
                 staff.user_id.write({
                     'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
                 })
+        
+        # raise ValidationError(json.dumps([f"{staff.staff_id.name},{staff.id},{staff.staff_id.id}" for staff in staff_recs]+[f"{staff.staff_id.name},{staff.id},{staff.staff_id.id}" for staff in task.assigned_staff_ids]))
+
+        assigned_ids = [rec.id for rec in task.assigned_staff_ids if rec.staff_id.id in staff_ids]
+        task.write({
+            "assigned_staff_ids":[[2,id] for id in assigned_ids],
+        })
         pass
     
     def act_assign_task_head_member(self,staff_ids):
         staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
         for record in self:
             for staff_rec in staff_recs:
-                if not record.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff_rec.id):
+                if not record.is_user_in_task(record.workflow_id.planning_id.project_id.id,staff_rec.id):
                     raise ValidationError(f'Cannot set {staff_rec.name} as head task member, they are not assigned to the task {record.name}.')
         
         head_mem_gr = self.env.ref('cpm_gr.project_head_mem_gr')
@@ -451,13 +458,14 @@ class Task(models.Model):
             })
             
         cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
-        task.add_log(
-            f"{', '.join(staff.name for staff in staff_recs)} was appointed to be task leader.",
-            cur_staff.get('id') if cur_staff else None
-        )
+        # self.add_log(
+        #     f"{', '.join(staff.name for staff in staff_recs)} was appointed to be task leader.",
+        #     cur_staff.get('id') if cur_staff else None
+        # )
         pass
         
     def act_unassign_task_head_member(self,staff_ids):
+        staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
         head_mem_gr = self.env.ref('cpm_gr.project_head_mem_gr')
         for staff in staff_recs:
             staff.user_id.write({
@@ -465,10 +473,10 @@ class Task(models.Model):
             })
             
         cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
-        task.add_log(
-            f"{', '.join(staff.name for staff in staff_recs)} was dismissed from task leader role.",
-            cur_staff.get('id') if cur_staff else None
-        )
+        # self.add_log(
+        #     f"{', '.join(staff.name for staff in staff_recs)} was dismissed from task leader role.",
+        #     cur_staff.get('id') if cur_staff else None
+        # )
         pass
     
     @api.model
@@ -538,6 +546,12 @@ class Task(models.Model):
                 }) for contractor in contractor_recs]
             }
         )
+        
+        cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+        task.add_log(
+            f"{', '.join(contractor.name for contractor in contractor_recs)} was assigned to the task.",
+            cur_staff.get('id') if cur_staff else None
+        )
         pass
     
     @api.model
@@ -545,6 +559,12 @@ class Task(models.Model):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
         
         contractor_recs = self.env["cpm_odoo.stakeholders_contractor"].search([["id",'in',contractor_ids]])
+        
+        cur_staff = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+        task.add_log(
+            f"{', '.join(contractor.name for contractor in contractor_recs)} was assigned to the task.",
+            cur_staff.get('id') if cur_staff else None
+        )
         
         assigned_ids = [rec.id for rec in task.assigned_contractor_ids if rec.contractor_id.id in contractor_ids]
         task.write({

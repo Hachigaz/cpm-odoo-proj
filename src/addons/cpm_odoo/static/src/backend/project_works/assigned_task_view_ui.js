@@ -192,17 +192,28 @@ export class AssignedTaskDetailView extends Component{
     }
 
     async act_create_task_issue(){
-        await this.action.doAction({
-            type: 'ir.actions.act_window',
-            name: 'New Checklist Item',
-            res_model: 'cpm_odoo.task_checklist_item',
-            view_mode: 'form',
-            views: [[false, 'form']],
-            target: 'new',
-            context:{
-                'default_task_id':this.page_data.task_id
-            }
-        });
+        let result = await this.orm.call(
+            "cpm_odoo.risk_mgmt_issue",
+            "act_create_staff_leave",
+            [
+                this.page_data.task_info.id
+            ]
+        )
+        
+        if(result){
+            this.action.doAction(result)
+        }
+        // await this.action.doAction({
+        //     type: 'ir.actions.act_window',
+        //     name: 'Issue',
+        //     res_model: 'cpm_odoo.risk_mgmt',
+        //     view_mode: 'form',
+        //     views: [[false, 'form']],
+        //     target: 'new',
+        //     context:{
+        //         'default_task_id':this.page_data.task_id
+        //     }
+        // });
     }
 
 

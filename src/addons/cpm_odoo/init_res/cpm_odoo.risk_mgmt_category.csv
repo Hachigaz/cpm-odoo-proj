@@ -1,0 +1,12 @@
+id,name,description,color
+cpm_risk_cat.schedule_delays,Schedule Delays,"Delays due to various factors.",#FF6347
+cpm_risk_cat.cost_overruns,Cost Overruns,"Exceeding the planned budget.",#FFD700
+cpm_risk_cat.safety_hazards,Safety Hazards,"Accidents or injuries on-site.",#FF4500
+cpm_risk_cat.regulatory_compliance,Regulatory Compliance,"Issues with permits and regulations.",#4CAF50
+cpm_risk_cat.supply_chain,Supply Chain,"Delays in materials or equipment.",#1E90FF
+cpm_risk_cat.labor_shortages,Labor Shortages,"Insufficient workforce availability.",#8A2BE2
+cpm_risk_cat.quality_issues,Quality Issues,"Problems with materials or work quality.",#D2691E
+cpm_risk_cat.environmental_risks,Environmental Risks,"Environmental impacts on the project.",#32CD32
+cpm_risk_cat.design_changes,Design Changes,"Changes in the project design.",#00CED1
+cpm_risk_cat.contract_disputes,Contract Disputes,"Disagreements between parties.",#8B0000,
+cpm_risk_cat.other,"Other Risks","Other risks",#C0A8F1

@@ -87,6 +87,10 @@ cpm_ma.task_mem_view_task_note_categories,cpm_ma.task_mem_view_task_note_categor
 cpm_ma.task_mem_view_document_sets,cpm_ma.task_mem_view_document_sets,cpm_odoo.documents_document_set,cpm_gr.project_mem_gr,1,0,0,0
 cpm_ma.task_mem_view_document_categories,cpm_ma.task_mem_view_document_categories,cpm_odoo.documents_document_category,cpm_gr.project_mem_gr,1,0,0,0
 cpm_ma.task_mem_view_documents,cpm_ma.task_mem_view_documents,cpm_odoo.documents_document,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_issues,cpm_ma.task_mem_view_issues,cpm_odoo.risk_mgmt_issue,cpm_gr.project_mem_gr,1,0,1,0
+cpm_ma.task_mem_view_issue_categories,cpm_ma.task_mem_view_issue_categories,cpm_odoo.risk_mgmt_issue_category,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_risks,cpm_ma.task_mem_view_risks,cpm_odoo.risk_mgmt,cpm_gr.project_mem_gr,1,0,1,0
+cpm_ma.task_mem_view_risk_categories,cpm_ma.task_mem_view_risk_categories,cpm_odoo.risk_mgmt_category,cpm_gr.project_mem_gr,1,0,0,0
 
 
 cpm_ma.task_head_mem_manage_task_checklist_item,cpm_ma.task_head_mem_manage_task_checklist_item,cpm_odoo.task_checklist_item,cpm_gr.project_head_mem_gr,1,1,1,1
@@ -94,3 +98,7 @@ cpm_ma.task_head_mem_manage_task_expenses,cpm_ma.task_head_mem_manage_task_expen
 cpm_ma.task_head_mem_manage_task_notes,cpm_ma.task_head_mem_manage_task_notes,cpm_odoo.planning_task_note,cpm_gr.project_head_mem_gr,1,1,1,1
 cpm_ma.task_head_mem_manage_task_note_categories,cpm_ma.task_head_mem_manage_task_note_categories,cpm_odoo.planning_task_note_category,cpm_gr.project_head_mem_gr,1,1,1,1
 cpm_ma.task_head_mem_manage_task_comments,cpm_ma.task_head_mem_manage_task_comments,cpm_odoo.planning_task_comment,cpm_gr.project_mem_gr,1,1,1,1
+cpm_ma.task_mem_view_issues,cpm_ma.task_mem_view_issues,cpm_odoo.risk_mgmt_issue,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_issue_categories,cpm_ma.task_mem_view_issue_categories,cpm_odoo.risk_mgmt_issue_category,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_risks,cpm_ma.task_mem_view_risks,cpm_odoo.risk_mgmt,cpm_gr.project_mem_gr,1,0,0,0
+cpm_ma.task_mem_view_risk_categories,cpm_ma.task_mem_view_risk_categories,cpm_odoo.risk_mgmt_category,cpm_gr.project_mem_gr,1,0,0,0

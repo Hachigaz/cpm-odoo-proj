@@ -566,7 +566,7 @@ class PlanningStaffList extends ItemList{
     }
 
     async act_assign_task_head_member(staff_id){
-        result = this.orm.call(
+        let result = this.orm.call(
             "cpm_odoo.planning_task",
             "act_assign_task_head_member",
             [
@@ -581,7 +581,7 @@ class PlanningStaffList extends ItemList{
     }
 
     async act_unassign_task_head_member(staff_id){
-        result = this.orm.call(
+        let result = this.orm.call(
             "cpm_odoo.planning_task",
             "act_unassign_task_head_member",
             [

@@ -89,10 +89,16 @@ Long description of module's purpose
         'init_res/cpm_odoo.res_mgmt_equipment.csv',
         'init_res/cpm_odoo.res_mgmt_mat_type.csv',
         'init_res/cpm_odoo.res_mgmt_material.csv',
+        'init_res/cpm_odoo.res_mgmt_material.csv',
+        
+        'init_res/cpm_odoo.risk_mgmt_category.csv',
+        'init_res/cpm_odoo.risk_mgmt_issue_category.csv',
+        
         'init_res/cpm_odoo.stakeholders_contractor_category.csv',
         'init_res/cpm_odoo.stakeholders_contractor.csv',
         'init_res/cpm_odoo.stakeholders_investor.csv',
         'init_res/cpm_odoo.stakeholders_supplier.csv',
+        'init_res/cpm_odoo.stakeholders_other_contacts.csv',
     ],
     'assets': {
         'web.assets_backend': [

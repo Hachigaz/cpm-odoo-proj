@@ -17,5 +17,23 @@
                 </form>
             </field>
         </record>
+        
+        <record id="cpm_odoo.issue_staff_leave_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.issue_staff_leave.form</field>
+            <field name="model">cpm_odoo.risk_mgmt_issue</field>
+            <field name="arch" type="xml">
+                <form string="Staff Leave">
+                    <sheet>
+                        <group string='Leave Info'>
+                            <field name="title" string="Title"></field>
+                            <field name="description" string="Description"></field>
+                            <field name="staff_id" string="Staff"></field>
+                            <field name="category_id" readonly="True" invisible="True" string="Category"></field>
+                            <field name="level" widget='selection' readonly="True" invisible="True" string="Level"></field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
     </data>
 </odoo>
