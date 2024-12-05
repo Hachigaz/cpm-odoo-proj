@@ -10,6 +10,9 @@
                     <field name="address"/>
                     <field name="phone"/>
                     <field name="email"/>   
+                    <field string="Sup. Eqp. Count" name="supplied_eqp_count"/>   
+                    <field string="Sup. Mat. Count" name="supplied_mat_count"/>   
+                    <field string="Supplier Type" name="supplier_type"/>   
                 </tree>
             </field>
         </record>
@@ -24,6 +27,7 @@
                             <group colspan='2'>
                                 <field name="partner_id"/>
                                 <field name="description"/>
+                                <field string="Supplier Type" name="supplier_type"/>   
                             </group>
                             <group colspan='1'>
                                 <field name="avatar_128" invisible="1"></field>
@@ -34,6 +38,14 @@
                             <field name="address"/>
                             <field name="phone" widget='phone'/>
                             <field name="email" widget='email'/>
+                        </group>
+                        <group string="Supplied Resources">
+                            <group>
+                                <field string="Equipments" name="supplied_eqp_ids"/>
+                            </group>
+                            <group>
+                                <field string="Materials" name="supplied_mat_ids"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
