@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="cpm_odoo.planning_task_note_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.planning_task_note.view.form</field>
+            <field name="model">cpm_odoo.planning_task_note</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="title" string="Title"></field>
+                            <field name="description" string="Description"></field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="cpm_odoo.planning_task_qa_verification_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.planning_task_qa_verification.view.form</field>
+            <field name="model">cpm_odoo.planning_task_qa_verification</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="title" string="Title"></field>
+                            <field name="description" string="Description"></field>
+                            <field name="completion_quality" string="Completion Quality"></field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="cpm_odoo.planning_task_qa_rejection_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.planning_task_qa_rejection.view.form</field>
+            <field name="model">cpm_odoo.planning_task_qa_rejection</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="title" string="Rejection Title"></field>
+                            <field name="description" string="Cause Detail"></field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

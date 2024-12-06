@@ -2,6 +2,7 @@
 
 from . import controllers
 from . import models
+from . import report
 
 from odoo.exceptions import ValidationError
 import json

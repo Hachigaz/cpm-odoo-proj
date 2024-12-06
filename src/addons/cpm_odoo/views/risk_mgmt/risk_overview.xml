@@ -5,7 +5,7 @@
             <field name="name">cpm_odoo.risk_mgmt_overview_kanban.kanban.view</field>
             <field name="model">cpm_odoo.risk_mgmt</field>
             <field name="arch" type="xml">
-                <kanban string="Risks" default_group_by="priority" create="False" edit="False" delete="False" >         
+                <kanban string="Risks" default_group_by="" create="False" edit="False" delete="False" >         
                     <templates>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_global_click">
@@ -19,13 +19,21 @@
                                     <div class="project">
                                         <field name="project_id"/>
                                     </div>
-                                    <div class="priority my-1">
-                                        <field name="priority" 
+                                    <div class="probability my-1">
+                                        <field name="probability" 
                                             widget="badge" 
-                                            string="Priority"
-                                            decoration-muted="priority == '1'"
-                                            decoration-warning="priority == '2'"
-                                            decoration-danger="priority == '3'" />
+                                            string="probability"
+                                            decoration-muted="probability == 'low'"
+                                            decoration-warning="probability == 'medium'"
+                                            decoration-danger="probability == 'high'" />
+                                    </div>
+                                    <div class="impact my-1">
+                                        <field name="impact" 
+                                            widget="badge" 
+                                            string="impact"
+                                            decoration-muted="impact == 'low'"
+                                            decoration-warning="impact == 'medium'"
+                                            decoration-danger="impact == 'high'" />
                                     </div>
                                     <div class="btn-list my-2">
                                         <button name="action_view_solutions" type="object" class="btn btn-primary" t-att-data-id="record.id">

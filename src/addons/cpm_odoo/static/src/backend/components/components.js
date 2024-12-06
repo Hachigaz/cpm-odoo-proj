@@ -415,7 +415,7 @@ export class ListFilter extends Component{
     act_filter(){
         this.state_data.selected_items.forEach((item,idx)=>{
             if(item!="null"){
-                this.state_data.selected_items[idx]=parseInt(item)
+                this.state_data.selected_items[idx]=parseInt(item)?parseInt(item):item
             }
         })
         this.props.act_filter(this.props.inst,this.col_name,this.state_data.selected_items)

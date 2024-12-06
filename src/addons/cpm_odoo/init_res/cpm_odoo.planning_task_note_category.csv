@@ -1,0 +1,3 @@
+id,name,description,color
+cpm_task_note_cat.head_mem_note,Head Member Note,"Note from Head Member",#3F51B5
+cpm_task_note_cat.qa_note,QA Note,"Note from QA",#9C27B0 

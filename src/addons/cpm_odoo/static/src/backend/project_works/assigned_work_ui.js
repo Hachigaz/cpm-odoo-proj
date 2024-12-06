@@ -6,6 +6,7 @@ import { session } from "@web/session";
 import { Component, onWillStart, onMounted, onWillUnmount, onWillDestroy, useEffect, useState, useRef} from "@odoo/owl";
 import { WorkOverviewPage } from "./work_overview_page";
 import { AssignedTaskDetailView } from "./assigned_task_view_ui";
+import { CompletedTasksViewUI } from "./completed_tasks_view_ui";
 
 class AssignedWorkPage extends Component{
     static clientActionName = "cpm_odoo.assigned_work_ui"
@@ -29,15 +30,9 @@ class AssignedWorkPage extends Component{
             group_id:""
         },
         {
-            id:"current_work",
-            name:"Current Work",
-            page:WorkOverviewPage,
-            group_id:""
-        },
-        {
-            id:"upcoming_work",
-            name:"Upcoming Work",
-            page:WorkOverviewPage,
+            id:CompletedTasksViewUI.page_name,
+            name:"Completed Tasks",
+            page:CompletedTasksViewUI,
             group_id:""
         },
         {
@@ -45,7 +40,7 @@ class AssignedWorkPage extends Component{
             name:"Task Detail",
             page:AssignedTaskDetailView,
             group_id:"",
-            hidden:true
+            hidden:getPageInfo(AssignedTaskDetailView.page_name)?false:true
         }
     ]
 

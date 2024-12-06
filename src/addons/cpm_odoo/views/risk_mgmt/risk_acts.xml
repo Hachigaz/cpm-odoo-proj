@@ -17,6 +17,7 @@
         <record id="cpm_odoo.risk_create_act" model="ir.actions.act_window">
           <field name="name">New Risk</field>
           <field name="res_model">cpm_odoo.risk_mgmt</field>
+          <field name="view_mode">form</field>
           <field name="views">(cpm_odoo.risk_create_view_form,form)</field>
         </record>
     

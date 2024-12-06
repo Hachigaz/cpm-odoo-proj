@@ -17,6 +17,7 @@
 
                     <sheet>
                         <group string='Issue Info'>
+                            <field name="project_id" invisible="not project_id" readonly="is_editable == False"/>
                             <field name="title" readonly="is_editable == False"/>
                             <field name="description" readonly="is_editable == False"/>
                             <field name="category_id" readonly="is_editable == False"/>

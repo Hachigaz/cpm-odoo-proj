@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="cpm_odoo.ProjectManagerUI">
+        <!-- Header -->
+        <div class="row h-100">
+            <div class="col-md-2 pt-2">
+                <div class="page-title mb-3">
+                    <h2 class="px-2 fs-3 fw-bold">
+                        Managers
+                    </h2>
+                </div>
+                <ul class="nav nav-pills flex-column" role="tablist">
+                    <t t-foreach="this.constructor.availablePages" t-as="page" t-key="page.id">
+                        <li class="nav-item user-select-none">
+                            <div t-att-class="`nav-link ${this.currentPage==page.id?'active':''}`" t-att-id="page.id" t-on-click="() => callSubPage(page.id)">
+                                <t t-esc="page.name"></t>
+                            </div>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+            <div class="col-md-10">
+                <div class="tab-content d-flex flex-column h-100">
+                    <div class="tab-pane fade active show flex-grow-1">
+                        <t t-component="pageComponent" context_data="props.context_data"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.ManagerOverviewPage">
+        <!-- Header -->
+        <div class="row h-100">
+        
+        </div>
+    </t>
+</templates>

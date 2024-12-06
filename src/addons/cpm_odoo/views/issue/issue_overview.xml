@@ -29,10 +29,11 @@
                                         <field name="level" 
                                             widget="badge" 
                                             string="Level"
-                                            decoration-success="level == 'minor'"
-                                            decoration-muted="level == 'moderate'"
-                                            decoration-warning="level == 'major'"
-                                            decoration-danger="level == 'critical'" />
+                                            decoration-muted="level == 'minor'"
+                                            decoration-warning="level == 'moderate'"
+                                            decoration-danger="level=='major' or level == 'critical'" 
+                                            decoration-bf="level == 'critical'" 
+                                            />
                                     </div>
                                     <div class="btn-solution my-2">
                                         <button name="toggle_resolved"
@@ -66,20 +67,5 @@
                 </kanban>
             </field>
         </record>
-        <!-- <record id="cpm_odoo.risk_mgmt_tree" model="ir.ui.view">
-            <field name="name">cpm_odoo.risk_mgmt.tree</field>
-            <field name="model">cpm_odoo.risk_mgmt</field>
-            <field name="arch" type="xml">
-                <tree string="Risks">
-                    <field name="name"/>
-                    <field name="priority" 
-                      widget="badge" 
-                      string="Priority"
-                      decoration-muted="priority == '1'"
-                      decoration-warning="priority == '2'"
-                      decoration-danger="priority == '3'" />
-                </tree>
-            </field>
-        </record> -->
     </data>
 </odoo>
