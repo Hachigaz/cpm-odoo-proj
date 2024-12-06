@@ -37,6 +37,7 @@ Long description of module's purpose
         'views/project/project_create.xml',
         'views/project/project_overview.xml',
         
+        'views/project/planning/tasks/task_note_forms.xml',
         'views/project/planning/tasks/create_task.xml',
         'views/project/planning/tasks/create_task_expense.xml',
         'views/project/planning/tasks/task_detail_forms.xml',
@@ -56,7 +57,11 @@ Long description of module's purpose
         'views/hr_mgmt/staff_create.xml',
         'views/hr_mgmt/staff_view.xml',
         
-        'views/stakeholders/contractor_create.xml',
+        'views/stakeholders/contractor_category_create.xml',
+        'views/stakeholders/contractor_view.xml',
+        'views/stakeholders/investor_view.xml',
+        'views/stakeholders/supplier_view.xml',
+        'views/stakeholders/stackholder_acts.xml',
         
         'views/res_mgmt/res_mgmt_acts.xml',
         'views/res_mgmt/views/warehouse_info/warehouse_info_create.xml',
@@ -70,11 +75,6 @@ Long description of module's purpose
         'views/res_mgmt/views/exports/mat_export_record_create.xml',
         'views/res_mgmt/views/exports/eqp_export_record_create.xml',
 
-        # 'views/issue/issue_acts.xml',
-        # 'views/issue/issue_create.xml',
-        # 'views/issue/issue_overview.xml',
-        # 'views/issue/issue_select_view.xml',
-        
         'views/stakeholders/investor_view.xml',
         'views/stakeholders/stackholder_acts.xml',
         'views/stakeholders/contractor_view.xml',
@@ -103,6 +103,11 @@ Long description of module's purpose
         'views/issue/issue_dashboard.xml',
         'views/issue/issue_report_template.xml',
         
+        'views/risk_mgmt/risk_acts.xml',
+        'views/risk_mgmt/risk_create.xml',
+        'views/risk_mgmt/risk_overview.xml',
+        'views/risk_mgmt/solution_create.xml',
+        
         # 'init_res/dump/cpm_odoo.root_project_hrm.csv',
         # 'init_res/dump/cpm_odoo.root_project_planning.csv',
         # 'init_res/dump/cpm_odoo.root_project_finance.csv',
@@ -126,6 +131,8 @@ Long description of module's purpose
         'init_res/cpm_odoo.stakeholders_investor.csv',
         'init_res/cpm_odoo.stakeholders_supplier.csv',
         'init_res/cpm_odoo.stakeholders_other_contacts.csv',
+        
+        'init_res/cpm_odoo.planning_task_note_category.csv',
     ],
     'assets': {
         'web.assets_backend': [

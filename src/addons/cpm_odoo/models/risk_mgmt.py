@@ -1,6 +1,8 @@
 from odoo import models, fields, api 
 from odoo.exceptions import ValidationError
 from datetime import datetime
+import json
+
 class Risk(models.Model):
     _name = "cpm_odoo.risk_mgmt"
     _description = "Model"
@@ -21,16 +23,43 @@ class Risk(models.Model):
         required=True
     )
 
-    priority = fields.Selection(
+    probability = fields.Selection(
         [
-            ("0", "Normal"),
-            ("1", "Low"),
-            ("2", "Medium"),
-            ("3", "High")
+            ("low", "Low"),
+            ("medium", "Medium"),
+            ("high", "High")
         ],
-        string = "Priority",
-        store = True
+        string = "Probability",
+        required=True
     )
+
+    impact = fields.Selection(
+        [
+            ("low", "Low"),
+            ("medium", "Medium"),
+            ("high", "High")
+        ],
+        string = "Impact",
+        required=True
+    )
+    
+    solution_ids = fields.One2many(
+        'cpm_odoo.risk_mgmt_solution', 
+        'risk_id', 
+        string='solution'
+    )
+    
+    solution_count = fields.Integer(
+        compute='_compute_solution_count', 
+        string='solution_count',
+        store=True
+    )
+
+    @api.depends('solution_ids')
+    def _compute_solution_count(self):
+        for record in self:
+            record.solution_count=len(record.solution_ids)
+        pass
     
     project_id = fields.Many2one(
         comodel_name = "cpm_odoo.root_project",
@@ -38,23 +67,42 @@ class Risk(models.Model):
         default=None
     )
 
+    created_at = fields.Date(
+        string='Created At',
+        store=True,
+        default=datetime.today()
+    )
+
     def action_view_solutions(self):
         self.ensure_one()
         
         view_id = self.env.ref("cpm_odoo.risk_mgmt_solution_create_form").id
 
+        # return {
+        #     'type': 'ir.actions.act_window',
+        #     'name': 'Solutions',
+        #     'res_model': 'cpm_odoo.risk_mgmt_solution',
+        #     'view_mode': 'tree',
+        #     'views': [
+        #         [self.env.ref("cpm_odoo.risk_mgmt_solution_create_form").id, 'tree']
+        #     ],
+        #     'domain': [('risk_id', '=', self.id)],
+        #     'context': {
+        #         'default_risk_id': self.id
+        #     },
+        #     'target': 'current',
+        # }
         return {
             'type': 'ir.actions.act_window',
             'name': 'Solutions',
             'res_model': 'cpm_odoo.risk_mgmt_solution',
-            'view_mode': 'tree,form',
+            'view_mode': 'tree',
             'views': [
-                [False, 'tree'],
-                [view_id, 'form'],
+                [False, 'tree']
             ],
             'domain': [('risk_id', '=', self.id)],
             'context': {
-                'default_risk_id': self.id 
+                'default_risk_id': self.id
             },
             'target': 'current',
         }
@@ -98,8 +146,24 @@ class Solution(models.Model):
     risk_id = fields.Many2one(
         comodel_name = "cpm_odoo.risk_mgmt",
         string = "Risk",
-        required = True
+        required = True,
+        ondelete="cascade"
     )
+    
+    def act_create_solution(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'name': 'New Solution',
+            'res_model': 'cpm_odoo.risk_mgmt_solution',
+            # 'domain': [],
+            'view_id':self.env.ref("cpm_odoo.risk_mgmt_solution_create_form").id,
+            'views':[(False,'form')],
+            'context': {
+                'default_risk_id':self.env.context.get('default_risk_id')
+            },
+            'target': 'new'
+        }
 
     
 
@@ -131,7 +195,8 @@ class Issue(models.Model):
             ("critical", "Critical")
         ],
         string = "Level",
-        store = True
+        store = True,
+        required=True
     )
     
     status = fields.Selection(
@@ -175,6 +240,12 @@ class Issue(models.Model):
         string = "Resolved Date",
         store=True
     )
+    
+    project_id = fields.Many2one(
+        comodel_name = "cpm_odoo.root_project",
+        string = "Project",
+        default=None
+    )
 
     @api.model
     def _default_staff_id(self):
@@ -216,7 +287,7 @@ class Issue(models.Model):
     
     def write(self, vals):
         for record in self:
-            if record.status != 'not_resolved' and self.env.user.has_group('cpm_gr.user_issues'):
+            if record.status != 'not_resolved' and self.env.user.has_group('cpm_gr.user_issues') and not set(vals.keys())=={'status'}:
                 raise ValidationError("You cannot edit issue with resolved or in progress status.")
         return super().write(vals)
     
@@ -252,7 +323,8 @@ class Issue(models.Model):
                     'default_description':f"{staff_rec['name']} leave from date ___ to ___ on task {task_rec.name}",
                     'default_staff_id':staff_rec['id'],
                     'default_level':'minor',
-                    'default_category_id':self.env.ref("cpm_iss_cat.hr_issues").id
+                    'default_category_id':self.env.ref("cpm_iss_cat.hr_issues").id,
+                    'default_project_id':task_rec.project_id.id
                 },
                 'target': 'new'
             }

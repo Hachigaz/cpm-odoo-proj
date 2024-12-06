@@ -2,7 +2,7 @@
 import { GanttDisplay, ItemList, SearchBar} from "../../components/components";
 import { DocumentSetItemList } from "../../doc_mgmt/document_mgmt";
 import { useService } from "@web/core/utils/hooks";
-import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, joinM2MDatas, formatSnakeStr, isInGroup, isInGroup2} from "../../components/component_utils";
+import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, joinM2MDatas, formatSnakeStr, isInGroup, isInGroup2, joinDatas} from "../../components/component_utils";
 import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
 import { formatCurrency } from "../finance/components";
 
@@ -512,6 +512,21 @@ class PlanningManageWorkflow extends Component{
         }
     }
 
+    async act_delete_workflow(){
+        if(!confirm("Delete workflow?")){
+            return
+        }
+        const result = await this.props.context_data.orm.call(
+            "cpm_odoo.planning_workflow",
+            "unlink",
+            [this.pageInfo.workflow_id]
+        )
+
+        if(result){
+            window.location.reload()
+        }
+    }
+
     async act_edit_general_info(){
         await this.action.doAction({
             type: 'ir.actions.act_window',
@@ -978,6 +993,7 @@ class PlanningTaskAttachedDocumentsPanel extends Component{
         })
 
         this.orm = useService("orm")
+        this.action = useService("action")
 
         this.cmp_root = useRef('cmp-root')
 
@@ -1019,6 +1035,18 @@ class PlanningTaskAttachedDocumentsPanel extends Component{
                 this.attached_doc_ids.splice(index, 1);
             }                
         }
+    }
+
+    async act_add_new_document(){
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Create Document Set',
+            res_model: 'cpm_odoo.documents_document_set',  // Model name
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context: { 'add_doc_to_task': this.props.task_info.id },  // Optional: default values for fields
+        });
     }
 
     async act_save(){
@@ -1155,7 +1183,6 @@ class PlanningManageTask extends Component{
         const page_name = PlanningManageTask.page_name
         this.pageInfo = getPageInfo(page_name)
         if(this.pageInfo===undefined){
-            alert("no page info")
             moveToPage(false,"workflow")
         }
 
@@ -1199,10 +1226,15 @@ class PlanningManageTask extends Component{
                 [
                     ['id','=',this.pageInfo.task_id]
                 ],
-                ["id","name","start_date","exp_end","task_status","assigned_staff_ids","assigned_contractor_ids","attached_document_ids"],
+                ["id","name","start_date","exp_end","task_status","assigned_staff_ids","assigned_contractor_ids","attached_document_ids","workflow_id"],
                 0,1,null
             ]
         ))
+
+        
+        if(!task_info){
+            moveToPage(false,"workflow")
+        }
 
         await joinM2MDatas(
             task_info,this.props.context_data.orm,['assigned_contractor_ids','cpm_odoo.planning_task_assign_contractor',[]]
@@ -1211,6 +1243,10 @@ class PlanningManageTask extends Component{
         await joinM2MDatas(
             task_info,this.props.context_data.orm,['assigned_staff_ids','cpm_odoo.planning_task_assign_staff',[]]
         )
+
+        await joinDatas(task_info,this.props.context_data.orm,[
+            ["workflow_id",'cpm_odoo.planning_workflow',['id','name','workflow_status']]
+        ])
         
         this.page_data.task_info= task_info[0]
         if(!this.page_data.task_info){
@@ -1242,6 +1278,23 @@ class PlanningManageTask extends Component{
             target: 'new',
             context: { 'default_workflow_id': this.page_data.task_info.workflow_id },
         });
+    }
+
+    async act_delete_task(){
+        if(!confirm("Delete Task?")){
+            return
+        }
+        let result = (await this.props.context_data.orm.call(
+            'cpm_odoo.planning_task',
+            'unlink',
+            [
+                this.pageInfo.task_id
+            ]
+        ))
+
+        if(result){
+            window.location.reload()
+        }
     }
 
     async _do_action(action,params){

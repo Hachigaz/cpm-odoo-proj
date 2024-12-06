@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="cpm_odoo.RiskIssuesUI">
+        <!-- Header -->
+        <div class="row h-100">
+            <div class="col-md-2 pt-2">
+                <div class="page-title mb-3">
+                    <h2 class="px-2 fs-3 fw-bold">
+                        Risks And Issues
+                    </h2>
+                </div>
+                <ul class="nav nav-pills flex-column" role="tablist">
+                    <t t-foreach="this.constructor.availablePages" t-as="page" t-key="page.id">
+                        <li class="nav-item user-select-none">
+                            <div t-att-class="`nav-link ${this.currentPage==page.id?'active':''}`" t-att-id="page.id" t-on-click="() => callSubPage(page.id)">
+                                <t t-esc="page.name"></t>
+                            </div>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+            <div class="col-md-10">
+                <div class="tab-content d-flex flex-column h-100">
+                    <div class="tab-pane fade active show flex-grow-1">
+                        <t t-component="pageComponent" context_data="props.context_data"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.RiskAndSafetyPage">
+        <!-- Header -->
+        <div class="row h-100">
+            <div class="container mt-5">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="fs-5">
+                        Project Risks And Safety
+                    </div>
+                    <div class="btn-list">
+                        <button class="btn btn-secondary" t-on-click="()=>{this.act_create_risk()}">
+                            New Risk
+                        </button>
+                    </div>
+                </div>
+                <div class="h-100 d-flex flex-column">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8 d-flex align-items-center">
+                            <div class="me-2 d-flex align-items-center">
+                                <label class="me-3 fs-5">
+                                    Category
+                                </label>
+                                <div class="me-2">
+                                    <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
+                            
+                                    </ListFilter>
+                                </div>
+                                <label class="me-3 fs-5">
+                                    Probability
+                                </label>
+                                <div class="me-2">
+                                    <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[1].item_list" col_name="this.filter_data[1].col_name">
+                            
+                                    </ListFilter>
+                                </div>
+                                <label class="me-3 fs-5">
+                                    Impact
+                                </label>
+                                <div class="me-2">
+                                    <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[2].item_list" col_name="this.filter_data[2].col_name">
+                            
+                                    </ListFilter>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center">
+                            <label class="me-2 fs-5">
+                                Search
+                            </label>
+                            <div class="flex-grow-1">
+                                <SearchBar inst="this" act_search="this.act_search">
+            
+                                </SearchBar>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <tr style="height:30px">
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Probability</th>
+                            <th>Impact</th>
+                            <th>Solutions</th>
+                            <th>Actions</th>
+                        </tr>
+                        <t t-if="page_data.page_arr.length > 0">
+                            <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                                <tr style="height:50px">
+                                    <td><t t-esc="item.name"/></td>
+                                    <td><t t-esc="item.category_id.name"/></td>
+                                    <td><t t-esc="this.constructor.formatSnakeStr(item.probability)"/></td>
+                                    <td><t t-esc="this.constructor.formatSnakeStr(item.impact)"/></td>
+                                    <td>
+                                        <span class="row align-items-center border-0 p-0">
+                                            <t t-if="item.solution_count>0">
+                                                <span class="me-1 col">
+                                                    <t t-esc="item.solution_count==1?`${item.solution_count} Solution`:`${item.solution_count} Solutions`"/>
+                                                </span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-danger me-1 col">
+                                                    No Solution Yet 
+                                                </span>
+
+                                            </t>
+                                            <span class='col'>
+                                                <button class="btn btn-link btn-sm me-2" t-on-click="()=>{this.act_view_solutions(item.id)}">Manage</button>
+                                            </span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="p-0 py-1 border-0">
+                                            <button class="btn btn-outline-info btn-sm me-2" t-on-click="()=>{this.act_view_risk(item.id)}">View Details</button>
+                                            <button class="btn btn-outline-warning btn-sm me-2" t-on-click="()=>{this.act_edit_risk(item.id)}">Edit</button>
+                                            <button class="btn btn-outline-danger btn-sm" t-on-click="()=>{this.act_delete_risk(item.id)}">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="page_data.page_count > 1">
+                                <tr>
+                                    <td colspan="6" class="d-flex align-items-center justify-content-center">
+                                        <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                            <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                                <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                                    <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                        <t t-esc="page+1"/>
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <td colspan="6" class="text-center mt-4 fs-6 fw-bold py-2">
+                                    No record
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.ProjectIssuesPage">
+        <!-- Header -->
+        <div class="row h-100">
+            <div class="container mt-5">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="fs-5">
+                        Project Issues
+                    </div>
+                    <div class="btn-list">
+                        <button class="btn btn-secondary" t-on-click="()=>{this.act_create_task_issue()}">
+                            Add New Issue
+                        </button>
+                    </div>
+                </div>
+                <div class="h-100 d-flex flex-column">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8 d-flex align-items-center">
+                            <div class="me-2 d-flex align-items-center">
+                                <label class="me-2 fs-5">
+                                    Category
+                                </label>
+                                <div class="me-2">
+                                    <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
+                            
+                                    </ListFilter>
+                                </div>
+                            </div>
+                            <div class="me-2 d-flex align-items-center">
+                                <label class="me-2 fs-5">
+                                    Level
+                                </label>
+                                <div class="me-2">
+                                    <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[1].item_list" col_name="this.filter_data[1].col_name">
+                            
+                                    </ListFilter>
+                                </div>
+                            </div>
+                            <div class="me-2 d-flex align-items-center">
+                                <label class="me-2 fs-5">
+                                    Status
+                                </label>
+                                <div class="me-2">
+                                    <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[2].item_list" col_name="this.filter_data[2].col_name">
+                            
+                                    </ListFilter>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center">
+                            <label class="me-2 fs-5">
+                                Search
+                            </label>
+                            <div class="flex-grow-1">
+                                <SearchBar inst="this" act_search="this.act_search">
+            
+                                </SearchBar>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <tr style="height:30px">
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Level</th>
+                            <th>Status</th>
+                            <th>Created By</th>
+                            <th>Actions</th>
+                        </tr>
+                        <t t-if="page_data.page_arr.length > 0">
+                            <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                                <tr style="height:50px">
+                                    <td><t t-esc="item.title"/></td>
+                                    <td><t t-esc="item.category_id.name"/></td>
+                                    <td><t t-esc="this.constructor.formatSnakeStr(item.level)"/></td>
+                                    <td><t t-esc="this.constructor.formatSnakeStr(item.status)"/></td>
+                                    <td>
+                                        <span class="d-flex align-items-center border-0 p-0">
+                                            <t t-if="item.staff_id">
+                                                <div class="img-wrapper me-1" style="width:25px;height:25px;">
+                                                    <img
+                                                        t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=${item.staff_id.id}&amp;field=avatar_256`" alt="Image"
+                                                        style="width: 100%;aspect-ratio:1/1"
+                                                        class="img-fluid rounded-circle"
+                                                    />
+                                                </div>
+                                                <t t-esc="item.staff_id.name"/>
+                                            </t>
+                                            <t t-else="">
+                                                
+                                            </t>
+                                        </span>    
+                                    </td>
+                                    <td>
+                                        <div class="p-0 py-1 border-0">
+                                            <t t-if="item.status=='not_resolved'">
+                                                <button class="btn btn-outline-info btn-sm me-2" t-on-click="()=>{this.act_mark_verified(item.id)}">Verify</button>
+                                                <button class="btn btn-outline-warning btn-sm me-2" t-on-click="()=>{this.act_edit_issue(item.id)}">Edit</button>
+                                                <button class="btn btn-outline-danger btn-sm" t-on-click="()=>{this.act_delete_issue(item.id)}">Delete</button>
+                                            </t>
+                                            <t t-elif="item.status=='in_progress'">
+                                                <button class="btn btn-outline-success btn-sm me-2" t-on-click="()=>{this.act_mark_resolved(item.id)}">Mark Completed</button>
+                                            </t>
+                                            <t t-else="">
+                                            </t>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="page_data.page_count > 1">
+                                <tr>
+                                    <td colspan="6" class="d-flex align-items-center justify-content-center">
+                                        <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                            <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                                <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                                    <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                        <t t-esc="page+1"/>
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <td colspan="6" class="text-center mt-4 fs-6 fw-bold py-2">
+                                    No record
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

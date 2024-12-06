@@ -29,10 +29,11 @@
                                         <field name="level" 
                                             widget="badge" 
                                             string="Level"
-                                            decoration-success="level == 'minor'"
-                                            decoration-muted="level == 'moderate'"
-                                            decoration-warning="level == 'major'"
-                                            decoration-danger="level == 'critical'" />
+                                            decoration-muted="level == 'minor'"
+                                            decoration-warning="level == 'moderate'"
+                                            decoration-danger="level=='major' or level == 'critical'" 
+                                            decoration-bf="level == 'critical'" 
+                                            />
                                     </div>
                                     <div class="btn-solution my-2">
                                         <button name="toggle_resolved"

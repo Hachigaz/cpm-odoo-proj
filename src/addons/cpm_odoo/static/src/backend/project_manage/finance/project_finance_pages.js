@@ -947,12 +947,6 @@ export class ProjectFinancePage extends Component {
             name:"Budgets",
             page:FinanceBudgetsTab,
             group_id:""
-        },
-        {
-            id:"investors",
-            name:"Investors",
-            page:FinanceInvestorsTab,
-            group_id:""
         }
     ]
 

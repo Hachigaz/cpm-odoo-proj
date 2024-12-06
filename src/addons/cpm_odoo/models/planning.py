@@ -266,6 +266,11 @@ class Task(models.Model):
     _name = "cpm_odoo.planning_task"
     _description = "Task"
     
+    project_id = fields.Many2one(
+        related="workflow_id.planning_id.project_id", 
+        string='project'
+    )
+    
     workflow_id = fields.Many2one(
         comodel_name = 'cpm_odoo.planning_workflow',
         string = 'Workflow',
@@ -300,71 +305,62 @@ class Task(models.Model):
         readonly=True
     )
     
+    date_completed = fields.Datetime(
+        'date_completed',
+        default=None
+    )
+    
+    date_verified = fields.Datetime(
+        'date_verified',
+        default=None
+    )
+    
     @api.model
     def act_mark_completed(self, task_id):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
         
-        staff = self.env["cpm_odoo.human_res_staff"].search(
-            [["user_id","=",self.env.user.id]]
-        )
-        
         if(task.task_status == "active"):
             task.task_status = "completed"
+            task.date_completed = fields.Datetime.now()
             
-            task.write({
-                "task_log_ids":[(0,0,{
-                    "title":f"{staff.name if staff else ''} marked the task as completed.",
-                    "staff_id":None
-                })]
-            })
+            staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+            task.add_log(
+                f"{staff_rec.get('name') if staff_rec else ''} marked the task as completed.",
+                staff_rec.get('id') if staff_rec else None
+            )
+            return True
         else:
             raise ValidationError("The task status is not completed.")
         pass
     
-    @api.model
-    def act_verify_task(self,task_id):
-        task = self.env["cpm_odoo.planning_task"].browse(task_id)
-        
-        staff = self.env["cpm_odoo.human_res_staff"].search(
-            [["user_id","=",self.env.user.id]]
-        )
-        
-        if(task.task_status == "completed"):
-            task.task_status = "verified"
-            
-            task.write({
-                "task_log_ids":[(0,0,{
-                    "title":f"{staff.name if staff else ''} verified the task.",
-                    "staff_id":None
-                })]
-            })
-        else:
-            raise ValidationError("The task status is not completed.")
+    def act_verify_task(self):
+        for task in self:
+            if(task.task_status == "completed"):
+                task.task_status = "verified"
+                task.date_verified = fields.Datetime.now()
+                
+                staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+                task.add_log(
+                    f"{staff_rec.get('name') if staff_rec else ''} verified the task.",
+                    staff_rec.get('id') if staff_rec else None
+                )
+            else:
+                raise ValidationError("The task status is not completed.")
         pass
     
-    def act_reject_completion(self,task_id,cause_str):
-        task = self.env["cpm_odoo.planning_task"].browse(task_id)
-        
-        staff = self.env["cpm_odoo.human_res_staff"].search(
-            [["user_id","=",self.env.user.id]]
-        )
-        
-        if(task.task_status == "completed"):
-            task.task_status = "active"
-            
-            task.write({
-                "task_log_ids":[(0,0,{
-                    "title":f"{staff.name if staff else ''} rejected the task completion.",
-                    "staff_id":None
-                })],
-                "task_note_ids":[(0,0,{
-                    "title":"Task completion rejected",
-                    "created_by":staff.id,
-                    "description":cause_str
-                })]
-            })
-        else:
-            raise ValidationError("The task status is not completed.")
+    def act_reject_completion(self):
+        for task in self:
+            if(task.task_status == "completed"):
+                task.task_status = "active"
+                task.date_completed=None
+                
+                staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+                task.add_log(
+                    f"{staff_rec.get('name') if staff_rec else ''} rejected the task completion.",
+                    staff_rec.get('id') if staff_rec else None
+                )
+            else:
+                raise ValidationError("The task status is not completed.")
         pass
     
     
@@ -763,6 +759,32 @@ class Task(models.Model):
             "exp_end asc"
         )
         return task_recs
+
+    @api.model
+    def act_get_completed_tasks(self,domain,count=0,cols=[]):
+
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ('task_status','=','completed'),
+            ] + domain,
+            cols,
+            0,count,
+            "exp_end asc"
+        )
+        return task_recs
+
+    @api.model
+    def act_get_verified_tasks(self,domain,count=0,cols=[]):
+
+        task_recs = self.env["cpm_odoo.planning_task"].search_read(
+            [
+                ('task_status','=','verified'),
+            ] + domain,
+            cols,
+            0,count,
+            "exp_end asc"
+        )
+        return task_recs
     
     @api.model_create_multi
     def create(self, vals):
@@ -788,7 +810,7 @@ class Task(models.Model):
     def write(self, vals):
         for rec in self:
             if rec.workflow_id.workflow_status != 'draft':
-                if vals.get("start_date") or vals.get("exp_end"):
+                if vals.get("start_date") or vals.get("exp_end") or vals.get('depends_on'):
                     raise ValidationError(f"Cannot change date of non-draft status task: Task {rec.name}")
         return super().write(vals)
 
@@ -847,6 +869,12 @@ class TaskCategory(models.Model):
         required=True
     )
     
+    # workflow_id = fields.Many2one(
+    #     'cpm_odoo.planning_workflow', 
+    #     string='workflow',
+    #     ondelete="cascade"
+    # )
+    
     color = fields.Char(
         string = 'Category Color',
         required=True,
@@ -874,12 +902,6 @@ class TaskNoteCategory(models.Model):
         required=True,
         size=24,
         default = "#FF5733"
-    )
-    
-    display = fields.Boolean(
-        string = 'Display',
-        required=True,
-        default=False
     )
     
 class TaskChecklistItem(models.Model):
@@ -1062,6 +1084,13 @@ class TaskNote(models.Model):
         required=True
     )
     
+    category_id = fields.Many2one(
+        'cpm_odoo.planning_task_note_category', 
+        string='category',
+        ondelete="cascade",
+        required=True
+    )
+    
     description = fields.Text(
         string = 'Description'
     )
@@ -1074,10 +1103,16 @@ class TaskNote(models.Model):
     
     created_by = fields.Many2one(
         comodel_name = 'cpm_odoo.human_res_staff', 
-        string='Posted By',
-        required = True
+        string='Posted By'
     )
     
+    @api.model_create_multi
+    def create(self, vals):
+        staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
+        for val in vals:
+            val['created_by'] = staff_rec.get('id') if staff_rec else None
+        return super().create(vals)
+
 class TaskComment(models.Model):
     _name = 'cpm_odoo.planning_task_comment'
     _description = "Task Note"
@@ -1156,3 +1191,56 @@ class TaskExpense(models.Model):
             val["title"] = "Task Expense: " + val["title"]
             val["description"] = f"Workflow: {task.workflow_id.name}, Task: {task.name}" + val["description"] if val["description"] else ""
         return super().create(vals)
+    
+    
+class TaskQA_Verification(models.Model):
+    _name = 'cpm_odoo.planning_task_qa_verification'
+    _description = "Task QA Verification"
+    
+    task_note_id = fields.Many2one(
+        'cpm_odoo.planning_task_note', 
+        string='task_note',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    completion_quality = fields.Selection([
+        ('poor', 'Poor'),
+        ('fair', 'Fair'),
+        ('good', 'Good'),
+        ('very_good', 'Very Good'),
+        ('excellent', 'Excellent')
+    ], string='completion_quality',required=True)
+    
+    _inherits = {
+        "cpm_odoo.planning_task_note":"task_note_id"
+    }
+        
+    @api.model_create_multi
+    def create(self, vals):
+        recs = super().create(vals)
+        for rec in recs:
+            rec.task_id.act_verify_task()
+        return recs
+    
+class TaskQA_Rejection(models.Model):
+    _name = 'cpm_odoo.planning_task_qa_rejection'
+    _description = "Task QA Rejection"
+    
+    task_note_id = fields.Many2one(
+        'cpm_odoo.planning_task_note', 
+        string='task_note',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    _inherits = {
+        "cpm_odoo.planning_task_note":"task_note_id"
+    }
+    
+    @api.model_create_multi
+    def create(self, vals):
+        recs = super().create(vals)
+        for rec in recs:
+            rec.task_id.act_reject_completion()
+        return recs

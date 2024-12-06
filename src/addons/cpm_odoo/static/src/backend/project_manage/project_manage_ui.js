@@ -9,6 +9,9 @@ import { ProjectPlanningPage} from "./planning/project_planning_pages";
 import { DocumentManagementTab } from "../doc_mgmt/document_mgmt";
 import { session } from "@web/session";
 import { ContractManagementTab } from "../doc_mgmt/contract_mgmt";
+import { ProjectManagerUI } from "./managers/manager_uis";
+import { RiskIssuesUI } from "./risks_issues/risk_issues_uis";
+import { QualityControlUI } from "./qcs/quality_control_uis";
 
 class ProjectManageUI extends Component {
     static template = "cpm_odoo.ProjectManageUI";
@@ -19,7 +22,8 @@ class ProjectManageUI extends Component {
         ProjectPlanningPage,
         ProjectFinancePage,
         DocumentManagementTab,
-        ContractManagementTab
+        ContractManagementTab,
+        ProjectManagerUI
     };
 
     get pageComponent() {
@@ -56,6 +60,30 @@ class ProjectManageUI extends Component {
             id: "contracts",
             name:"Contracts",
             page:ContractManagementTab,
+            group_id:"cpm_manage_project_plans"
+        },
+        {
+            id: "risks_and_issues",
+            name:"Risks and Issues",
+            page:RiskIssuesUI,
+            group_id:"cpm_manage_project_plans"
+        },
+        {
+            id: "stakeholders",
+            name:"Stakeholders",
+            page:ContractManagementTab,
+            group_id:"cpm_manage_project_plans"
+        },
+        {
+            id: "quality_controls",
+            name:"Qualty Controls",
+            page:QualityControlUI,
+            group_id:"cpm_manage_project_plans"
+        },
+        {
+            id: "proj_managers",
+            name:"Managers",
+            page:ProjectManagerUI,
             group_id:"cpm_manage_project_plans"
         }
     ]

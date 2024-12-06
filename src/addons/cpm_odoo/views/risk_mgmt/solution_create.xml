@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="cpm_odoo.risk_mgmt_solution_view_tree" model="ir.ui.view">
+            <field name="name">cpm_odoo.risk_mgmt_solution.view.tree</field>
+            <field name="model">cpm_odoo.risk_mgmt_solution</field>
+            <field name="arch" type="xml">                                
+            <tree create="False" import="False" export_xlsx="False">
+                    <header>
+                        <button string="New Solution" name="act_create_solution" type="object" display="always" context="{'default_risk_id':context.get('default_risk_id')}"/>
+                    </header>
+                    <field name="name" string="Name"></field>
+                    <field name="description" string="Description"></field>
+                </tree>
+            </field>
+        </record>
+
+
         <record id="cpm_odoo.risk_mgmt_solution_create_form" model="ir.ui.view">
             <field name="name">cpm_odoo.risk_mgmt_solution_create_form.form</field>
             <field name="model">cpm_odoo.risk_mgmt_solution</field>
@@ -10,7 +25,7 @@
                         <group>
                             <field name="name"/>
                             <field name="description"/>
-                            <field name="risk_id" readonly="1"/>  
+                            <field name="risk_id" readonly="1" invisible="True"/>  
                         </group>
                     </sheet>
                 </form>

@@ -58,7 +58,7 @@
                         <section class="bg-light rounded p-4 h-100">
                             <div class="">
                                 <div class="mb-3">
-                                    <h2 class="h4 m-0">Stakeholders</h2>
+                                    <h2 class="h4 m-0">Project Investors</h2>
                                 </div>
                                 <t t-if="this.state_data.investor_list.length>0">
                                     <div class="row">
@@ -97,22 +97,28 @@
                         <!-- Risks Section -->
                         <section class="bg-light rounded p-4 h-100 overflow-hidden">
                             <div class="mb-3">
-                                <h2 class="h4 m-0">Issues</h2>
+                                <h2 class="h4 m-0">Risks and Issues</h2>
                             </div>
                             <div class="">
                                 <t t-if="this.state_data.issue_list.length>0">
                                     <t t-foreach="this.state_data.issue_list" t-as="issue" t-key="issue.id">
-                                        <t t-if="issue.level=='minor'">
+                                        <!-- <t t-if="issue.level=='minor'">
                                             
-                                        </t>
-                                        <t t-elif="issue.level=='moderate'">
-
+                                        </t> -->
+                                        <t t-if="issue.level=='moderate'">
+                                            <div class="alert alert-warning">
+                                                <strong>Issue:</strong> <t t-esc="issue.title"/>
+                                            </div>
                                         </t>
                                         <t t-elif="issue.level=='major'">
-
+                                            <div class="alert alert-danger">
+                                                <strong>Issue:</strong> <t t-esc="issue.title"/>
+                                            </div>
                                         </t>
                                         <t t-elif="issue.level=='critical'">
-
+                                            <div class="alert alert-danger">
+                                                <strong>Issue:</strong> <t t-esc="issue.title"/> <span class="fw-bolder">- Critical</span>
+                                            </div>
                                         </t>
                                     </t>
                                 </t>
@@ -166,19 +172,19 @@
                                         <div class="col-12">
                                             <div class="card shadow-sm mb-3">
                                                 <div class="card-body d-flex justify-content-between align-items-center">
-                                                    <span class="fw-bold">Members</span>
-                                                    <span class="text-info h5">12</span>
+                                                    <span class="fw-bold">Project Issues</span>
+                                                    <span class="text-info h5"><t t-esc="this.state_data.issue_list.length"/> Unresolved Issues</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        <!-- <div class="col-12">
                                             <div class="card shadow-sm mb-3">
                                                 <div class="card-body d-flex justify-content-between align-items-center">
                                                     <span class="fw-bold">Upcoming Deadlines</span>
                                                     <span class="text-danger h5">3</span>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </section>
                             </div>

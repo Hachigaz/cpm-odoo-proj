@@ -1,7 +1,8 @@
 /** @odoo-module **/
 import { ItemList, SearchBar} from "../components/components";
 import { useService } from "@web/core/utils/hooks";
-import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, clearPageInfo, joinDatas, joinM2MDatas, formatSnakeStr} from "../components/component_utils";
+import { session } from "@web/session";
+import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, clearPageInfo, joinDatas, joinM2MDatas, formatSnakeStr, isInGroup} from "../components/component_utils";
 import { Component, onWillStart, onMounted, onWillUnmount, onWillDestroy, useEffect, useState, useRef} from "@odoo/owl";
 import { DocumentSetItemList } from "../doc_mgmt/document_mgmt";
 
@@ -15,6 +16,7 @@ export class AssignedTaskDetailView extends Component{
     static formatSnakeStr = formatSnakeStr
     static formatDate = formatDate
     static formatDateTime = formatDateTime
+    static isInGroup = isInGroup
     setup(){
         this.pageInfo = getPageInfo("assigned_task_detail_view")
         if(!this.pageInfo){
@@ -30,9 +32,11 @@ export class AssignedTaskDetailView extends Component{
         this.page_data = {
             task_id:this.pageInfo.task_id,
             task_info:null,
+            is_project_head:false,
             checklist:[],
             history_log:[],
-            comments:[]
+            comments:[],
+            task_notes:[]
         }
 
         onWillStart(async ()=>{
@@ -84,6 +88,8 @@ export class AssignedTaskDetailView extends Component{
             ]
         )
 
+        this.page_data.is_project_head = isInGroup(session.uid,'cpm_gr.project_head_mem_gr',this.orm)
+
         task_info=task_info[0]
 
         // if(!task_info){
@@ -95,6 +101,7 @@ export class AssignedTaskDetailView extends Component{
         await this.load_checklist()
         await this.load_history_log()
         await this.load_comments()
+        await this.load_notes()
     }
 
     async load_checklist(){
@@ -191,7 +198,7 @@ export class AssignedTaskDetailView extends Component{
         this.page_data.history_log=history_log?history_log:[]
     }
 
-    async act_create_task_issue(){
+    async act_create_staff_leave(){
         let result = await this.orm.call(
             "cpm_odoo.risk_mgmt_issue",
             "act_create_staff_leave",
@@ -203,17 +210,40 @@ export class AssignedTaskDetailView extends Component{
         if(result){
             this.action.doAction(result)
         }
-        // await this.action.doAction({
-        //     type: 'ir.actions.act_window',
-        //     name: 'Issue',
-        //     res_model: 'cpm_odoo.risk_mgmt',
-        //     view_mode: 'form',
-        //     views: [[false, 'form']],
-        //     target: 'new',
-        //     context:{
-        //         'default_task_id':this.page_data.task_id
-        //     }
-        // });
+    }
+
+    async act_create_task_issue(){
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Issue',
+            res_model: 'cpm_odoo.risk_mgmt_issue',
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context:{
+                'default_task_id':this.page_data.task_id,
+                'default_project_id':this.page_data.task_info.project_id[0]
+            }
+        });
+    }
+
+    async act_mark_task_completed(){
+        if(!confirm("Mark Task as Completed?")){
+            return
+        }
+        let result = await this.orm.call(
+            "cpm_odoo.planning_task",
+            "act_mark_completed",
+            [
+                this.page_data.task_info.id
+            ]
+        )
+        
+        if(result){
+            if (result){
+                this.window.reload()
+            }
+        }
     }
 
 
@@ -255,5 +285,43 @@ export class AssignedTaskDetailView extends Component{
         else{
             this.comment_text_area.el.focus()
         }
+    }
+    async act_add_task_note(){
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Add Task Note',
+            res_model: 'cpm_odoo.planning_task_note',
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context:{
+                'default_task_id':this.page_data.task_id,
+                'default_category_id':1
+            }
+        });
+    }
+
+    async load_notes(){
+        let notes = await this.orm.call(
+            "cpm_odoo.planning_task_note",
+            'search_read',
+            [
+                [
+                    ["task_id",'=',this.page_data.task_id]
+                ],
+                [],
+                0,0,"date_created desc"
+            ]
+        )
+
+        await joinDatas(
+            notes,this.orm,
+            [
+                ['category_id','cpm_odoo.planning_task_note_category',['id','name','color']],
+                ['created_by','cpm_odoo.human_res_staff',['id','name']]
+            ]
+        )
+
+        this.page_data.task_notes=notes?notes:[]
     }
 }
