@@ -8,8 +8,11 @@
                     <h2 class="mb-1">
                         <t t-esc="this.page_data.task_info.name"/>
                     </h2>
-                    <p class="text-muted mb-0">
+                    <p class="text-muted mb-1">
                         Assigned to <strong><t t-esc="this.page_data.task_info.assigned_staff_ids.length + this.page_data.task_info.assigned_contractor_ids.length"/></strong> members.
+                    </p>
+                    <p class="text-muted mb-1">
+                        Start Date: <strong><t t-esc="this.constructor.formatDate(this.page_data.task_info.start_date)"/></strong>
                     </p>
                     <p class="text-muted">
                         Due Date: <strong><t t-esc="this.constructor.formatDate(this.page_data.task_info.exp_end)"/></strong>
@@ -28,12 +31,21 @@
                     </p>
                 </div>
                 <div class="btn-list d-flex align-items-center justify-content-end col-md-4 text-md-end">
-                    <div class="btn-list me-1">
-                        <button class="btn btn-sm btn-secondary me-2" t-on-click="()=>{this.act_create_staff_leave()}">Create Staff Leave</button>
-                    </div>
-                    <div class="btn-list">
-                        <button class="btn btn-sm btn-secondary" t-on-click="()=>{this.act_create_task_issue()}">Report Issue</button>
-                    </div>
+                    <t t-if="this.page_data.task_info.task_status==='active'">
+                        <div class="btn-list me-1">
+                            <button class="btn btn-sm btn-secondary me-2" t-on-click="()=>{this.act_create_staff_leave()}">Create Staff Leave</button>
+                        </div>
+                    </t>
+                    <t t-if="this.page_data.is_project_head">
+                        <t t-if="this.page_data.task_info.task_status==='active'">
+                            <div class="btn-list">
+                                <button class="btn btn-sm btn-secondary me-2" t-on-click="()=>{this.act_create_task_issue()}">Report Issue</button>
+                            </div>
+                            <div class="btn-list">
+                                <button class="btn btn-sm btn-secondary" t-on-click="()=>{this.act_mark_task_completed()}">Mark Completed</button>
+                            </div>
+                        </t>
+                    </t>
                 </div>
             </div>
 
@@ -47,7 +59,16 @@
                 </p>
                 <div class="d-flex align-items-center">
                     <span class="me-2">Status:</span>
-                    <span t-att-class="`badge fw-bold ${this.page_data.task_info.task_status==='active'?'bg-warning':'bg-success'}`"><t t-esc="this.constructor.formatSnakeStr(this.page_data.task_info.task_status)"/></span>
+                    <t t-set="status" t-value="this.page_data.task_info.task_status"/>
+                    <t t-if="status==='active'">
+                        <span class="badge fw-bold bg-warning"><t t-esc="this.constructor.formatSnakeStr(this.page_data.task_info.task_status)"/></span>
+                    </t>
+                    <t t-elif="status==='completed'">
+                        <span class="badge fw-bold text-white bg-success"><t t-esc="this.constructor.formatSnakeStr(this.page_data.task_info.task_status)"/></span>
+                    </t>
+                    <t t-else="">
+                        <span class="badge fw-bold bg-info text-white"><t t-esc="this.constructor.formatSnakeStr(this.page_data.task_info.task_status)"/></span>
+                    </t>
                 </div>
                 </div>
                 <div class="col-md-6">
@@ -82,6 +103,11 @@
                         History
                     </button>
                     </li>
+                    <li class="nav-item">
+                    <button class="nav-link" id="recent-notes-tab" t-on-click="()=>{this.show_tab('recent-notes')}">
+                        Recent Notes
+                    </button>
+                    </li>
                 </ul>
                 <!-- Tab Content -->
                 <div class="tab-content pt-3">
@@ -90,9 +116,13 @@
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h5>Checklist</h5>
                             <div class="btn-list">
-                                <div class="btn btn-secondary" t-on-click="()=>{this.act_add_checklist_item()}">
-                                    Add Checklist Item
-                                </div>
+                                <t t-if="this.page_data.is_project_head">
+                                    <t t-if="this.page_data.task_info.task_status==='active'">
+                                        <div class="btn btn-secondary" t-on-click="()=>{this.act_add_checklist_item()}">
+                                            Add Checklist Item
+                                        </div>
+                                    </t>
+                                </t>
                             </div>
                         </div>
                         <ul class="list-group">
@@ -151,34 +181,36 @@
                                         </div>
                                         <div class="col-2">
                                             <t t-if="item.is_completed">
-                                                <span class="badge bg-success bg-gradient text-white">Completed</span>
+                                                <span class="bg-success bg-gradient text-white">Completed</span>
                                             </t>
                                             <t t-else="">
-                                                <span class="badge bg-warning bg-gradient">In Progress</span>
+                                                <span class="bg-warning bg-gradient">In Progress</span>
                                             </t>
                                         </div>
                                         <div class="col-2 d-flex justify-content-end">
-                                            <t t-if="!item.is_completed">
-                                                <!-- <div class="btn btn-sm btn-secondary" t-on-click="()=>{this.mark_completed(item.id)}">
-                                                    Mark Completed
-                                                </div> -->
-                                                <div class="btn btn-sm btn-primary px-3 py-2" t-on-click="()=>{this.mark_completed(item.id)}">
-                                                    <i class="fa-solid fa-check"></i>
-                                                </div>
-                                                <!-- <div class="btn btn-sm btn-danger ms-2" t-on-click="()=>{this.mark_completed(item.id)}">
-                                                    Delete
-                                                </div> -->
-                                                <div class="btn btn-sm btn-danger ms-2 px-3 py-2" t-on-click="()=>{this.mark_completed(item.id)}">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </div>
-                                            </t>
-                                            <t t-else="">
-                                                <!-- <div class="btn btn-sm btn-secondary" t-on-click="()=>{this.mark_reset(item.id)}">
-                                                    Revert
-                                                </div> -->
-                                                <div class="btn btn-sm btn-primary px-3 py-2" t-on-click="()=>{this.mark_reset(item.id)}">
-                                                    <i class="fa-solid fa-rotate-left"></i>
-                                                </div>
+                                            <t t-if="this.page_data.task_info.task_status==='active'">
+                                                <t t-if="!item.is_completed">
+                                                    <!-- <div class="btn btn-sm btn-secondary" t-on-click="()=>{this.mark_completed(item.id)}">
+                                                        Mark Completed
+                                                    </div> -->
+                                                    <div class="btn btn-sm btn-primary px-3 py-2" t-on-click="()=>{this.mark_completed(item.id)}">
+                                                        <i class="fa-solid fa-check"></i>
+                                                    </div>
+                                                    <!-- <div class="btn btn-sm btn-danger ms-2" t-on-click="()=>{this.mark_completed(item.id)}">
+                                                        Delete
+                                                    </div> -->
+                                                    <div class="btn btn-sm btn-danger ms-2 px-3 py-2" t-on-click="()=>{this.act_delete_checklist_item(item.id)}">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </div>
+                                                </t>
+                                                <t t-else="">
+                                                    <!-- <div class="btn btn-sm btn-secondary" t-on-click="()=>{this.mark_reset(item.id)}">
+                                                        Revert
+                                                    </div> -->
+                                                    <div class="btn btn-sm btn-primary px-3 py-2" t-on-click="()=>{this.mark_reset(item.id)}">
+                                                        <i class="fa-solid fa-rotate-left"></i>
+                                                    </div>
+                                                </t>
                                             </t>
                                         </div>
                                     </li>
@@ -246,6 +278,83 @@
                             <!-- <li>
                             <i class="bi bi-clock-history"></i> Task marked as "In Progress" by Staff Name - 2 days ago
                             </li> -->
+                        </ul>
+                    </div>
+                    <!-- Recent Notes -->
+                    <div class="tab-pane fade" id="recent-notes">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5>Recent Notes</h5>
+                            <div class="btn-list">
+                                <t t-if="this.page_data.is_project_head">
+                                    <t t-if="this.page_data.task_info.task_status==='active'">
+                                        <div class="btn btn-secondary" t-on-click="()=>{this.act_add_task_note()}">
+                                            Add Note
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+                        </div>
+                        <ul class="list-unstyled">
+                            <div class="container">
+                                <div class="tab-pane fade show active" id="team-leader" role="tabpanel" aria-labelledby="team-leader-tab">
+                                    <div class="list-group">
+                                        <t t-foreach="this.page_data.task_notes" t-as="note" t-key="note_index">
+                                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="mb-1 d-flex align-items-center">
+                                                        <span class="me-1">
+                                                            <t t-if="note.category_id.id===1">
+                                                                <i class="fas fa-circle fa-sm " t-att-style="`color: ${note.category_id.color}; font-size:0.8rem; margin-right: 8px;`"></i>
+                                                                <t t-esc="`Note from Head Member`"/>
+                                                            </t>
+                                                            <t t-elif="note.category_id.id===2">
+                                                                <i class="fas fa-circle fa-sm " t-att-style="`color: ${note.category_id.color}; font-size:0.8rem; margin-right: 8px;`"></i>
+                                                                <t t-esc="`Note from QA `"/>
+                                                            </t>
+                                                            <t t-elif="note.category_id">
+                                                                <i class="fas fa-circle fa-sm " t-att-style="`color: ${note.category_id.color}; font-size:0.8rem; margin-right: 8px;`"></i>
+                                                                <t t-esc="`${note.category_id.name} `"/>
+                                                            </t>
+                                                        </span>
+                                            
+                                                        <t t-if="note.created_by">
+                                                            <div class="img-wrapper me-1" style="width:23px;height:23px;">
+                                                                <img
+                                                                    t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=1&amp;field=avatar_256`" alt="Image"
+                                                                    style="width: 100%;aspect-ratio:1/1"
+                                                                    class="img-fluid rounded-circle me-1"
+                                                                />
+                                                            </div>
+                                                            <t t-esc="note.created_by.name"/>:
+                                                        </t>
+                                                        <t t-else="">
+                                                            :
+                                                        </t>
+                                                    </h6>
+                                                    <p class="mb-1">
+                                                        <t t-esc="note.title"/>
+                                                    </p>
+                                                    <t t-if="note.description">
+                                                        <p class="mb-1 text-muted">
+                                                            <t t-esc="note.description"/>
+                                                        </p>
+                                                    </t>
+                                                </div>
+                                                <small class="text-muted">
+                                                    <t t-esc="this.constructor.formatDateTime(note.date_created)"/>
+                                                </small>
+                                            </div>
+                                        </t>
+                                        <!-- <div class="list-group-item d-flex justify-content-between align-items-start">
+                                            <div>
+                                            <h6 class="mb-1">Team Leader: John Doe</h6>
+                                            <p class="mb-1">Consider adjusting the colors to match the brand guidelines.</p>
+                                            </div>
+                                            <small class="text-muted">4 hours ago</small>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
                         </ul>
                     </div>
                 </div>

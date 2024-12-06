@@ -461,13 +461,13 @@
                                                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                                                 <t t-esc="task.name"/>
                                                                 <t t-if="task.task_status==='active'">
-                                                                    <span class="badge bg-warning">Active</span>
+                                                                    <span class="badge bg-success-light">Active</span>
                                                                 </t>
                                                                 <t t-elif="task.task_status==='completed'">
-                                                                    <span class="badge bg-secondary">Pending</span>
+                                                                    <span class="badge bg-success">Completed</span>
                                                                 </t>
                                                                 <t t-elif="task.task_status==='verifed'">
-                                                                    <span class="badge bg-success-light">Completed</span>
+                                                                    <span class="badge bg-info">Verified</span>
                                                                 </t>
                                                             </li>
                                                         </t>
@@ -1026,28 +1026,9 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#attached-documents-tab #add-new-document-modal">
+                <button type="button" class="btn btn-secondary me-2" t-on-click="()=>{this.act_add_new_document()}">
                     Add New Document
                 </button>
-                <div class="modal fade" id="add-new-document-modal" tabindex="-1">
-                    <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="add-new-document-modal-label">
-                                    Add New Document
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{}"></button>
-                            </div>
-                            <div class="modal-body">
-                                
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.act_cancel()}">Close</button>
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  t-on-click="()=>{}">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </span>
         </div>
         <div class="container-fluid">
@@ -1166,6 +1147,14 @@
                     <button type="button" class="btn btn-secondary ms-1" t-on-click="(event)=>{this.act_edit_task_info()}">
                         Edit General Info
                     </button>
+                    <t t-if="this.page_data.task_info.workflow_id.workflow_status === 'draft'">
+                        <button type="button" class="btn btn-secondary ms-1" t-on-click="(event)=>{this.act_edit_task_info()}">
+                            Edit General Info
+                        </button>
+                        <button type="button" class="btn btn-danger ms-1" t-on-click="(event)=>{this.act_delete_task()}">
+                            Delete Task
+                        </button>
+                    </t>
                 </div>
             </div>
             <div class="row task-tabs">

@@ -321,3 +321,20 @@ class ContractSet(models.Model):
             if(len(recs)>0):
                 raise ValidationError(f"Cannot delete contract set {record.name}, it is linked to task {recs[0].task_id.name}")
         return super().unlink()
+    
+    
+    #FIX ATTACH WHEN CREATE DOC IN TASK VIEW
+    @api.model_create_multi
+    def create(self, vals):
+        recs = super().create(vals)
+        
+        task_id = self.env.context.get("add_doc_to_task")
+        if task_id:
+            task_rec = self.env["cpm_odoo.planning_task"].sudo().browse(task_id)
+            
+            task_rec.write({
+                "attached_document_ids":[(4,rec.id) for rec in recs]
+            }
+            )
+        
+        return recs

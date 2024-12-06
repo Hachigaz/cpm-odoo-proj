@@ -7,12 +7,17 @@
             <field name="arch" type="xml">
                 <form string="New Risk">
                     <sheet>
-                        <group string='Risk Info'>
-                            <field name="name" string="Risk Name"></field>
-                            <field name="description" string="Description"></field>
-                            <field name="category_id" string="Category"></field>
-                            <field name="project_id" string="Project"></field>
-                            <field name="priority" widget='priority' string="Priority"></field>
+                        <group col='3' string='Risk Info'>
+                            <group colspan='2'>
+                                <field name="project_id" readonly="True" invisible="True" string="Project"></field>
+                                <field name="name" readonly="context.get('act_type')=='view'" string="Risk Name"></field>
+                                <field name="description" readonly="context.get('act_type')=='view'" string="Description"></field>
+                                <field name="category_id" readonly="context.get('act_type')=='view'" string="Category"></field>
+                            </group>
+                            <group colspan='1'>
+                                <field name="probability" readonly="context.get('act_type')=='view'" string="Probability"></field>
+                                <field name="impact" string="Impact"></field>
+                            </group>
                         </group>
                     </sheet>
                 </form>

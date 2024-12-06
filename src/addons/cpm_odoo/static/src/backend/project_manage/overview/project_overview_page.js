@@ -169,12 +169,11 @@ export class ProjectOverviewPage extends Component {
                     ['status','!=','resolved']
                 ],
                 [],
-                0,0,"created_at asc"
+                0,8,"created_at asc"
             ]
         )
 
         this.state_data.issue_list = issue_list
-        console.log(issue_list)
     }
 
     async act_edit_project(){

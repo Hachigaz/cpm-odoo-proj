@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="cpm_odoo.QualityControlUI">
+        <!-- Header -->
+        <div class="row h-100">
+            <div class="col-md-2 pt-2">
+                <div class="page-title mb-3">
+                    <h2 class="px-2 fs-3 fw-bold">
+                        Quality Controls
+                    </h2>
+                </div>
+                <ul class="nav nav-pills flex-column" role="tablist">
+                    <t t-foreach="this.constructor.availablePages" t-as="page" t-key="page.id">
+                        <li class="nav-item user-select-none">
+                            <div t-att-class="`nav-link ${this.currentPage==page.id?'active':''}`" t-att-id="page.id" t-on-click="() => callSubPage(page.id)">
+                                <t t-esc="page.name"></t>
+                            </div>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+            <div class="col-md-10">
+                <div class="tab-content d-flex flex-column h-100">
+                    <div class="tab-pane fade active show flex-grow-1">
+                        <t t-component="pageComponent" context_data="props.context_data"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.QualityControlOverviewPage">
+        <!-- Header -->
+        <div class="row h-100">
+            
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.QualityControlVerificationTaskPage">
+        <!-- Header -->
+        <div class="row h-100">
+            <div class="container mt-5">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="fs-5 fw-bold">
+                        Pending Tasks
+                    </div>
+                    <div class="btn-list">
+                    
+                    </div>
+                </div>
+                <div class="h-100 d-flex flex-column">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8 d-flex align-items-center">
+                            <div class="me-2 d-flex align-items-center">
+                                <label class="me-2 fs-5">
+                                    Priority
+                                </label>
+                                <div class="me-2">
+                                    <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
+                            
+                                    </ListFilter>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center">
+                            <label class="me-2 fs-5">
+                                Search
+                            </label>
+                            <div class="flex-grow-1">
+                                <SearchBar inst="this" act_search="this.act_search">
+            
+                                </SearchBar>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <tr style="height:30px">
+                            <th>Task Name</th>
+                            <th>Workflow</th>
+                            <th>Category</th>
+                            <th>Date Completed</th>
+                            <th>Priority</th>
+                            <th>Actions</th>
+                        </tr>
+                        <t t-if="page_data.page_arr.length > 0">
+                            <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                                <tr style="height:50px">
+                                    <td><t t-esc="item.name"/></td>
+                                    <td><t t-esc="item.workflow_id.name"/></td>
+                                    <td><t t-esc="item.category_id?item.category_id.name:''"/></td>
+                                    <td><t t-esc="this.constructor.formatDateTime(item.date_completed)"/></td>
+                                    <td><t t-esc="this.constructor.formatSnakeStr(item.priority)"/></td>
+                                    <td>
+                                        <div class="p-0 py-1 border-0">
+                                            <button class="btn btn-outline-success btn-sm me-2" t-on-click="()=>{this.act_mark_verified(item.id)}">Verify</button>
+                                            <button class="btn btn-outline-warning btn-sm me-2" t-on-click="()=>{this.act_reject_completion(item.id)}">Reject</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="page_data.page_count > 1">
+                                <tr>
+                                    <td colspan="6" class="d-flex align-items-center justify-content-center">
+                                        <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                            <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                                <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                                    <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                        <t t-esc="page+1"/>
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <td colspan="6" class="text-center mt-4 fs-6 fw-bold py-2">
+                                    No record
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.QualityControlVerifiedTaskPage">
+        <!-- Header -->
+        <div class="row h-100">
+            <div class="container mt-5">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="fs-5 fw-bold">
+                        Verified Tasks
+                    </div>
+                    <div class="btn-list">
+                    
+                    </div>
+                </div>
+                <div class="h-100 d-flex flex-column">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8 d-flex align-items-center">
+                            <div class="me-2 d-flex align-items-center">
+                                <label class="me-2 fs-5">
+                                    Category
+                                </label>
+                                <div class="me-2">
+                                    <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
+                            
+                                    </ListFilter>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center">
+                            <label class="me-2 fs-5">
+                                Search
+                            </label>
+                            <div class="flex-grow-1">
+                                <SearchBar inst="this" act_search="this.act_search">
+            
+                                </SearchBar>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <tr style="height:30px">
+                            <th>Task Name</th>
+                            <th>Workflow</th>
+                            <th>Category</th>
+                            <th>Date Completed</th>
+                            <th>Priority</th>
+                        </tr>
+                        <t t-if="page_data.page_arr.length > 0">
+                            <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                                <tr style="height:50px">
+                                    <td><t t-esc="item.name"/></td>
+                                    <td><t t-esc="item.workflow_id.name"/></td>
+                                    <td><t t-esc="item.category_id?item.category_id.name:''"/></td>
+                                    <td><t t-esc="this.constructor.formatDateTime(item.date_completed)"/></td>
+                                    <td><t t-esc="this.constructor.formatSnakeStr(item.priority)"/></td>
+                                </tr>
+                            </t>
+                            <t t-if="page_data.page_count > 1">
+                                <tr>
+                                    <td colspan="6" class="d-flex align-items-center justify-content-center">
+                                        <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                            <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                                <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                                    <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                        <t t-esc="page+1"/>
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <td colspan="6" class="text-center mt-4 fs-6 fw-bold py-2">
+                                    No record
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
