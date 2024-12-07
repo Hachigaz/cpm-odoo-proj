@@ -34,7 +34,7 @@
         <div class="row h-100">
             <div class="container mt-5">
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="fs-5">
+                    <div class="px-2 fs-4 fw-bold">
                         Project Risks And Safety
                     </div>
                     <div class="btn-list">
@@ -161,7 +161,7 @@
         <div class="row h-100">
             <div class="container mt-5">
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="fs-5">
+                    <div class="px-2 fs-4 fw-bold">
                         Project Issues
                     </div>
                     <div class="btn-list">

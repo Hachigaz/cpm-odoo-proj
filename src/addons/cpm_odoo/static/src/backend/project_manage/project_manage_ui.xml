@@ -12,11 +12,13 @@
                 <div class="header bg-white text-white px-3 py-2 main-header">
                     <ul class="nav nav-tabs" role="tablist">
                         <t t-foreach="availablePages" t-as="page" t-key="page.id">
-                            <li class="nav-item user-select-none bg-light" role="presentation">
-                                <a class="nav-link" t-att-id="page.id" t-on-click="() => callPage(page.id)">
-                                    <t t-esc="page.name"></t>
-                                </a>
-                            </li>
+                            <t t-if="!page.hidden">
+                                <li class="nav-item user-select-none bg-light" role="presentation">
+                                    <a class="nav-link" t-att-id="page.id" t-on-click="() => callPage(page.id)">
+                                        <t t-esc="page.name"></t>
+                                    </a>
+                                </li>
+                            </t>
                         </t>
                     </ul>
                 </div>

@@ -32,7 +32,102 @@
     <t t-name="cpm_odoo.ManagerOverviewPage">
         <!-- Header -->
         <div class="row h-100">
-        
+
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.FinanceManagerPage">
+        <!-- Header -->
+        <div class="row h-100">
+            <div class="container mt-5">
+                <t t-esc="console.log(this.page_data.item_list)"/>
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="fs-5 fw-bold">
+                        <t t-esc="this.page_title"/>
+                    </div>
+                    <div class="btn-list">
+                        <div class="btn btn-secondary me-2" t-on-click="()=>{this.act_add_manager()}">
+                            Add Manager
+                        </div>
+                        <div class="btn btn-secondary" t-on-click="()=>{window.location.reload()}">
+                            Refresh
+                        </div>
+                    </div>
+                </div>
+                <div class="h-100 d-flex flex-column">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8 d-flex align-items-center">
+                            <div class="me-2 d-flex align-items-center">
+                                <label class="me-2 fs-5">
+                                    Department
+                                </label>
+                                <div class="me-2">
+                                    <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
+                            
+                                    </ListFilter>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center">
+                            <label class="me-2 fs-5">
+                                Search
+                            </label>
+                            <div class="flex-grow-1">
+                                <SearchBar inst="this" act_search="this.act_search">
+            
+                                </SearchBar>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <t t-esc="console.log(this.page_data.item_list)"/>
+                        <t t-if="page_data.page_arr.length > 0">
+                            <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
+                                <div class="col-md-4">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <img t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=${item.id}&amp;field=avatar_256`" alt="Profile" class="rounded-circle me-3" style="width: 80px; height: 80px;"/>
+                                                <!-- Staff Info -->
+                                                <div>
+                                                    <h5 class="card-title mb-0"><t t-esc="item.name"/></h5>
+                                                    <p class="text-muted mb-1"><t t-esc="item.department_id?item.department_id.name:''"/></p>
+                                                    <p class="text-muted mb-0">Email: <t t-esc="item.email?item.email:'No Email'"/></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-center p-2">
+                                            <!-- <button class="btn btn-sm btn-primary me-2">View</button> -->
+                                            <button class="btn btn-sm btn-danger" t-on-click="()=>{this.act_remove_manager(item.id)}">Unassign</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-if="page_data.page_count > 1">
+                                <div class="col-12 align-items-center justify-content-center">
+                                    <div class="item-list-footer mt-3 pt-2 pb-2 bg-primary">
+                                        <div class="item-list-page btn-list d-flex align-items-center justify-content-center">
+                                            <t t-foreach="page_data.page_arr" t-as="page" t-key="page">
+                                                <button class="btn btn-secondary px-4 py-2 mx-1" t-on-click="()=>{this.act_load_page(page)}">
+                                                    <t t-esc="page+1"/>
+                                                </button>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <div class="text-center mt-4 fs-6 fw-bold py-2 col-12">
+                                    No record
+                                </div>
+                            </tr>
+                        </t>
+                    </div>
+                </div>
+            </div>
         </div>
     </t>
 </templates>

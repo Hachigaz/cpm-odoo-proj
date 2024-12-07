@@ -315,6 +315,11 @@ class Task(models.Model):
         default=None
     )
     
+    verification_id = fields.Many2one(
+        'cpm_odoo.planning_task_qa_verification', 
+        string='verification'
+    )
+    
     @api.model
     def act_mark_completed(self, task_id):
         task = self.env["cpm_odoo.planning_task"].browse(task_id)
@@ -1220,6 +1225,7 @@ class TaskQA_Verification(models.Model):
     def create(self, vals):
         recs = super().create(vals)
         for rec in recs:
+            rec.task_id.verification_id = rec.id
             rec.task_id.act_verify_task()
         return recs
     

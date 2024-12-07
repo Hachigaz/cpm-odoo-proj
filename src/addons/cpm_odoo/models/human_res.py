@@ -1,4 +1,6 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+import json
 
 class Staff(models.Model):
     _name = "cpm_odoo.human_res_staff"
@@ -105,6 +107,17 @@ class Staff(models.Model):
                 
         return result
     
+    def call_action(self):
+        model_name = self.env.context.get("call_model_name")
+        model_func = self.env.context.get("call_model_func")
+        params = self.env.context.get("call_model_params")
+        
+        # raise ValidationError(json.dumps([model_name,model_func,params]))
+        
+        result = getattr(self.env[model_name].sudo(),model_func)
+        result(*params)
+        
+        
 class Department(models.Model):
     _name = 'cpm_odoo.human_res_department'
     _description = "Model"

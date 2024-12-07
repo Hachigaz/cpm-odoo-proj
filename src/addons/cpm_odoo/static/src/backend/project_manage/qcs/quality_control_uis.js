@@ -144,11 +144,12 @@ class QualityControlVerifiedTaskPage extends ItemList{
         super.init()
 
         this.page_data.model_name = "cpm_odoo.planning_task"
-        this.page_data.column_list = ['id','name','workflow_id','category_id','date_completed','priority','description','task_status']
+        this.page_data.column_list = ['id','name','workflow_id','category_id','date_completed','priority','description','task_status','date_verified','verification_id']
         this.page_data.order_by_str = "date_created asc, name asc"
         this.page_data.join_cols = [
             ['workflow_id','cpm_odoo.planning_workflow',['id','name']],
-            ['category_id','cpm_odoo.planning_task_category',['id','name','color']]
+            ['category_id','cpm_odoo.planning_task_category',['id','name','color']],
+            ['verification_id','cpm_odoo.planning_task_qa_verification',['id','completion_quality']]
         ]
 
         this.search_filter.search_bar.cols=['name']
@@ -219,12 +220,12 @@ export class QualityControlUI extends Component{
     }
 
     static availablePages = [
-        {
-            id:QualityControlOverviewPage.page_name,
-            name:"Overview",
-            page:QualityControlOverviewPage,
-            group_id:""
-        },
+        // {
+        //     id:QualityControlOverviewPage.page_name,
+        //     name:"Overview",
+        //     page:QualityControlOverviewPage,
+        //     group_id:""
+        // },
         {
             id:QualityControlVerificationTaskPage.page_name,
             name:"Pending Tasks",
