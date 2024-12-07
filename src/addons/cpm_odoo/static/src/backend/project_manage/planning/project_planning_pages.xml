@@ -494,7 +494,7 @@
                             </PlanningTaskList>
                         </div>
                         <div class="tab-pane fade" id="workflow-task-schedule" role="tabpanel">
-                            <h4>Schedule</h4>
+                            <h4 class="fs-4 fw-bold mb-3">Schedule</h4>
                             <PlanningTaskGraph state_data="{task_list: page_data.task_list}" context_params="{display_size:{height:'60vh'}}"/>
                         </div>
                     </div>

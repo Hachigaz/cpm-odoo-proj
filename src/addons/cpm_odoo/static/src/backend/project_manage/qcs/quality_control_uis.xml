@@ -170,7 +170,8 @@
                             <th>Workflow</th>
                             <th>Category</th>
                             <th>Date Completed</th>
-                            <th>Priority</th>
+                            <th>Date Verified</th>
+                            <th>Comp. Quality</th>
                         </tr>
                         <t t-if="page_data.page_arr.length > 0">
                             <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
@@ -179,7 +180,8 @@
                                     <td><t t-esc="item.workflow_id.name"/></td>
                                     <td><t t-esc="item.category_id?item.category_id.name:''"/></td>
                                     <td><t t-esc="this.constructor.formatDateTime(item.date_completed)"/></td>
-                                    <td><t t-esc="this.constructor.formatSnakeStr(item.priority)"/></td>
+                                    <td><t t-esc="item.date_verified?this.constructor.formatDateTime(item.date_verified):''"/></td>
+                                    <td><t t-esc="item.verification_id?this.constructor.formatSnakeStr(item.verification_id.completion_quality):''"/></td>
                                 </tr>
                             </t>
                             <t t-if="page_data.page_count > 1">

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="cpm_odoo.StakeholdersUI">
+        <!-- Header -->
+        <div class="row h-100">
+            <div class="col-md-2 pt-2">
+                <div class="page-title mb-3">
+                    <h2 class="px-2 fs-3 fw-bold">
+                        Project Stakeholders
+                    </h2>
+                </div>
+                <ul class="nav nav-pills flex-column" role="tablist">
+                    <t t-foreach="this.constructor.availablePages" t-as="page" t-key="page.id">
+                        <li class="nav-item user-select-none">
+                            <div t-att-class="`nav-link ${this.currentPage==page.id?'active':''}`" t-att-id="page.id" t-on-click="() => callSubPage(page.id)">
+                                <t t-esc="page.name"></t>
+                            </div>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+            <div class="col-md-10">
+                <div class="tab-content d-flex flex-column h-100">
+                    <div class="tab-pane fade active show flex-grow-1">
+                        <t t-component="pageComponent" context_data="props.context_data"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.ProjectInvestorPage">
+        <!-- Header -->
+        <div class="row h-100 container">
+            <t t-foreach="this.investor_list" t-as="item" t-key="item.id">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow" style="background-color:#F4F4F4">
+                        <div class="position-relative d-flex align-items-center justify-content-center">
+                            <img t-att-src="`web/image/?model=cpm_odoo.stakeholders_investor&amp;id=${item.id}&amp;field=avatar_256`" class="card-img-top rounded-top py-3" style="width:80%" alt=""/>
+                            <!-- <div class="position-absolute bottom-0 start-0 bg-dark text-white px-3 py-1 opacity-75">Project Manager</div> -->
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fs-5 fw-bold mb-2 text-center"><t t-esc="item.name"/></h5>
+                            <p class="text-muted mb-3 text-center">
+                                <t t-esc="item.description?item.description:'No Description'"/>
+                            </p>
+                            <p class="text-muted mb-1">
+                                Email: <t t-esc="item.email?item.email:'Not Specified'"/>
+                            </p>
+                            <p class="text-muted mb-1">
+                                Address: <t t-esc="item.address?item.address:'Not Specified'"/>
+                            </p>
+                            <p class="text-muted mb-1">
+                                Contact Phone: <t t-esc="item.phone?item.phone:'Not Specified'"/>
+                            </p>
+                            <!-- <button class="btn btn-primary btn-sm px-4 rounded-pill">View Profile</button> -->
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="cpm_odoo.ProjectOtherContactPage">
+        <!-- Header -->
+        <div class="row h-100 container">
+            <t t-foreach="this.other_contact_list" t-as="item" t-key="item.id">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow" style="background-color:#F4F4F4">
+                        <div class="position-relative d-flex align-items-center justify-content-center">
+                            <img t-att-src="`web/image/?model=cpm_odoo.stakeholders_investor&amp;id=${item.id}&amp;field=avatar_256`" class="card-img-top rounded-top py-3" style="width:80%" alt=""/>
+                            <!-- <div class="position-absolute bottom-0 start-0 bg-dark text-white px-3 py-1 opacity-75">Project Manager</div> -->
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fs-5 fw-bold mb-2 text-center"><t t-esc="item.name"/></h5>
+                            <p class="text-muted mb-3 text-center">
+                                <t t-esc="item.description?item.description:'No Description'"/>
+                            </p>
+                            <p class="text-muted mb-1">
+                                Email: <t t-esc="item.email?item.email:'Not Specified'"/>
+                            </p>
+                            <p class="text-muted mb-1">
+                                Address: <t t-esc="item.address?item.address:'Not Specified'"/>
+                            </p>
+                            <p class="text-muted mb-1">
+                                Contact Phone: <t t-esc="item.phone?item.phone:'Not Specified'"/>
+                            </p>
+                            <!-- <button class="btn btn-primary btn-sm px-4 rounded-pill">View Profile</button> -->
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

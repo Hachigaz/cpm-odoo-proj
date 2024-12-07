@@ -12,6 +12,7 @@ import { ContractManagementTab } from "../doc_mgmt/contract_mgmt";
 import { ProjectManagerUI } from "./managers/manager_uis";
 import { RiskIssuesUI } from "./risks_issues/risk_issues_uis";
 import { QualityControlUI } from "./qcs/quality_control_uis";
+import { StakeholdersUI } from "./stakeholders/stakeholders_ui";
 
 class ProjectManageUI extends Component {
     static template = "cpm_odoo.ProjectManageUI";
@@ -69,12 +70,6 @@ class ProjectManageUI extends Component {
             group_id:"cpm_manage_project_plans"
         },
         {
-            id: "stakeholders",
-            name:"Stakeholders",
-            page:ContractManagementTab,
-            group_id:"cpm_manage_project_plans"
-        },
-        {
             id: "quality_controls",
             name:"Qualty Controls",
             page:QualityControlUI,
@@ -84,6 +79,12 @@ class ProjectManageUI extends Component {
             id: "proj_managers",
             name:"Managers",
             page:ProjectManagerUI,
+            group_id:"cpm_manage_project_plans"
+        },
+        {
+            id: "stakeholders",
+            name:"Stakeholders",
+            page:StakeholdersUI,
             group_id:"cpm_manage_project_plans"
         }
     ]
@@ -127,8 +128,8 @@ class ProjectManageUI extends Component {
             })
         }
         
-        onWillStart(() => {
-            this.getUserPrivileges()
+        onWillStart(async () => {
+            await this.getUserPrivileges()
         });
 
         // onMounted(async() => {
@@ -155,8 +156,22 @@ class ProjectManageUI extends Component {
     }
 
     async getUserPrivileges(){
-        let result = await this.props.context_data.rpc("/proj/authorize")
-        this.props.context_data.csrf_token = result.csrf_token
+        let project_rec = await this.props.context_data.orm.call(
+            "cpm_odoo.root_project",
+            "get_user_mgmt_groups",
+            [
+                this.props.context_data.project_id,
+                session.uid
+            ]
+        )
+
+        this.availablePages[1].hidden = !project_rec.planning_group_id
+        this.availablePages[2].hidden = !project_rec.finance_group_id
+        this.availablePages[3].hidden = !project_rec.document_group_id
+        this.availablePages[4].hidden = !project_rec.contract_group_id
+        this.availablePages[5].hidden = !project_rec.risk_issue_group_id
+        this.availablePages[6].hidden = !project_rec.qa_group_id
+        this.availablePages[7].hidden = !project_rec.head_mgmt_group_id
     }
 
     async callPage(id) {

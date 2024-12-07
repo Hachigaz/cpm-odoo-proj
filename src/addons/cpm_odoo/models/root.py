@@ -458,7 +458,7 @@ class Project(models.Model):
     @api.model
     def act_get_finance_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
         proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
-        uids = [user.id for user in proj_rec.finance_group_id.users]
+        uids = [user.id for user in proj_rec.finance_group_id.users if user not in proj_rec.head_mgmt_group_id.users]
         staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
             domain + [['user_id','in',uids]],
             cols,
@@ -485,6 +485,7 @@ class Project(models.Model):
         staff_rec.write({
             'groups_id':[[3,record.finance_group_id.id]]
         })
+        return True
         pass
     
     planning_group_id = fields.Many2one(
@@ -494,6 +495,39 @@ class Project(models.Model):
         ondelete="restrict"
     )
     
+    @api.model
+    def act_get_planning_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
+        proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
+        uids = [user.id for user in proj_rec.planning_group_id.users if user not in proj_rec.head_mgmt_group_id.users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+            domain + [['user_id','in',uids]],
+            cols,
+            offset,
+            count,
+            order
+        )
+        
+        return staff_recs
+    
+    @api.model
+    def act_add_planning_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[4,record.planning_group_id.id]]
+        })
+        pass
+    
+    @api.model
+    def act_remove_planning_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[3,record.planning_group_id.id]]
+        })
+        return True
+        pass
+    
     document_group_id = fields.Many2one(
         comodel_name = 'res.groups', 
         string='document_group_id',
@@ -501,12 +535,148 @@ class Project(models.Model):
         ondelete="restrict"
     )
     
+    @api.model
+    def act_get_document_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
+        proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
+        uids = [user.id for user in proj_rec.document_group_id.users if user not in proj_rec.planning_group_id.users or user not in proj_rec.head_mgmt_group_id.users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+            domain + [['user_id','in',uids]],
+            cols,
+            offset,
+            count,
+            order
+        )
+        
+        return staff_recs
+    
+    @api.model
+    def act_add_document_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[4,record.document_group_id.id]]
+        })
+        pass
+    
+    @api.model
+    def act_remove_document_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[3,record.document_group_id.id]]
+        })
+        return True
+        pass
+    
     contract_group_id = fields.Many2one(
         comodel_name = 'res.groups', 
         string='contract_group_id',
         readonly=True,
         ondelete="restrict"
     )
+    
+    @api.model
+    def act_get_contract_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
+        proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
+        uids = [user.id for user in proj_rec.contract_group_id.users if user not in proj_rec.planning_group_id.users or user not in proj_rec.head_mgmt_group_id.users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+            domain + [['user_id','in',uids]],
+            cols,
+            offset,
+            count,
+            order
+        )
+        
+        return staff_recs
+    
+    @api.model
+    def act_add_contract_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[4,record.contract_group_id.id]]
+        })
+        pass
+    
+    risk_issue_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='risk_issue_group_id',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
+    @api.model
+    def act_get_risk_issue_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
+        proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
+        uids = [user.id for user in proj_rec.risk_issue_group_id.users if user not in proj_rec.planning_group_id.users or user not in proj_rec.head_mgmt_group_id.users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+            domain + [['user_id','in',uids]],
+            cols,
+            offset,
+            count,
+            order
+        )
+        
+        return staff_recs
+    
+    @api.model
+    def act_add_risk_issue_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[4,record.risk_issue_group_id.id]]
+        })
+        pass
+    
+    @api.model
+    def act_remove_contract_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[3,record.contract_group_id.id]]
+        })
+        return True
+        pass
+    
+    qa_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='qa_group_id',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
+    @api.model
+    def act_get_qa_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
+        proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
+        uids = [user.id for user in proj_rec.qa_group_id.users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+            domain + [['user_id','in',uids]],
+            cols,
+            offset,
+            count,
+            order
+        )
+        
+        return staff_recs
+    
+    @api.model
+    def act_add_qa_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[4,record.qa_group_id.id]]
+        })
+        pass
+    
+    @api.model
+    def act_remove_qa_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[3,record.qa_group_id.id]]
+        })
+        return True
+        pass
         
     def add_head_manager(self,staff_id):
         for record in self:
@@ -536,6 +706,29 @@ class Project(models.Model):
             return self.env.ref(view_id).id
         else:
             return self.env["res.views"].sudo().search([['name','=',view_id]]).id
+        
+    def get_user_mgmt_groups(self,user_id):
+        user_rec = self.env["res.users"].sudo().browse(user_id)
+        
+        for record in self:
+            result = {}
+            if record.head_mgmt_group_id.id in user_rec.groups_id.ids:
+                result['finance_group_id']=True
+                result['planning_group_id']=True
+                result['document_group_id']=True
+                result['contract_group_id']=True
+                result['qa_group_id']=True
+                result['risk_issue_group_id']=True
+                result['head_mgmt_group_id'] = True
+            else:
+                result['finance_group_id']=True if record.finance_group_id.id in user_rec.groups_id.ids else False
+                result['planning_group_id']=True if record.planning_group_id.id in user_rec.groups_id.ids else False
+                result['document_group_id']=True if record.document_group_id.id in user_rec.groups_id.ids else False
+                result['contract_group_id']=True if record.contract_group_id.id in user_rec.groups_id.ids else False
+                result['qa_group_id']=True if record.qa_group_id.id in user_rec.groups_id.ids else False
+                result['risk_issue_group_id']=True if record.risk_issue_group_id.id in user_rec.groups_id.ids else False
+                result['head_mgmt_group_id'] = False
+            return result
         
     @api.model_create_multi
     def create(self, vals):
@@ -610,6 +803,22 @@ class Project(models.Model):
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Planning Group {record.id}",
                 "implied_ids":[mgmt_gr_rec.id,contract_group_id.id,document_group_id.id],
+                "comment":f"Project Planning Group {record.short_name}"
+            })
+            
+            #qa group
+            qa_group_id = self.env["res.groups"].sudo().create({
+                "id":f"cpm_gr.proj{record.id}",
+                "name":f"Project Planning Group {record.id}",
+                "implied_ids":[mgmt_gr_rec.id],
+                "comment":f"Project Planning Group {record.short_name}"
+            })
+            
+            #risk_issue group
+            risk_issue_group_id = self.env["res.groups"].sudo().create({
+                "id":f"cpm_gr.proj{record.id}",
+                "name":f"Project Planning Group {record.id}",
+                "implied_ids":[mgmt_gr_rec.id],
                 "comment":f"Project Planning Group {record.short_name}"
             })
             

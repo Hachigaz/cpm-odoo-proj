@@ -43,20 +43,23 @@
                 <t t-esc="console.log(this.page_data.item_list)"/>
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="fs-5 fw-bold">
-                        Finance Managers
+                        <t t-esc="this.page_title"/>
                     </div>
                     <div class="btn-list">
-                        <div class="btn btn-secondary" t-on-click="()=>{this.act_add_manager()}">
+                        <div class="btn btn-secondary me-2" t-on-click="()=>{this.act_add_manager()}">
                             Add Manager
+                        </div>
+                        <div class="btn btn-secondary" t-on-click="()=>{window.location.reload()}">
+                            Refresh
                         </div>
                     </div>
                 </div>
                 <div class="h-100 d-flex flex-column">
                     <div class="row g-3 mb-3">
-                        <!-- <div class="col-md-8 d-flex align-items-center">
+                        <div class="col-md-8 d-flex align-items-center">
                             <div class="me-2 d-flex align-items-center">
                                 <label class="me-2 fs-5">
-                                    Category
+                                    Department
                                 </label>
                                 <div class="me-2">
                                     <ListFilter inst="this" act_filter="this.act_filter" item_list="this.filter_data[0].item_list" col_name="this.filter_data[0].col_name">
@@ -64,7 +67,7 @@
                                     </ListFilter>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="col-md-4 d-flex align-items-center">
                             <label class="me-2 fs-5">
                                 Search
@@ -94,7 +97,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-footer text-center">
+                                        <div class="card-footer text-center p-2">
                                             <!-- <button class="btn btn-sm btn-primary me-2">View</button> -->
                                             <button class="btn btn-sm btn-danger" t-on-click="()=>{this.act_remove_manager(item.id)}">Unassign</button>
                                         </div>

@@ -241,7 +241,7 @@ export class AssignedTaskDetailView extends Component{
         
         if(result){
             if (result){
-                this.window.reload()
+                window.location.reload()
             }
         }
     }
