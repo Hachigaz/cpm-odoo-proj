@@ -320,7 +320,7 @@
                                                         <t t-if="note.created_by">
                                                             <div class="img-wrapper me-1" style="width:23px;height:23px;">
                                                                 <img
-                                                                    t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=1&amp;field=avatar_256`" alt="Image"
+                                                                    t-att-src="`web/image/?model=cpm_odoo.human_res_staff&amp;id=${note.created_by.id}&amp;field=avatar_256`" alt="Image"
                                                                     style="width: 100%;aspect-ratio:1/1"
                                                                     class="img-fluid rounded-circle me-1"
                                                                 />

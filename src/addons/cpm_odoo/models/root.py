@@ -400,6 +400,7 @@ class Project(models.Model):
         ondelete="restrict"
     )
     
+    
     def add_staff_to_mgmt(self,staff_id):
         staff_rec = self.env["cpm_odoo.human_res_staff"].browse(staff_id)
         for record in self:
@@ -454,6 +455,38 @@ class Project(models.Model):
         ondelete="restrict"
     )
     
+    @api.model
+    def act_get_finance_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
+        proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
+        uids = [user.id for user in proj_rec.finance_group_id.users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+            domain + [['user_id','in',uids]],
+            cols,
+            offset,
+            count,
+            order
+        )
+        
+        return staff_recs
+    
+    @api.model
+    def act_add_finance_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[4,record.finance_group_id.id]]
+        })
+        pass
+    
+    @api.model
+    def act_remove_finance_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[3,record.finance_group_id.id]]
+        })
+        pass
+    
     planning_group_id = fields.Many2one(
         comodel_name = 'res.groups', 
         string='planning_group_id',
@@ -497,6 +530,13 @@ class Project(models.Model):
             })
         pass
     
+    @api.model
+    def get_model_view_id(self,view_id,xml_id=True):
+        if xml_id:
+            return self.env.ref(view_id).id
+        else:
+            return self.env["res.views"].sudo().search([['name','=',view_id]]).id
+        
     @api.model_create_multi
     def create(self, vals):
         records = super().create(vals)

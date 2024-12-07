@@ -160,6 +160,8 @@ export class ItemList extends Component{
     init(){
         if(!this.page_data){
             this.page_data = useState({
+                get_func:'search_read',
+                get_func_params:[],
                 item_list:[],
                 item_count:0,
                 current_page: 0,
@@ -225,14 +227,27 @@ export class ItemList extends Component{
             })
         }
         let item_display_count = this.page_data.item_display_count
-        let item_count = await this.orm.call(
-            this.page_data.model_name,
-            'search_count',
-            [
-                domain,
-            ]
-        )
-
+        let item_count = 0
+        if(this.page_data.get_func==="search_read"){
+            item_count = await this.orm.call(
+                this.page_data.model_name,
+                'search_count',
+                [
+                    domain,
+                ]
+            )
+        }
+        else{
+            item_count = (await this.orm.call(
+                this.page_data.model_name,
+                this.page_data.get_func,
+                [
+                    ...this.page_data.get_func_params,
+                    domain
+                ]
+            )).length
+        }
+        // alert(item_count)
         this.page_data.item_count = item_count
 
         let page_count = Math.floor(item_count/item_display_count)
@@ -264,8 +279,9 @@ export class ItemList extends Component{
             this.page_data.current_page = page
             let item_list = await this.orm.call(
                 this.page_data.model_name,
-                'search_read',
+                this.page_data.get_func,
                 [
+                    ...this.page_data.get_func_params,
                     domain,
                     this.page_data.column_list,
                     this.page_data.current_page*this.page_data.item_display_count,
