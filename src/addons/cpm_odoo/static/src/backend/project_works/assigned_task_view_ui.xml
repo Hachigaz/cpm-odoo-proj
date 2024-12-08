@@ -16,7 +16,7 @@
                     </p>
                     <p class="text-muted">
                         Due Date: <strong><t t-esc="this.constructor.formatDate(this.page_data.task_info.exp_end)"/></strong>
-                        <t t-if="(new Date(this.page_data.task_info.exp_end) &lt; new Date()) &amp;&amp; this.page_data.task_info.task_status==='active'">
+                        <t t-if="(new Date(this.page_data.task_info.exp_end) &lt; new Date().setHours(0, 0, 0, 0)) &amp;&amp; this.page_data.task_info.task_status==='active'">
                             <div class="text-danger ms-2">
                                 Task is overdue by <t t-esc="Math.floor((new Date() - new Date(this.page_data.task_info.exp_end))/ (1000 * 60 * 60 * 24))"/> days
                             </div>
