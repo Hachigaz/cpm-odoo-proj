@@ -103,7 +103,7 @@
                             <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
                                 <tr class="hover:bg-gray-100 py-4 px-4 ">
                                     <td class="py-2 px-4 border-b"><t t-esc="item.material_id.name"/></td>
-                                    <td class="py-2 px-4 border-b"><t t-esc="item.material_id.eqp_type_id.name"/></td>
+                                    <td class="py-2 px-4 border-b"><t t-esc="item.material_id.mat_type_id.name"/></td>
                                     <td class="py-2 px-4 border-b"><t t-esc="item.amount"/></td>
                                 </tr>
                             </t>

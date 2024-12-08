@@ -130,8 +130,8 @@ export class ImportRecordItemList extends ItemList{
         else if(opt==="eqp"){
             await this.action.doAction({
                 type: 'ir.actions.act_window',
-                name: 'Record Details',
-                res_model: 'cpm_odoo.logistics_mat_imp_rec',
+                name: 'Edit Record',
+                res_model: 'cpm_odoo.logistics_eqp_imp_rec',
                 res_id: id,
                 view_mode: 'form',
                 views: [[false, 'form']],
@@ -146,32 +146,26 @@ export class ImportRecordItemList extends ItemList{
             if(!confirm("Delete Record?")){
                 return
             }
-            this.orm.call(
+            let result = await this.orm.call(
                 "cpm_odoo.logistics_mat_imp_rec",
                 "unlink",
                 [
                     id
                 ]
             )
-            storePageInfo(this.constructor.page_name,{
-                'current_render_content':'mat'
-            })
             window.location.reload()
         }
         else if(opt==="eqp"){
             if(!confirm("Delete Record?")){
                 return
             }
-            this.orm.call(
+            let result = await this.orm.call(
                 "cpm_odoo.logistics_eqp_imp_rec",
                 "unlink",
                 [
                     id
                 ]
             )
-            storePageInfo(this.constructor.page_name,{
-                'current_render_content':'eqp'
-            })
             window.location.reload()
         }
     }
@@ -187,6 +181,9 @@ export class ImportRecordItemList extends ItemList{
             this.current_render_content = 'eqp'
             this.act_setup_list()
         }
+        storePageInfo(this.constructor.page_name,{
+            'current_render_content':this.current_render_content
+        })
     }
 }
 

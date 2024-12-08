@@ -951,13 +951,13 @@ class PlanningContractorAssignPanel extends ItemList{
 
     async act_cancel_all(inst){
         inst.assign_actions.forEach((id)=>{
-            let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
+            let card_el = inst.cmp_root.el.querySelector(`.contractor-card-list#assign-list #contractor-${id}`)
             
             inst.act_flip_btn_state(card_el)
         })
 
         inst.cancel_actions.forEach((id)=>{
-            let card_el = inst.cmp_root.el.querySelector(`.staff-card-list#assign-list #staff-${id}`)
+            let card_el = inst.cmp_root.el.querySelector(`.contractor-card-list#assign-list #contractor-${id}`)
             
             inst.act_flip_btn_state(card_el)
         })

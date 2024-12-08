@@ -7,7 +7,7 @@
             <field name="model">cpm_odoo.logistics_eqp_exp_rec_det</field>
             <field name="arch" type="xml">
                 <tree string="Record Details" create="True" edit="True" delete="True" import="False" export_xlsx="False" default_order="equipment_id asc">
-                    <field name="equipment_id" string="Name">
+                    <field name="equipment_id" string="Name" domain="[['id','in',context.get('avail_eqps')]]">
 
                     </field>
                     <field name="amount" string="Amount">
@@ -55,9 +55,13 @@
                             </group>
                         </group>
                         <group cols="3" string="Record Details">
-                            <field name="exp_det_ids" string="Record Details" context="{
-                                'tree_view_ref': 'cpm_odoo.logistics_eqp_exp_det_view_tree'
-                              }">
+                            <field name="exp_det_ids" string="Record Details" 
+                                context="{
+                                    'tree_view_ref': 'cpm_odoo.logistics_eqp_exp_det_view_tree',
+                                    'avail_eqps':warehouse_id.avail_eqps,
+                                    'avail_eqps2':[1]
+                                }"
+                              >
                             </field>
                         </group>
                     </sheet>

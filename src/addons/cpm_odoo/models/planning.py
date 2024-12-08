@@ -394,7 +394,7 @@ class Task(models.Model):
         staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
         
         for staff in staff_recs:
-            if not self.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff.id):
+            if not self.is_user_in_proj(task.workflow_id.planning_id.project_id.id,staff.id):
                 staff.user_id.write({
                     'groups_id':[(4,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
                 })
@@ -432,7 +432,7 @@ class Task(models.Model):
         )
         
         for staff in staff_recs:
-            if not self.is_user_in_task(task.workflow_id.planning_id.project_id.id,staff.id):
+            if not self.is_user_in_proj(task.workflow_id.planning_id.project_id.id,staff.id):
                 staff.user_id.write({
                     'groups_id':[(3,task.workflow_id.planning_id.project_id.proj_mem_group_id.id)]
                 })
@@ -449,7 +449,7 @@ class Task(models.Model):
         staff_recs = self.env["cpm_odoo.human_res_staff"].browse(staff_ids)
         for record in self:
             for staff_rec in staff_recs:
-                if not record.is_user_in_task(record.workflow_id.planning_id.project_id.id,staff_rec.id):
+                if not record.is_user_in_task(staff_rec.user_id.id):
                     raise ValidationError(f'Cannot set {staff_rec.name} as head task member, they are not assigned to the task {record.name}.')
         
         head_mem_gr = self.env.ref('cpm_gr.project_head_mem_gr')
@@ -481,7 +481,7 @@ class Task(models.Model):
         pass
     
     @api.model
-    def is_user_in_task(self,project_id,user_id):
+    def is_user_in_proj(self,project_id,user_id):
         recs = self.env["cpm_odoo.planning_task"].search_read(
             [
                 ['assigned_staff_ids','in',user_id],
@@ -494,6 +494,14 @@ class Task(models.Model):
         else:
             return False
         pass
+    
+    def is_user_in_task(self,user_id):
+        for record in self:
+            if(any(staff for staff in record.assigned_staff_ids if staff.staff_id.user_id.id == user_id)):
+                return True
+            else:
+                return False
+            pass
     
     
     

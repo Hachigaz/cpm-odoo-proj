@@ -47,12 +47,6 @@ class Mat_ImportRecord(models.Model):
         string='imp_det'
     )
     
-    trans_imp_det_ids = fields.One2many(
-        'cpm_odoo.logistics_mat_imp_rec_det_transient', 
-        'imp_rec_id', 
-        string='trans_imp_det'
-    )
-    
     @api.onchange('supplier_id')
     def _onchange_supplier_id(self):
         for record in self.imp_det_ids:
@@ -72,6 +66,18 @@ class Mat_ImportRecord(models.Model):
     #         })
         
     #     return recs
+    
+    @api.constrains('imp_det_ids')
+    def _constrains_imp_det_ids(self):
+        dets = self.imp_det_ids
+        overlap_recs = []
+        for i in range(len(self.imp_det_ids)):
+            for j in range(i,len(self.imp_det_ids)):
+                if dets[i].material_id.id == dets[j].material_id.id and i != j:
+                    overlap_recs.append(dets[i])
+        if len(overlap_recs)>0:
+            rec = overlap_recs[0]
+            raise ValidationError(f"{rec.material_id.name} has duplicate records")
     
     is_verified = fields.Boolean(
         string = 'is_verified',
@@ -104,6 +110,12 @@ class Mat_ImportRecord(models.Model):
                 raise ValidationError("Cannot edit verified import record.")
         return super().write(vals)
     
+    @api.model_create_multi
+    def create(self, vals):
+        recs = super().create(vals)
+        
+        
+        return recs
     
 class Mat_ImportRecordDetail(models.Model):
     _name = 'cpm_odoo.logistics_mat_imp_rec_det'
@@ -114,8 +126,16 @@ class Mat_ImportRecordDetail(models.Model):
     imp_rec_id = fields.Many2one(
         'cpm_odoo.logistics_mat_imp_rec', 
         string='imp_rec',
-        required=True
+        required=True,
+        ondelete='cascade'
     )
+    
+    @api.constrains('amount')
+    def _constrains_amount(self):
+        for rec in self:
+            if rec.amount == 0:
+                raise ValidationError("Amount must be larger than 0")
+        pass
     
     @api.constrains('material_id')
     def _constrains_material_id(self):
@@ -125,12 +145,6 @@ class Mat_ImportRecordDetail(models.Model):
                 raise ValidationError(f"The supplier {supplier_rec.name} does not supply the material {record.material_id.name}")
         pass
     
-class Mat_ImportRecordDetail_Transient(models.TransientModel):
-    _name = 'cpm_odoo.logistics_mat_imp_rec_det_transient'
-    _description = 'model.technical.name'
-    
-    _inherit = ['cpm_odoo.logistics_mat_imp_rec_det']
-
 class Eqp_ImportRecord(models.Model):
     _name = 'cpm_odoo.logistics_eqp_imp_rec'
     _description = 'model.technical.name'
@@ -141,12 +155,6 @@ class Eqp_ImportRecord(models.Model):
         'cpm_odoo.logistics_eqp_imp_rec_det', 
         'imp_rec_id', 
         string='imp_det'
-    )
-    
-    trans_imp_det_ids = fields.One2many(
-        'cpm_odoo.logistics_eqp_imp_rec_det_transient', 
-        'imp_rec_id', 
-        string='trans_imp_det'
     )
     
     @api.onchange('supplier_id')
@@ -168,6 +176,18 @@ class Eqp_ImportRecord(models.Model):
     #         })
         
     #     return recs
+    
+    @api.constrains('imp_det_ids')
+    def _constrains_imp_det_ids(self):
+        dets = self.imp_det_ids
+        overlap_recs = []
+        for i in range(len(self.imp_det_ids)):
+            for j in range(i,len(self.imp_det_ids)):
+                if dets[i].equipment_id.id == dets[j].equipment_id.id and i != j:
+                    overlap_recs.append(dets[i])
+        if len(overlap_recs)>0:
+            rec = overlap_recs[0]
+            raise ValidationError(f"{rec.equipment_id.name} has duplicate records")
     
     is_verified = fields.Boolean(
         string = 'is_verified',
@@ -200,6 +220,13 @@ class Eqp_ImportRecord(models.Model):
                 raise ValidationError("Cannot edit verified import record.")
         return super().write(vals)
     
+    @api.model_create_multi
+    def create(self, vals):
+        recs = super().create(vals)
+        
+        
+        return recs
+    
 class Eqp_ImportRecordDetail(models.Model):
     _name = 'cpm_odoo.logistics_eqp_imp_rec_det'
     _description = 'model.technical.name'
@@ -209,8 +236,16 @@ class Eqp_ImportRecordDetail(models.Model):
     imp_rec_id = fields.Many2one(
         'cpm_odoo.logistics_eqp_imp_rec', 
         string='imp_rec',
-        required=True
+        required=True,
+        ondelete='cascade'
     )
+    
+    @api.constrains('amount')
+    def _constrains_amount(self):
+        for rec in self:
+            if rec.amount == 0:
+                raise ValidationError("Amount must be larger than 0")
+        pass
     
     @api.constrains('equipment_id')
     def _constrains_equipment_id(self):
@@ -219,12 +254,6 @@ class Eqp_ImportRecordDetail(models.Model):
             if not any(record.equipment_id.id  == rec.id for rec in supplier_rec.supplied_eqp_ids):
                 raise ValidationError(f"The supplier {supplier_rec.name} does not supply the equipment {record.equipment_id.name}")
         pass
-    
-class Eqp_ImportRecordDetail_Transient(models.TransientModel):
-    _name = 'cpm_odoo.logistics_eqp_imp_rec_det_transient'
-    _description = 'model.technical.name'
-    
-    _inherit = ['cpm_odoo.logistics_eqp_imp_rec_det']
     
 class Abs_ExportRecord(models.AbstractModel):
     _name = 'cpm_odoo.logistics_abs_exp_rec'
@@ -303,6 +332,19 @@ class Mat_ExportRecord(models.Model):
         string='trans_exp_det'
     )
     
+    @api.constrains('exp_det_ids')
+    def _constrains_exp_det_ids(self):
+        dets = self.exp_det_ids
+        overlap_recs = []
+        for i in range(len(self.exp_det_ids)):
+            for j in range(i,len(self.exp_det_ids)):
+                if dets[i].material_id.id == dets[j].material_id.id and i != j:
+                    overlap_recs.append(dets[i])
+        if len(overlap_recs)>0:
+            rec = overlap_recs[0]
+            raise ValidationError(f"{rec.material_id.name} has duplicate records")
+        
+
     # @api.model_create_multi
     # def create(self, vals):
     #     recs = super().create(vals)
@@ -313,19 +355,6 @@ class Mat_ExportRecord(models.Model):
     #         })
         
     #     return recs
-    
-    @api.constrains('amount')
-    def _constrains_amount(self):
-        for record in self:
-            storage_rec = self.env["cpm_odoo.res_mgmt_mat_storage_rec"].search(
-                [
-                    ['warehouse_id','=',record.imp_rec_id.warehouse_id.id],
-                    ['material_id','=',record.material_id.id]
-                ]
-            )
-            if (not storage_rec) or storage_rec.amount - reocrd.amount < 0:
-                raise ValidationError(f"There is not enough material {record.material_id.name} ({record.storage_rec.amount}) in warehouse {record.imp_rec_id.warehouse_id.name} to export")
-        pass
 
 class Mat_ExportRecordDetail(models.Model):
     _name = 'cpm_odoo.logistics_mat_exp_rec_det'
@@ -336,8 +365,26 @@ class Mat_ExportRecordDetail(models.Model):
     exp_rec_id = fields.Many2one(
         'cpm_odoo.logistics_mat_exp_rec', 
         string='exp_rec',
-        required=True
+        required=True,
+        ondelete='cascade'
     )
+    
+    @api.constrains('amount')
+    def _constrains_amount(self):
+        for det_rec in self:
+            if det_rec.amount <= 0:
+                raise ValidationError("Amount must be larger than 0")
+            
+            storage_rec = [rec for rec in det_rec.exp_rec_id.warehouse_id.mat_storage_rec_ids if rec.material_id == det_rec.material_id]
+            
+            if len(storage_rec) == 0:
+                raise ValidationError(f"There is no {det_rec.material_id.name} in stock")
+            else:  
+                storage_rec = storage_rec[0]          
+                if storage_rec.amount <det_rec.amount:
+                    raise ValidationError(f"Not enough {det_rec.material_id.name} in stock ({storage_rec.amount} available)")
+                
+        pass
     
 class Mat_ExportRecordDetail_Transient(models.TransientModel):
     _name = 'cpm_odoo.logistics_mat_exp_rec_det_transient'
@@ -373,7 +420,20 @@ class Eqp_ExportRecord(models.Model):
     #         })
         
     #     return recs
+        
     
+    @api.constrains('exp_det_ids')
+    def _constrains_exp_det_ids(self):
+        dets = self.exp_det_ids
+        overlap_recs = []
+        for i in range(len(self.exp_det_ids)):
+            for j in range(i,len(self.exp_det_ids)):
+                if dets[i].equipment_id.id == dets[j].equipment_id.id and i != j:
+                    overlap_recs.append(dets[i])
+        if len(overlap_recs)>0:
+            rec = overlap_recs[0]
+            raise ValidationError(f"{rec.equipment_id.name} has duplicate records")
+        
     @api.constrains('amount')
     def _constrains_amount(self):
         for record in self:
@@ -393,10 +453,28 @@ class Eqp_ExportRecordDetail(models.Model):
     
     _inherit = ['cpm_odoo.res_mgmt_eqp_res_rec']
     
+    @api.constrains('amount')
+    def _constrains_amount(self):
+        for det_rec in self:
+            if det_rec.amount <= 0:
+                raise ValidationError("Amount must be larger than 0")
+            
+            storage_rec = [rec for rec in det_rec.exp_rec_id.warehouse_id.eqp_storage_rec_ids if rec.equipment_id == det_rec.equipment_id]
+            
+            if len(storage_rec) == 0:
+                raise ValidationError(f"There is no {det_rec.equipment_id.name} in stock")
+            else:  
+                storage_rec = storage_rec[0]          
+                if storage_rec.amount <det_rec.amount:
+                    raise ValidationError(f"Not enough {det_rec.equipment_id.name} in stock ({storage_rec.amount} available)")
+                
+        pass
+    
     exp_rec_id = fields.Many2one(
         'cpm_odoo.logistics_eqp_exp_rec', 
         string='exp_rec',
-        required=True
+        required=True,
+        ondelete='cascade'
     )
     
 class Eqp_ExportRecordDetail_Transient(models.TransientModel):
