@@ -9,6 +9,8 @@ import { formatCurrency } from "../finance/components";
 class PlanningOverview extends Component {
     static page_name = "PlanningOverview"
     static template = "cpm_odoo.PlanningOverview";
+
+    static formatDate = formatDate
     setup(){
         this.page_info = useState({
             in_drafts:[],
@@ -445,7 +447,7 @@ class PlanningManageWorkflow extends Component{
                 [
                     ['id','=',this.pageInfo.workflow_id]
                 ],
-                ["id","name","start_date","exp_end","workflow_status","task_count","unassigned_task_count","active_task_count","completed_task_count","verified_task_count"],
+                ["id","name","start_date","exp_end","workflow_status","task_count","unassigned_task_count","active_task_count","completed_task_count","verified_task_count","overdue_task_count"],
                 0,1,null
             ]
         ))[0]
@@ -1045,7 +1047,10 @@ class PlanningTaskAttachedDocumentsPanel extends Component{
             view_mode: 'form',
             views: [[false, 'form']],
             target: 'new',
-            context: { 'add_doc_to_task': this.props.task_info.id },  // Optional: default values for fields
+            context: { 
+                'add_doc_to_task': this.props.task_info.id,
+                'project_id':this.props.context_data.project_id
+            },  // Optional: default values for fields
         });
     }
 
@@ -1226,7 +1231,7 @@ class PlanningManageTask extends Component{
                 [
                     ['id','=',this.pageInfo.task_id]
                 ],
-                ["id","name","start_date","exp_end","task_status","assigned_staff_ids","assigned_contractor_ids","attached_document_ids","workflow_id"],
+                ["id","name","task_status","start_date","exp_end","task_status","assigned_staff_ids","assigned_contractor_ids","attached_document_ids","workflow_id"],
                 0,1,null
             ]
         ))

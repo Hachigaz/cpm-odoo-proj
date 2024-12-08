@@ -155,8 +155,32 @@
                                         <div class="col-12">
                                             <div class="card shadow-sm mb-3">
                                                 <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold">Active Tasks</span>
+                                                    <span class="text-primary h5"><t t-esc="this.state_data.statistics.active_task_count"/></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-body d-flex justify-content-between align-items-center">
                                                     <span class="fw-bold">Completed Tasks</span>
-                                                    <span class="text-success h5"><t t-esc="this.state_data.statistics.completed_task_count"/></span>
+                                                    <span class="text-primary h5"><t t-esc="this.state_data.statistics.completed_task_count"/></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold">Verified Tasks</span>
+                                                    <span class="text-primary h5"><t t-esc="this.state_data.statistics.verified_task_count"/></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold text-danger">Overdue Tasks</span>
+                                                    <span class="text-primary h5"><t t-esc="this.state_data.statistics.overdue_task_count"/></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -168,14 +192,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        <!-- <div class="col-12">
                                             <div class="card shadow-sm mb-3">
                                                 <div class="card-body d-flex justify-content-between align-items-center">
                                                     <span class="fw-bold">Project Issues</span>
                                                     <span class="text-info h5"><t t-esc="this.state_data.issue_list.length"/> Unresolved Issues</span>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <!-- <div class="col-12">
                                             <div class="card shadow-sm mb-3">
                                                 <div class="card-body d-flex justify-content-between align-items-center">

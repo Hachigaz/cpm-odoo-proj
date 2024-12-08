@@ -91,6 +91,8 @@ Long description of module's purpose
         'views/risk_mgmt/risk_overview.xml',
         'views/risk_mgmt/solution_create.xml',
         
+        'views/reports/reports.xml',
+        
         # 'init_res/dump/cpm_odoo.root_project_hrm.csv',
         # 'init_res/dump/cpm_odoo.root_project_planning.csv',
         # 'init_res/dump/cpm_odoo.root_project_finance.csv',

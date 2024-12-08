@@ -6,19 +6,19 @@ cpm_ma.create_and_edit_proj_doc,cpm_ma.create_and_edit_proj_doc,cpm_odoo.root_pr
 cpm_ma.create_and_edit_proj_planning,cpm_ma.create_and_edit_proj_planning,cpm_odoo.root_project_planning,cpm_gr.create_and_edit_projects,1,1,1,0
 cpm_ma.create_and_edit_proj_finance,cpm_ma.create_and_edit_proj_finance,cpm_odoo.root_project_finance,cpm_gr.create_and_edit_projects,1,1,1,0
 
-cpm_ma.planning_view_planning,cpm_ma.planning_view_planning,cpm_odoo.root_project_planning,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_workflows,cpm_ma.planning_view_workflows,cpm_odoo.planning_workflow,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_tasks,cpm_ma.planning_view_tasks,cpm_odoo.planning_task,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_assigned_contractors,cpm_ma.planning_view_assigned_contractors,cpm_odoo.planning_task_assign_contractor,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_task_categories,cpm_ma.planning_view_task_categories,cpm_odoo.planning_task_category,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_task_expenses,cpm_ma.planning_view_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_task_notes,cpm_ma.planning_view_task_notes,cpm_odoo.planning_task_note,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_task_note_categories,cpm_ma.planning_view_task_note_categories,cpm_odoo.planning_task_note_category,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_task_assign_contractor,cpm_ma.planning_view_task_assign_contractor,cpm_odoo.planning_task_assign_contractor,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_task_assign_staff,cpm_ma.planning_view_task_assign_staff,cpm_odoo.planning_task_assign_staff,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_task_checklist_item,cpm_ma.planning_view_task_checklist_item,cpm_odoo.task_checklist_item,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_task_history_log,cpm_ma.planning_view_task_history_log,cpm_odoo.task_history_log,cpm_gr.view_project_plans,1,0,0,0
-cpm_ma.planning_view_task_comments,cpm_ma.planning_view_task_comments,cpm_odoo.planning_task_comment,cpm_gr.view_project_plans,1,0,0,0
+cpm_ma.planning_view_planning,cpm_ma.planning_view_planning,cpm_odoo.root_project_planning,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_workflows,cpm_ma.planning_view_workflows,cpm_odoo.planning_workflow,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_tasks,cpm_ma.planning_view_tasks,cpm_odoo.planning_task,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_assigned_contractors,cpm_ma.planning_view_assigned_contractors,cpm_odoo.planning_task_assign_contractor,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_task_categories,cpm_ma.planning_view_task_categories,cpm_odoo.planning_task_category,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_task_expenses,cpm_ma.planning_view_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_task_notes,cpm_ma.planning_view_task_notes,cpm_odoo.planning_task_note,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_task_note_categories,cpm_ma.planning_view_task_note_categories,cpm_odoo.planning_task_note_category,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_task_assign_contractor,cpm_ma.planning_view_task_assign_contractor,cpm_odoo.planning_task_assign_contractor,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_task_assign_staff,cpm_ma.planning_view_task_assign_staff,cpm_odoo.planning_task_assign_staff,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_task_checklist_item,cpm_ma.planning_view_task_checklist_item,cpm_odoo.task_checklist_item,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_task_history_log,cpm_ma.planning_view_task_history_log,cpm_odoo.task_history_log,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.planning_view_task_comments,cpm_ma.planning_view_task_comments,cpm_odoo.planning_task_comment,cpm_gr.project_mgmt_gr,1,0,0,0
 
 cpm_ma.planning_manage_planning,cpm_ma.planning_manage_planning,cpm_odoo.root_project_planning,cpm_gr.manage_project_plans,1,1,0,0
 cpm_ma.planning_manage_workflows,cpm_ma.planning_manage_workflows,cpm_odoo.planning_workflow,cpm_gr.manage_project_plans,1,1,1,1
@@ -34,29 +34,32 @@ cpm_ma.planning_manage_task_checklist_item,cpm_ma.planning_manage_task_checklist
 cpm_ma.planning_manage_task_history_log,cpm_ma.planning_manage_task_history_log,cpm_odoo.task_history_log,cpm_gr.manage_project_plans,1,1,1,1
 cpm_ma.planning_manage_task_comments,cpm_ma.planning_manage_task_comments,cpm_odoo.planning_task_comment,cpm_gr.manage_project_plans,1,1,1,1
 
-cpm_ma.view_project_finances,cpm_ma.view_project_finances,cpm_odoo.root_project_finance,cpm_gr.view_project_finances,1,0,0,0
-cpm_ma.view_project_investor_record,cpm_ma.view_project_investor_record,cpm_odoo.project_investor_investment_record,cpm_gr.view_project_finances,1,0,0,0
-cpm_ma.view_project_expense_record,cpm_ma.view_project_expense_record,cpm_odoo.project_category_expense_record,cpm_gr.view_project_finances,1,0,0,0
-cpm_ma.view_project_investments,cpm_ma.view_project_investments,cpm_odoo.finance_investment_record,cpm_gr.view_project_finances,1,0,0,0
-cpm_ma.view_project_expenses,cpm_ma.view_project_expenses,cpm_odoo.finance_expense_record,cpm_gr.view_project_finances,1,0,0,0
-cpm_ma.view_project_expense_categories,cpm_ma.view_project_expense_categories,cpm_odoo.finance_expense_category,cpm_gr.view_project_finances,1,0,0,0
-cpm_ma.view_investors,cpm_ma.view_investors,cpm_odoo.stakeholders_investor,cpm_gr.view_project_finances,1,0,0,0
-cpm_ma.view_task_expenses,cpm_ma.view_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.view_project_finances,1,0,0,0
+cpm_ma.view_project_finances,cpm_ma.view_project_finances,cpm_odoo.root_project_finance,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_project_investor_record,cpm_ma.view_project_investor_record,cpm_odoo.project_investor_investment_record,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_project_expense_record,cpm_ma.view_project_expense_record,cpm_odoo.project_category_expense_record,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_project_investments,cpm_ma.view_project_investments,cpm_odoo.finance_investment_record,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_project_expenses,cpm_ma.view_project_expenses,cpm_odoo.finance_expense_record,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_project_expense_categories,cpm_ma.view_project_expense_categories,cpm_odoo.finance_expense_category,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_task_expenses,cpm_ma.view_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.project_mgmt_gr,1,0,0,0
+
+
+cpm_ma.planning_task_qa_rejection,cpm_ma.planning_task_qa_rejection,cpm_odoo.planning_task_qa_rejection,cpm_gr.project_mgmt_gr,1,1,1,1
+cpm_ma.planning_task_qa_verification,cpm_ma.planning_task_qa_verification,cpm_odoo.planning_task_qa_verification,cpm_gr.project_mgmt_gr,1,1,1,1
 
 cpm_ma.manage_project_finances,cpm_ma.manage_project_finances,cpm_odoo.root_project_finance,cpm_gr.manage_project_finances,1,1,0,0
-cpm_ma.manage_project_investor_record,cpm_ma.manage_project_investor_record,cpm_odoo.project_investor_investment_record,cpm_gr.view_project_finances,1,1,1,1
-cpm_ma.manage_project_expense_record,cpm_ma.manage_project_expense_record,cpm_odoo.project_category_expense_record,cpm_gr.view_project_finances,1,1,1,1
+cpm_ma.manage_project_investor_record,cpm_ma.manage_project_investor_record,cpm_odoo.project_investor_investment_record,cpm_gr.manage_project_finances,1,1,1,1
+cpm_ma.manage_project_expense_record,cpm_ma.manage_project_expense_record,cpm_odoo.project_category_expense_record,cpm_gr.manage_project_finances,1,1,1,1
 cpm_ma.manage_project_investments,cpm_ma.manage_project_investments,cpm_odoo.finance_investment_record,cpm_gr.manage_project_finances,1,1,1,1
 cpm_ma.manage_project_expenses,cpm_ma.manage_project_expenses,cpm_odoo.finance_expense_record,cpm_gr.manage_project_finances,1,1,1,1
 cpm_ma.manage_project_expense_categories,cpm_ma.manage_project_expense_categories,cpm_odoo.finance_expense_category,cpm_gr.manage_project_finances,1,1,1,1
 cpm_ma.edit_investors,cpm_ma.edit_investors,cpm_odoo.stakeholders_investor,cpm_gr.manage_project_finances,1,1,0,0
-cpm_ma.edit_task_expenses,cpm_ma.edit_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.manage_project_finances,1,1,0,0
+cpm_ma.edit_task_expenses,cpm_ma.edit_task_expenses,cpm_odoo.planning_task_expense,cpm_gr.manage_project_finances,1,1,1,1
 
-cpm_ma.view_proj_documents,cpm_ma.view_proj_documents,cpm_odoo.root_project_doc_mgmt,cpm_gr.view_project_documents,1,0,0,0
-cpm_ma.view_contract_sets,cpm_ma.view_contract_sets,cpm_odoo.contracts_contract_set,cpm_gr.view_project_documents,1,0,0,0
-cpm_ma.view_document_sets,cpm_ma.view_document_sets,cpm_odoo.documents_document_set,cpm_gr.view_project_documents,1,0,0,0
-cpm_ma.view_document_categories,cpm_ma.view_document_categories,cpm_odoo.documents_document_category,cpm_gr.view_project_documents,1,0,0,0
-cpm_ma.view_documents,cpm_ma.view_documents,cpm_odoo.documents_document,cpm_gr.view_project_documents,1,0,0,0
+cpm_ma.view_proj_documents,cpm_ma.view_proj_documents,cpm_odoo.root_project_doc_mgmt,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_contract_sets,cpm_ma.view_contract_sets,cpm_odoo.contracts_contract_set,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_document_sets,cpm_ma.view_document_sets,cpm_odoo.documents_document_set,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_document_categories,cpm_ma.view_document_categories,cpm_odoo.documents_document_category,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_documents,cpm_ma.view_documents,cpm_odoo.documents_document,cpm_gr.project_mgmt_gr,1,0,0,0
 
 cpm_ma.manage_proj_documents,cpm_ma.manage_proj_documents,cpm_odoo.root_project_doc_mgmt,cpm_gr.manage_project_documents,1,1,0,0
 cpm_ma.manage_contract_sets,cpm_ma.manage_contract_sets,cpm_odoo.contracts_contract_set,cpm_gr.manage_project_documents,1,1,1,1
@@ -72,6 +75,8 @@ cpm_ma.view_staff_list,cpm_ma.view_staff_list,cpm_odoo.human_res_staff,base.grou
 cpm_ma.view_department,cpm_ma.view_department,cpm_odoo.human_res_department,base.group_user,1,0,0,0
 cpm_ma.view_contractor,cpm_ma.view_contractor,cpm_odoo.stakeholders_contractor,base.group_user,1,0,0,0
 cpm_ma.view_contractor_category,cpm_ma.view_contractor_category,cpm_odoo.stakeholders_contractor_category,base.group_user,1,0,0,0
+cpm_ma.view_other_contact,cpm_ma.view_other_contact,cpm_odoo.stakeholders_other_contacts,base.group_user,1,0,0,0
+cpm_ma.view_investors,cpm_ma.view_other_contact,cpm_odoo.stakeholders_investor,base.group_user,1,0,0,0
 
 cpm_ma.task_mem_view_planning,cpm_ma.task_mem_view_planning,cpm_odoo.root_project_planning,cpm_gr.project_mem_gr,1,0,0,0
 cpm_ma.task_mem_view_workflows,cpm_ma.task_mem_view_workflows,cpm_odoo.planning_workflow,cpm_gr.project_mem_gr,1,0,0,0
@@ -98,6 +103,7 @@ cpm_ma.task_head_mem_manage_task_expenses,cpm_ma.task_head_mem_manage_task_expen
 cpm_ma.task_head_mem_manage_task_notes,cpm_ma.task_head_mem_manage_task_notes,cpm_odoo.planning_task_note,cpm_gr.project_head_mem_gr,1,1,1,1
 cpm_ma.task_head_mem_manage_task_note_categories,cpm_ma.task_head_mem_manage_task_note_categories,cpm_odoo.planning_task_note_category,cpm_gr.project_head_mem_gr,1,1,1,1
 cpm_ma.task_head_mem_manage_task_comments,cpm_ma.task_head_mem_manage_task_comments,cpm_odoo.planning_task_comment,cpm_gr.project_mem_gr,1,1,1,1
+
 cpm_ma.task_mem_view_issues,cpm_ma.task_mem_view_issues,cpm_odoo.risk_mgmt_issue,cpm_gr.project_mem_gr,1,0,0,0
 cpm_ma.task_mem_view_issue_categories,cpm_ma.task_mem_view_issue_categories,cpm_odoo.risk_mgmt_issue_category,cpm_gr.project_mem_gr,1,0,0,0
 cpm_ma.task_mem_view_risks,cpm_ma.task_mem_view_risks,cpm_odoo.risk_mgmt,cpm_gr.project_mem_gr,1,0,0,0
@@ -127,3 +133,21 @@ cpm_ma.warehouse_manager_logistics_eqp_exp_rec_det,warehouse_manager_logistics_e
 
 cpm_ma.warehouse_manager_res_mgmt_warehouse_info,warehouse_manager_res_mgmt_warehouse_info,cpm_odoo.res_mgmt_warehouse_info,cpm_gr.warehouse_manager,1,0,0,0
 cpm_ma.warehouse_manager_create_res_mgmt_warehouse_info,warehouse_manager_create_res_mgmt_warehouse_info,cpm_odoo.res_mgmt_warehouse_info,cpm_gr.warehouse_create,1,1,1,1
+
+cpm_ma.hr_manage_staff,cpm_ma.hr_manage_staff,cpm_odoo.human_res_staff,cpm_gr.hr_manage,1,1,1,1
+cpm_ma.hr_manage_department,cpm_ma.hr_manage_department,cpm_odoo.human_res_department,cpm_gr.hr_manage,1,1,1,1
+
+cpm_ma.stk_manage_department,cpm_ma.stk_manage_department,cpm_odoo.human_res_department,cpm_gr.stk_manage,1,1,1,1
+cpm_ma.stk_manage_contractor,cpm_ma.stk_manage_contractor,cpm_odoo.stakeholders_contractor,cpm_gr.stk_manage,1,1,1,1
+cpm_ma.stk_manage_investor,cpm_ma.stk_manage_investor,cpm_odoo.stakeholders_investor,cpm_gr.stk_manage,1,1,1,1
+cpm_ma.stk_manage_supplier,cpm_ma.stk_manage_supplier,cpm_odoo.stakeholders_supplier,cpm_gr.stk_manage,1,1,1,1
+cpm_ma.stk_manage_contractor_category,cpm_ma.stk_manage_contractor_category,cpm_odoo.stakeholders_contractor_category,cpm_gr.stk_manage,1,1,1,1
+cpm_ma.stk_manage_other_contact,cpm_ma.stk_manage_other_contact,cpm_odoo.stakeholders_other_contacts,cpm_gr.stk_manage,1,1,1,1
+
+cpm_ma.view_eqp,cpm_ma.view_eqp,cpm_odoo.res_mgmt_equipment,base.group_user,1,0,0,0
+cpm_ma.view_eqp_t,cpm_ma.view_eqp_t,cpm_odoo.res_mgmt_eqp_type,base.group_user,1,0,0,0
+cpm_ma.view_mat,cpm_ma.view_mat,cpm_odoo.res_mgmt_material,base.group_user,1,0,0,0
+cpm_ma.view_mat_t,cpm_ma.view_mat_t,cpm_odoo.res_mgmt_mat_type,base.group_user,1,0,0,0
+
+
+cpm_ma.view_supplier,cpm_ma.view_supplier,cpm_odoo.stakeholders_supplier,cpm_gr.stk_manage,1,0,0,0

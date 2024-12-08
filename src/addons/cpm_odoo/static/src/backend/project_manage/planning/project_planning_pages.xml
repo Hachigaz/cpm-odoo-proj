@@ -30,21 +30,21 @@
                     Overview
                 </div>
             </div>
-            <div class="pt-2 pb-2">
-                <div class="row">
-                    <div class="col-8">
+            <div class="pt-2 pb-2 d-flex align-items-center justify-content-center">
+                <div class="container row">
+                    <div class="col">
                         <div class="container">
                             <div class="row">
                                 <!-- To Do Column -->
                                 <div class="col-md-4">
-                                    <h4>In-drafts (<t t-esc="this.page_info.in_draft_count"/>)</h4>
+                                    <h4 class="fs-4 mb-3 fw-bold">In-drafts (<t t-esc="this.page_info.in_draft_count"/>)</h4>
                                     <t t-foreach="this.page_info.in_drafts" t-as="workflow" t-key="workflow.id">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title">
+                                                <h5 class="card-title fs-5 fw-bold">
                                                     <t t-esc="workflow.name"/>
                                                 </h5>
-                                                <p class="card-text">
+                                                <p class="card-text mb-2">
                                                     <t t-if="workflow.description">
                                                         <t t-esc="workflow.description"/>
                                                     </t>
@@ -52,6 +52,14 @@
                                                         No Description
                                                     </t>
                                                 </p>
+                                                <div class="mb-2">
+                                                    <p>
+                                                        Start Date: <t t-esc="this.constructor.formatDate(workflow.start_date)"/>
+                                                    </p>
+                                                    <p>
+                                                        Expected End Date: <t t-esc="this.constructor.formatDate(workflow.exp_end)"/>
+                                                    </p>
+                                                </div>
                                                 <div class="btn-list d-flex align-items-center justify-content-end">
                                                     <div class="btn btn-secondary" t-on-click="()=>{act_manage_workflow(workflow.id)}">
                                                         Manage
@@ -64,23 +72,29 @@
                         
                                 <!-- In Progress Column -->
                                 <div class="col-md-4">
-                                    <h4>Active (<t t-esc="this.page_info.active_workflow_count"/>)</h4>
+                                    <h4 class="fs-4 mb-3 fw-bold">Active (<t t-esc="this.page_info.active_workflow_count"/>)</h4>
                                     <t t-foreach="this.page_info.active_workflows" t-as="workflow" t-key="workflow.id">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title">
+                                                <h5 class="card-title fs-5 fw-bold">
                                                     <t t-esc="workflow.name"/>
                                                 </h5>
-                                                <p class="card-text">
-                                                    <p class="card-text">
-                                                        <t t-if="workflow.description">
-                                                            <t t-esc="workflow.description"/>
-                                                        </t>
-                                                        <t t-else="">
-                                                            No Description
-                                                        </t>
-                                                    </p>
+                                                <p class="card-text mb-2">
+                                                    <t t-if="workflow.description">
+                                                        <t t-esc="workflow.description"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        No Description
+                                                    </t>
                                                 </p>
+                                                <div class="mb-2">
+                                                    <p>
+                                                        Start Date: <t t-esc="this.constructor.formatDate(workflow.start_date)"/>
+                                                    </p>
+                                                    <p>
+                                                        Expected End Date: <t t-esc="this.constructor.formatDate(workflow.exp_end)"/>
+                                                    </p>
+                                                </div>
                                                 <div class="btn-list d-flex align-items-center justify-content-end">
                                                     <div class="btn btn-secondary" t-on-click="()=>{act_manage_workflow(workflow.id)}">
                                                         Manage
@@ -93,23 +107,29 @@
                         
                                 <!-- Done Column -->
                                 <div class="col-md-4">
-                                    <h4>Finished (<t t-esc="this.page_info.finished_workflow_count"/>)</h4>
+                                    <h4 class="fs-4 mb-3 fw-bold">Finished (<t t-esc="this.page_info.finished_workflow_count"/>)</h4>
                                     <t t-foreach="this.page_info.finished_workflows" t-as="workflow" t-key="workflow.id">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title">
+                                                <h5 class="card-title fs-5 fw-bold">
                                                     <t t-esc="workflow.name"/>
                                                 </h5>
-                                                <p class="card-text">
-                                                    <p class="card-text">
-                                                        <t t-if="workflow.description">
-                                                            <t t-esc="workflow.description"/>
-                                                        </t>
-                                                        <t t-else="">
-                                                            No Description
-                                                        </t>
-                                                    </p>
+                                                <p class="card-text mb-2">
+                                                    <t t-if="workflow.description">
+                                                        <t t-esc="workflow.description"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        No Description
+                                                    </t>
                                                 </p>
+                                                <div class="mb-2">
+                                                    <p>
+                                                        Start Date: <t t-esc="this.constructor.formatDate(workflow.start_date)"/>
+                                                    </p>
+                                                    <p>
+                                                        Date Finished: <t t-esc="this.constructor.formatDate(workflow.end_date)"/>
+                                                    </p>
+                                                </div>
                                                 <div class="btn-list d-flex align-items-center justify-content-end">
                                                     <div class="btn btn-secondary" t-on-click="()=>{act_manage_workflow(workflow.id)}">
                                                         Manage
@@ -119,26 +139,6 @@
                                         </div>
                                     </t>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">Tab 1</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">Tab 2</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-                                <h5>Tab 1 Content</h5>
-                                <p>This is the content for tab 1.</p>
-                            </div>
-                            <div class="tab-pane fade p-3" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
-                                <h5>Tab 2 Content</h5>
-                                <p>This is the content for tab 2.</p>
                             </div>
                         </div>
                     </div>
@@ -438,6 +438,10 @@
                                                         <p class="mb-2">
                                                             Unassigned Task Count: 
                                                             <t t-esc="this.page_data.workflow_info.unassigned_task_count"/>
+                                                        </p>
+                                                        <p class="mb-2">
+                                                            Overdue Task Count: 
+                                                            <t t-esc="this.page_data.workflow_info.overdue_task_count"/>
                                                         </p>
                                                     </div>
                                                     <h6 class="mb-2">Progress:</h6>
@@ -912,7 +916,7 @@
     <t t-name="cpm_odoo.PlanningTaskAttachedDocumentsPanel">
         <div class="tab-header py-2 d-inline-flex flex-row align-items-center" id="attached-documents-tab" t-ref="cmp-root">
             <span class="me-3">
-                <h4 class="m-0">Attached Documents</h4>
+                <h4 class="m-0 fs-4 fw-bold">Attached Documents</h4>
             </span>
             <span class="btn-list">
                 <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#attached-documents-tab #attach-document-modal">
@@ -1120,7 +1124,7 @@
     <t t-name="cpm_odoo.PlanningTaskExpensePanel">
         <div class="tab-header py-2 d-inline-flex flex-row align-items-center">
             <span class="me-3">
-                <h4 class="m-0">Task Expenses</h4>
+                <h4 class="m-0 fs-4 fw-bold">Task Expenses</h4>
             </span>
             <span class="btn-list">
                 <button type="button" class="btn btn-secondary me-2" t-on-click="()=>{this.act_add_task_expense()}">
@@ -1182,58 +1186,60 @@
                         <div class="tab-pane fade active show" id="assigned-members-tab" role="tabpanel">
                             <div class="tab-header py-2 d-inline-flex flex-row align-items-center">
                                 <span class="me-3">
-                                    <h4 class="m-0">Assigned Members</h4>
+                                    <h4 class="m-0 fs-4 fw-bold">Assigned Members</h4>
                                 </span>
                                 <span class="btn-list">
-                                    <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-staff-modal" t-on-click="()=>{}">
-                                    <!-- <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-staff-modal" t-on-click="()=>{this.staff_asgn_act.load(this.staff_asgn_act.inst)}"> -->
-                                        Assign Staffs
-                                    </button>
+                                    <t t-if="this.page_data.task_info.task_status!=='verified'">
+                                        <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-staff-modal" t-on-click="()=>{}">
+                                        <!-- <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-staff-modal" t-on-click="()=>{this.staff_asgn_act.load(this.staff_asgn_act.inst)}"> -->
+                                            Assign Staffs
+                                        </button>
                                     
-                                    <div class="modal fade" id="assign-staff-modal" tabindex="-1">
-                                        <div class="modal-dialog modal-xl">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                <h5 class="modal-title" id="assign-staff-modal-label">Assign Staffs</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <PlanningStaffAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.staff_asgn_act">
+                                        <div class="modal fade" id="assign-staff-modal" tabindex="-1">
+                                            <div class="modal-dialog modal-xl">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                    <h5 class="modal-title" id="assign-staff-modal-label">Assign Staffs</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <PlanningStaffAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.staff_asgn_act">
 
-                                                    </PlanningStaffAssignPanel>
-                                                </div>
-                                                <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}">Close</button>
-                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  t-on-click="()=>{this.staff_asgn_act.save(this.staff_asgn_act.inst)}">Save</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-contractor-modal" t-on-click="()=>{}">
-                                    <!-- <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-contractor-modal" t-on-click="()=>{this.contractor_asgn_act.load(this.contractor_asgn_act.inst)}"> -->
-                                        Assign Contractors
-                                    </button>
-                                    
-                                    <div class="modal fade" id="assign-contractor-modal" tabindex="-1">
-                                        <div class="modal-dialog modal-xl">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="assign-contractor-modal-label">Assign Contractors</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{this.contractor_asgn_act.cancel(this.contractor_asgn_act.inst)}"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <PlanningContractorAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.contractor_asgn_act">
-                                                        
-                                                    </PlanningContractorAssignPanel>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.contractor_asgn_act.cancel(this.contractor_asgn_act.inst)}">Close</button>
-                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" t-on-click="()=>{this.contractor_asgn_act.save(this.contractor_asgn_act.inst)}">Save</button>
+                                                        </PlanningStaffAssignPanel>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.staff_asgn_act.cancel(this.staff_asgn_act.inst)}">Close</button>
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  t-on-click="()=>{this.staff_asgn_act.save(this.staff_asgn_act.inst)}">Save</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        
+                                        <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-contractor-modal" t-on-click="()=>{}">
+                                        <!-- <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#assigned-members-tab #assign-contractor-modal" t-on-click="()=>{this.contractor_asgn_act.load(this.contractor_asgn_act.inst)}"> -->
+                                            Assign Contractors
+                                        </button>
+                                        
+                                        <div class="modal fade" id="assign-contractor-modal" tabindex="-1">
+                                            <div class="modal-dialog modal-xl">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="assign-contractor-modal-label">Assign Contractors</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" t-on-click="()=>{this.contractor_asgn_act.cancel(this.contractor_asgn_act.inst)}"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <PlanningContractorAssignPanel context_data="props.context_data" task_info="page_data.task_info" asgn_act="this.contractor_asgn_act">
+                                                            
+                                                        </PlanningContractorAssignPanel>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" t-on-click="()=>{this.contractor_asgn_act.cancel(this.contractor_asgn_act.inst)}">Close</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" t-on-click="()=>{this.contractor_asgn_act.save(this.contractor_asgn_act.inst)}">Save</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
                                 </span>
                             </div>
                             <!-- <div class="card">
@@ -1280,7 +1286,7 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="documents-tab" role="tabpanel">
-                            <PlanningTaskAttachedDocumentsPanel task_info="page_data.task_info">
+                            <PlanningTaskAttachedDocumentsPanel task_info="page_data.task_info" context_data="this.props.context_data">
 
                             </PlanningTaskAttachedDocumentsPanel>
                         </div>

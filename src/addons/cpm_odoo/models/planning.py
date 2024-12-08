@@ -133,6 +133,32 @@ class Workflow(models.Model):
             record.verified_task_count = verified_task_count
         pass
     
+    overdue_verified_task_count = fields.Integer(
+        string = 'Overdue Verified Task Count',
+        compute = '_compute_overdue_verified_task_count',
+        store=True
+    )
+    
+    @api.depends('task_ids.task_status','task_ids.is_overdue')
+    def _compute_overdue_verified_task_count(self):
+        for record in self:
+            overdue_verified_task_count = sum(1 for task in record.task_ids if task.task_status == "verified" and task.is_overdue)
+            record.overdue_verified_task_count = overdue_verified_task_count
+        pass
+    
+    overdue_task_count = fields.Integer(
+        string = 'Overdue Task Count',
+        compute = '_compute_overdue_task_count',
+        store=True
+    )
+    
+    @api.depends('task_ids.task_status','task_ids.is_overdue')
+    def _compute_overdue_task_count(self):
+        for record in self:
+            overdue_task_count = sum(1 for task in record.task_ids if task.task_status != "verified" and task.is_overdue)
+            record.overdue_task_count = overdue_task_count
+        pass
+    
     workflow_status = fields.Selection(
         [
             ('draft', 'Draft'),
@@ -169,11 +195,9 @@ class Workflow(models.Model):
         workflow = self.env["cpm_odoo.planning_workflow"].browse(workflow_id)
         #check for unverified tasks
         #set end date and set finished status
-        if(workflow.verified_task_count == workflow.task_count):
-            workflow.end_date = fields.Date.today()
-            workflow.workflow_status = 'finished'
-        else:
-            raise ValidationError(f"The workflow {workflow.name} has unverified tasks.")
+        workflow.end_date = fields.Date.today()
+        workflow.workflow_status = 'finished'
+
         
         pass
     
@@ -343,12 +367,20 @@ class Task(models.Model):
             if(task.task_status == "completed"):
                 task.task_status = "verified"
                 task.date_verified = fields.Datetime.now()
+                task.end_date = fields.Datetime.now()
                 
                 staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
                 task.add_log(
                     f"{staff_rec.get('name') if staff_rec else ''} verified the task.",
                     staff_rec.get('id') if staff_rec else None
                 )
+
+                workflow_finished = True
+                for t_rec in task.workflow_id.task_ids:
+                    if t_rec.task_status != "verified":
+                        workflow_finished = False
+                if workflow_finished:
+                    t_rec.workflow_id.mark_finished(t_rec.workflow_id.id)
             else:
                 raise ValidationError("The task status is not completed.")
         pass
@@ -368,6 +400,19 @@ class Task(models.Model):
                 raise ValidationError("The task status is not completed.")
         pass
     
+    is_overdue = fields.Boolean(compute='_compute_is_overdue', string='is_overdue',store=True)
+    
+    @api.depends('exp_end','end_date')
+    def _compute_is_overdue(self):
+        for rec in self:
+            if not rec.end_date:
+                today = fields.Date.context_today(self)
+                day_after_today = today + timedelta(days=1)
+                
+                rec.is_overdue = day_after_today >= rec.exp_end
+            else:
+                rec.is_overdue = rec.exp_end < rec.end_date
+        pass
     
     assigned_staff_ids = fields.One2many(
         comodel_name = 'cpm_odoo.planning_task_assign_staff', 

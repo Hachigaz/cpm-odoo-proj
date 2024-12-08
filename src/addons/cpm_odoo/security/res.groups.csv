@@ -22,6 +22,11 @@ cpm_gr.create_and_edit_projects,cpm_gr.create_and_edit_projects,Create and Edit 
 cpm_gr.manage_issues,cpm_gr.manage_issues,Manage Issues,cpm_gr_cat.cpm_groups,,
 cpm_gr.user_issues,cpm_gr.user_issues,User Issues,cpm_gr_cat.cpm_groups,,
 
+cpm_gr.hr_manage,cpm_gr.hr_manage,HR Manage Group,cpm_gr_cat.cpm_groups,,
+
+cpm_gr.stk_manage,cpm_gr.stk_manage,Stakeholders Manage Group,cpm_gr_cat.cpm_groups,,
+
+cpm_gr.qc,cpm_gr.qc,Quality Control Group,cpm_gr_cat.cpm_groups,,
 
 cpm_gr.warehouse_manager,cpm_gr.warehouse_manager,Warehouse Manager,"cpm_gr_cat.cpm_groups",""
 cpm_gr.warehouse_create,cpm_gr.warehouse_create,Warehouse Create,"cpm_gr_cat.cpm_groups","cpm_gr.warehouse_manager"

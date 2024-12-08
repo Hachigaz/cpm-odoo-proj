@@ -98,6 +98,12 @@ export class AssignedTaskDetailView extends Component{
 
         this.page_data.task_info=task_info
 
+        let today = new Date()
+        today.setHours(0, 0, 0, 0);
+        
+
+        this.is_task_started = new Date(task_info.start_date)<=today
+
         await this.load_checklist()
         await this.load_history_log()
         await this.load_comments()

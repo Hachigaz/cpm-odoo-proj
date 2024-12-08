@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="col btn-list mt-2 d-flex justify-content-end">
-                    <div class="btn btn-outline-dark" t-on-click="()=>{this.act_contract_set_detail(props.doc_set.id)}">
+                    <div class="btn btn-outline-dark" t-on-click="()=>{this.act_document_set_detail(props.doc_set.id)}">
                         View Details
                     </div>
                 </div>
@@ -85,7 +85,7 @@
     </t>
 
     <t t-name="cpm_odoo.ProjectDocumentTab">
-        <DocumentSetItemList extra_domain="">
+        <DocumentSetItemList extra_domain="[['is_project_specific','=',true],['project_doc_mgmt_id','=',this.props.context_data.doc_id]]">
             
         </DocumentSetItemList>
     </t>

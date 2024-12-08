@@ -67,42 +67,50 @@ export class ProjectOverviewPage extends Component {
                 [
                     ['planning_id','=',this.props.context_data.planning_id]
                 ],
-                ['active_task_count:sum'],
+                ['active_task_count:sum','completed_task_count:sum','verified_task_count:sum'],
                 ['planning_id'],
                 0,0,[],true
             ]
         )
-        total_task_count = total_task_count[0]
-        if(total_task_count){
-            total_task_count = total_task_count.active_task_count?total_task_count.active_task_count:1
+
+        if(total_task_count.length>0){
+            total_task_count = total_task_count[0]
+            let active_task_count = total_task_count.active_task_count
+            active_task_count = active_task_count?active_task_count:0
+    
+            let completed_task_count = total_task_count.completed_task_count
+            completed_task_count = completed_task_count?completed_task_count:0
+    
+            let verified_task_count = total_task_count.verified_task_count
+            verified_task_count = verified_task_count?verified_task_count:0
+            
+            let overdue_task_count = total_task_count.overdue_task_count + total_task_count.overdue_verified_task_count
+            overdue_task_count = overdue_task_count?overdue_task_count:0
+            
+            total_task_count = active_task_count+completed_task_count+verified_task_count
+    
+    
+            
+            let project_progress = ((verified_task_count/(total_task_count>0?total_task_count:1)) * 100).toFixed(1);
+            
+            this.state_data.statistics = {
+                total_task_count:total_task_count,
+                active_task_count:active_task_count,
+                completed_task_count:completed_task_count,
+                verified_task_count:verified_task_count,
+                project_progress:project_progress,
+                overdue_task_count:overdue_task_count
+            }
         }
-        
-        let completed_task_count = await this.orm.call(
-            "cpm_odoo.planning_workflow",
-            "read_group",
-            [
-                [
-                    ['planning_id','=',this.props.context_data.planning_id]
-                ],
-                ['completed_task_count:sum'],
-                ['planning_id'],
-                0,0,[],true
-            ]
-        )
-        if(completed_task_count[0]){
-            completed_task_count = completed_task_count[0]
-        }
-
-        completed_task_count = completed_task_count.completed_task_count?completed_task_count.completed_task_count:0
-
-
-        
-        let project_progress = ((completed_task_count/(total_task_count>0?total_task_count:1)) * 100).toFixed(1);
-        
-        this.state_data.statistics = {
-            total_task_count:total_task_count?total_task_count:0,
-            completed_task_count:completed_task_count?completed_task_count:0,
-            project_progress:project_progress
+        else{
+            this.state_data.statistics = {
+                total_task_count:0,
+                active_task_count:0,
+                completed_task_count:0,
+                verified_task_count:0,
+                project_progress:0,
+                overdue_task_count:0
+            }
         }
 
         let investor_ids = (await this.orm.call(

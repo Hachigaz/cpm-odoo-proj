@@ -122,6 +122,21 @@ class DocumentSet(models.Model):
             }
             # "context": { 'default_document_set_id': self.env.context.document_set_id },
         }
+        
+    @api.model_create_multi
+    def create(self, vals):
+        recs = super().create(vals)
+
+        add_doc_to = self.env.context.get("add_doc_to_task")
+        if add_doc_to:
+            t_rec = self.env["cpm_odoo.planning_task"].browse(add_doc_to)
+            t_rec.write({
+                'attached_document_ids':[
+                    (4,d_rec.id) for d_rec in recs
+                ]
+            })
+
+        return recs
     
     def unlink(self):
         for record in self:

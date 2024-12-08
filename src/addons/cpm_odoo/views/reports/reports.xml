@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="cpm_odoo.issue_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="issue_recs" t-as="rec">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <h2>Product Report</h2>
+                        <br></br>
+                        <p>
+                            Name :  <span t-field="rec.name"/>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <data>
+
+        <record id="cpm_odoo.issue_report_act" model="ir.actions.report">
+            <field name="name">Issue Report</field>
+            <field name="model">cpm_odoo.issue_report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">cpm_odoo.issue_report_file</field>
+            <field name="report_file">cpm_odoo.issue_report_name</field>
+            <field name="print_report_name">Issue Report - '%s' % report_title</field>
+            <field name="binding_model_id" ref="cpm_odoo.issue_report"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+    
+
+</odoo>
