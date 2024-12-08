@@ -30,5 +30,20 @@
                 </form>
             </field>
         </record>
+
+        <record id="cpm_odoo.view_department_form" model="ir.ui.view">
+            <field name="name">model_name.view.form</field>
+            <field name="model">cpm_odoo.human_res_department</field>
+            <field name="arch" type="xml">
+                <form string="New Department">
+                    <sheet>
+                        <group string="Department Info">
+                            <field name="name"/>
+                            <field name="department_role_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
     </data>
 </odoo>
