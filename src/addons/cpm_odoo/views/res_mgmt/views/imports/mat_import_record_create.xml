@@ -17,6 +17,21 @@
             </field>
         </record>
 
+        <!-- <record id="cpm_odoo.logistics_mat_imp_rec_det_transient_view_tree" model="ir.ui.view">
+            <field name="name">cpm_odoo.logistics_mat_imp_rec_det_transient.view.tree</field>
+            <field name="model">cpm_odoo.logistics_mat_imp_rec_det_transient</field>
+            <field name="arch" type="xml">
+                <tree string="Record Details" create="True" edit="True" delete="True" import="False" export_xlsx="False" default_order="material_id asc">
+                    <field name="material_id" string="Name">
+
+                    </field>
+                    <field name="amount" string="Amount">
+
+                    </field>
+                </tree>
+            </field>
+        </record> -->
+
 
         <record id="cpm_odoo.logistics_mat_imp_rec_det_view_form" model="ir.ui.view">
             <field name="name">cpm_odoo.logistics_mat_import_record.view.form</field>
@@ -36,6 +51,25 @@
                 </form>
             </field>
         </record>
+        
+        <!-- <record id="cpm_odoo.logistics_mat_imp_rec_det_transient_view_form" model="ir.ui.view">
+            <field name="name">cpm_odoo.logistics_mat_import_record_transient.view.form</field>
+            <field name="model">cpm_odoo.logistics_mat_imp_rec_det_transient</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group cols="2" string="Record Details">
+                            <group colspan="1">
+                                <field name="material_id" string="Material" domain="[('supplier_ids','in',context.get('supplier_id'))]"></field>
+                            </group>
+                            <group colspan="1">
+                                <field name="amount" string="Amount"></field>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record> -->
 
         <record id="cpm_odoo.logistics_mat_import_record_view_form" model="ir.ui.view">
             <field name="name">cpm_odoo.logistics_mat_import_record.view.form</field>
@@ -64,7 +98,8 @@
                             <field name="imp_det_ids" string="Record Details" context="{
                                 'tree_view_ref': 'cpm_odoo.logistics_mat_imp_det_view_tree',
                                 'supplier_id':supplier_id
-                              }">
+                              }"
+                              >
                             </field>
                         </group>
                     </sheet>

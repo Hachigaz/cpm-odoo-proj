@@ -7,7 +7,7 @@
             <field name="model">cpm_odoo.logistics_mat_exp_rec_det</field>
             <field name="arch" type="xml">
                 <tree string="Record Details" create="True" edit="True" delete="True" import="False" export_xlsx="False" default_order="material_id asc">
-                    <field name="material_id" string="Name">
+                    <field name="material_id" string="Name" domain="[['id','in',context.get('avail_mats')]]">
 
                     </field>
                     <field name="amount" string="Amount">
@@ -46,6 +46,8 @@
                         <group cols="3" string="General Info">
                             <group colspan="2">
                                 <field name="warehouse_id" string="Warehouse" readonly="True"></field>
+                                <field name="export_type" string="Export Type"></field>
+                                <field name="delivered_by" string="Delivered By"></field>
                             </group>
                             <group colspan="1">
                                 <field name="date_created" string="Date Created" readonly="True"></field>
@@ -53,9 +55,12 @@
                             </group>
                         </group>
                         <group cols="3" string="Record Details">
-                            <field name="exp_det_ids" string="Record Details" context="{
-                                'tree_view_ref': 'cpm_odoo.logistics_mat_exp_det_view_tree'
-                              }">
+                            <field name="exp_det_ids" string="Record Details" 
+                                context="{
+                                    'tree_view_ref': 'cpm_odoo.logistics_mat_exp_det_view_tree',
+                                    'avail_mats':warehouse_id.avail_mats
+                                }"
+                              >
                             </field>
                         </group>
                     </sheet>

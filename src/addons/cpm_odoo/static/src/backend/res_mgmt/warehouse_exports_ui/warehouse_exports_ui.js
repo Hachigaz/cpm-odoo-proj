@@ -161,9 +161,6 @@ export class ExportRecordItemList extends ItemList{
                     id
                 ]
             )
-            storePageInfo(this.constructor.page_name,{
-                'current_render_content':'mat'
-            })
             window.location.reload()
         }
         else if(opt==="eqp"){
@@ -177,9 +174,6 @@ export class ExportRecordItemList extends ItemList{
                     id
                 ]
             )
-            storePageInfo(this.constructor.page_name,{
-                'current_render_content':'eqp'
-            })
             window.location.reload()
         }
     }
@@ -195,6 +189,9 @@ export class ExportRecordItemList extends ItemList{
             this.current_render_content = 'eqp'
             this.act_setup_list()
         }
+        storePageInfo(this.constructor.page_name,{
+            'current_render_content':this.current_render_content
+        })
     }
 }
 

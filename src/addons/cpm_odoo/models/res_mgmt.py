@@ -1,4 +1,7 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+import json
+
 
 class Equipment(models.Model):
     _name = 'cpm_odoo.res_mgmt_equipment'
@@ -167,6 +170,44 @@ class WarehouseInfo(models.Model):
     eqp_exp_rec_ids = fields.One2many(
         'cpm_odoo.logistics_eqp_exp_rec', 'warehouse_id', string='eqp_exp_rec'
     )
+    
+    avail_eqps = fields.Many2many(
+        comodel_name="cpm_odoo.res_mgmt_equipment",
+        relation="avail_eqp_in_wareh",
+        column1="wid",
+        column2="item_id",
+        compute='_compute_avail_eqps', string='avail_eqps',
+        store=True
+    )
+    
+    @api.depends('eqp_storage_rec_ids')
+    def _compute_avail_eqps(self):
+        for w_rec in self:
+            w_rec.avail_eqps.unlink()
+            w_rec.write({
+                'avail_eqps':[(4,rec.equipment_id.id,0) for rec in w_rec.eqp_storage_rec_ids if rec.amount > 0]
+            })
+            
+        pass
+    
+    avail_mats = fields.Many2many(
+        comodel_name="cpm_odoo.res_mgmt_material",
+        relation="avail_mat_in_wareh",
+        column1="wid",
+        column2="item_id",
+        compute='_compute_avail_mats', string='avail_mats',
+        store=True
+    )
+    
+    @api.depends('mat_storage_rec_ids')
+    def _compute_avail_mats(self):
+        for w_rec in self:
+            w_rec.avail_mats.unlink()
+            w_rec.write({
+                'avail_mats':[(4,rec.material_id.id,0) for rec in w_rec.mat_storage_rec_ids if rec.amount > 0]
+            })
+            
+        pass
     
     
 class Mat_StorageRecord(models.Model):
