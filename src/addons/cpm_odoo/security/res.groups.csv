@@ -21,3 +21,8 @@ cpm_gr.create_and_edit_projects,cpm_gr.create_and_edit_projects,Create and Edit 
 
 cpm_gr.manage_issues,cpm_gr.manage_issues,Manage Issues,cpm_gr_cat.cpm_groups,,
 cpm_gr.user_issues,cpm_gr.user_issues,User Issues,cpm_gr_cat.cpm_groups,,
+
+
+cpm_gr.warehouse_manager,cpm_gr.warehouse_manager,Warehouse Manager,"cpm_gr_cat.cpm_groups",""
+cpm_gr.warehouse_create,cpm_gr.warehouse_create,Warehouse Create,"cpm_gr_cat.cpm_groups","cpm_gr.warehouse_manager"
+cpm_gr.warehouse_deliverer,cpm_gr.warehouse_deliverer,Warehouse Delivery,"cpm_gr_cat.cpm_groups",""

@@ -15,9 +15,10 @@
           <field name="name">Assigned Warehouses</field>
           <field name="res_model">cpm_odoo.res_mgmt_warehouse_info</field>
           <field name="view_mode">kanban</field>
+          <field name="domain">[['warehouse_manager_group_id.users','in',uid]]</field>
         </record>
 
-        <menuitem sequence="10" name="Warehouses" parent="cpm_odoo.warehouse_root" id="cpm_odoo.assigned_warehouse_menuitem" action="cpm_odoo.assigned_warehouse_list_act"/>
+        <menuitem sequence="10" name="Warehouses" parent="cpm_odoo.warehouse_root" id="cpm_odoo.assigned_warehouse_menuitem" action="cpm_odoo.assigned_warehouse_list_act" groups="cpm_gr.warehouse_manager"/>
 
         <record id="cpm_odoo.create_new_warehouse_act" model="ir.actions.act_window">
           <field name="name">New Warehouse</field>
@@ -26,15 +27,7 @@
           <field name="target">new</field>
         </record>
 
-        <menuitem sequence="20" name="New Warehouse" parent="cpm_odoo.warehouse_root" id="cpm_odoo.create_new_warehouse_menuitem" action="cpm_odoo.create_new_warehouse_act"/>
-
-        <record id="cpm_odoo.test_page" model="ir.actions.client">
-          <field name="name">Test</field>
-          <field name="tag">cpm_odoo.action_test</field>
-          <field name="target">main</field>
-        </record>
-
-        <menuitem sequence="30" name="Test" parent="cpm_odoo.warehouse_root" id="cpm_odoo.warehouse_test" action="cpm_odoo.test_page"/>
+        <menuitem sequence="20" name="New Warehouse" parent="cpm_odoo.warehouse_root" id="cpm_odoo.create_new_warehouse_menuitem" action="cpm_odoo.create_new_warehouse_act" groups="cpm_gr.warehouse_create"/>
 
         <menuitem sequence="40" name="Equipment and Material" parent="cpm_odoo.warehouse_root" id="cpm_odoo.equipment_material_root"/>
 
@@ -47,7 +40,7 @@
             <field name="views">[('cpm_odoo.view_equipment_tree', 'tree'), ('cpm_odoo.view_equipment_form', 'form')]</field>
         </record>
 
-        <menuitem sequence="10" name="Equipment" parent="cpm_odoo.equipment_material_root" id="cpm_odoo.equipment_menuitem" action="cpm_odoo.equipment_act"/>
+        <menuitem sequence="10" name="Equipment" parent="cpm_odoo.equipment_material_root" id="cpm_odoo.equipment_menuitem" action="cpm_odoo.equipment_act" groups="cpm_gr.warehouse_manager"/>
 
         <!-- Material Menu -->
         <record id="cpm_odoo.material_act" model="ir.actions.act_window">
@@ -56,6 +49,6 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem sequence="20" name="Material" parent="cpm_odoo.equipment_material_root" id="cpm_odoo.material_menuitem" action="cpm_odoo.material_act"/>
+        <menuitem sequence="20" name="Material" parent="cpm_odoo.equipment_material_root" id="cpm_odoo.material_menuitem" action="cpm_odoo.material_act" groups="cpm_gr.warehouse_manager"/>
     </data>
 </odoo>

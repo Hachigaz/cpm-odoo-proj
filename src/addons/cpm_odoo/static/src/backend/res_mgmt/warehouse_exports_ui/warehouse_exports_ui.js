@@ -24,10 +24,11 @@ export class ExportRecordItemList extends ItemList{
             this.current_render_content = 'mat'
             this.page_data.model_name = 'cpm_odoo.logistics_mat_exp_rec'
         }
-        this.page_data.column_list = ['id','created_by','date_created','export_type','is_delivered','delivered_by','exp_det_ids']
+        this.page_data.column_list = []
         this.page_data.order_by_str = "date_created desc"
         this.page_data.join_cols =[
-            
+            ['created_by','cpm_odoo.human_res_staff',['id','name']],
+            ['delivered_by','cpm_odoo.human_res_staff',['id','name']]
         ]
         this.search_filter.search_bar.cols=["name"]
         
@@ -170,6 +171,58 @@ export class ExportRecordItemList extends ItemList{
             this.orm.call(
                 "cpm_odoo.logistics_eqp_exp_rec",
                 "unlink",
+                [
+                    id
+                ]
+            )
+            window.location.reload()
+        }
+    }
+
+    async act_verify_record_detail(opt,id){
+        if(!confirm("Verify record?")){
+            return
+        }
+        if(opt==="mat"){
+            await this.orm.call(
+                "cpm_odoo.logistics_mat_exp_rec",
+                "act_verify_record",
+                [
+                    id
+                ]
+            )
+            window.location.reload()
+        }
+        else if(opt==="eqp"){
+            await this.orm.call(
+                "cpm_odoo.logistics_eqp_exp_rec",
+                "act_verify_record",
+                [
+                    id
+                ]
+            )
+            window.location.reload()
+        }
+    }
+
+    async act_mark_delivered(opt,id){
+        if(!confirm("Mark record as delivered?")){
+            return
+        }
+        if(opt==="mat"){
+            await this.orm.call(
+                "cpm_odoo.logistics_mat_exp_rec",
+                "act_mark_delivered",
+                [
+                    id
+                ]
+            )
+            window.location.reload()
+        }
+        else if(opt==="eqp"){
+            await this.orm.call(
+                "cpm_odoo.logistics_eqp_exp_rec",
+                "act_mark_delivered",
                 [
                     id
                 ]

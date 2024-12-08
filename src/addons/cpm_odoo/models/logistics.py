@@ -6,6 +6,13 @@ class Abs_ImportRecord(models.AbstractModel):
     _name = 'cpm_odoo.logistics_abs_imp_rec'
     _description = 'model.technical.name'
     
+    title = fields.Char(
+        string = 'Title',
+        required=True,
+        size = 256,
+        default="Import Record"
+    )
+        
     warehouse_id = fields.Many2one(
         comodel_name = 'cpm_odoo.res_mgmt_warehouse_info', 
         string='Warehouse'
@@ -85,12 +92,17 @@ class Mat_ImportRecord(models.Model):
         default = False
     )
     
+    verified_at = fields.Datetime(
+        'verified_at'
+    )
+    
     def act_verify_record(self):
         for record in self:
             if record.is_verified:
                 raise ValidationError("Cannot verify import record that is already verified.")
             else:
                 record.is_verified = True
+                record.verified_at = fields.Datetime.now()
                 for imp_det in record.imp_det_ids:
                     s_rec = [s_rec for s_rec in self.warehouse_id.mat_storage_rec_ids if s_rec.material_id == imp_det.material_id]
                     if len(s_rec)==1:
@@ -195,12 +207,17 @@ class Eqp_ImportRecord(models.Model):
         default = False
     )
     
+    verified_at = fields.Datetime(
+        'verified_at'
+    )
+    
     def act_verify_record(self):
         for record in self:
             if record.is_verified:
                 raise ValidationError("Cannot verify import record that is already verified.")
             else:
                 record.is_verified = True
+                record.verified_at = fields.Datetime.now()
                 for imp_det in record.imp_det_ids:
                     s_rec = [s_rec for s_rec in self.warehouse_id.eqp_storage_rec_ids if s_rec.equipment_id == imp_det.equipment_id]
                     if len(s_rec)==1:
@@ -259,6 +276,13 @@ class Abs_ExportRecord(models.AbstractModel):
     _name = 'cpm_odoo.logistics_abs_exp_rec'
     _description = 'model.technical.name'
     
+    title = fields.Char(
+        string = 'Title',
+        required=True,
+        size = 256,
+        default="Export Record"
+    )
+    
     export_type = fields.Selection(
         [
             ('site_delivery', 'Site Delivery'),
@@ -308,10 +332,19 @@ class Abs_ExportRecord(models.AbstractModel):
         string = 'delivered_at'
     )
     
-    def act_delivered(self):
+    def act_mark_delivered(self):
         for record in self:
             record.is_delivered = True
             record.delivered_at = fields.Datetime.now()
+            
+            
+    is_verified = fields.Boolean(
+        string = 'is_verified',
+        required = True,
+        default = False
+    )
+    
+    date_verified = fields.Datetime('date_verified')
 
 
 class Mat_ExportRecord(models.Model):
@@ -344,6 +377,26 @@ class Mat_ExportRecord(models.Model):
             rec = overlap_recs[0]
             raise ValidationError(f"{rec.material_id.name} has duplicate records")
         
+    
+    def act_verify_record(self):
+        for record in self:
+            if record.is_verified:
+                raise ValidationError("Cannot verify export record that is already verified.")
+            else:
+                record.is_verified = True
+                record.date_verified = fields.Datetime.now()
+                for exp_det in record.exp_det_ids:
+                    s_rec = [s_rec for s_rec in self.warehouse_id.mat_storage_rec_ids if s_rec.material_id == exp_det.material_id]
+                    if len(s_rec)==1:
+                        s_rec = s_rec[0]
+                        if s_rec.amount < exp_det.amount:
+                            raise ValidationError(f"Cannot verified export record, there is not enough {s_rec.material_id.name} in stock ({s_rec.amount} remaining).")
+
+                        s_rec.amount -= exp_det.amount
+                    elif len(s_rec)>1:
+                        raise ValidationError("Unexpected Error - 222")
+                    else:
+                        raise ValidationError(f"Cannot verified export record, there is no {exp_det.material_id.name} in stock.")
 
     # @api.model_create_multi
     # def create(self, vals):
@@ -421,6 +474,25 @@ class Eqp_ExportRecord(models.Model):
         
     #     return recs
         
+    def act_verify_record(self):
+        for record in self:
+            if record.is_verified:
+                raise ValidationError("Cannot verify export record that is already verified.")
+            else:
+                record.is_verified = True
+                record.date_verified = fields.Datetime.now()
+                for exp_det in record.exp_det_ids:
+                    s_rec = [s_rec for s_rec in self.warehouse_id.eqp_storage_rec_ids if s_rec.equipment_id == exp_det.equipment_id]
+                    if len(s_rec)==1:
+                        s_rec = s_rec[0]
+                        if s_rec.amount < exp_det.amount:
+                            raise ValidationError(f"Cannot verified export record, there is not enough {s_rec.equipment_id.name} in stock ({s_rec.amount} remaining).")
+
+                        s_rec.amount -= exp_det.amount
+                    elif len(s_rec)>1:
+                        raise ValidationError("Unexpected Error - 222")
+                    else:
+                        raise ValidationError(f"Cannot verified export record, there is no {exp_det.equipment_id.name} in stock.")
     
     @api.constrains('exp_det_ids')
     def _constrains_exp_det_ids(self):

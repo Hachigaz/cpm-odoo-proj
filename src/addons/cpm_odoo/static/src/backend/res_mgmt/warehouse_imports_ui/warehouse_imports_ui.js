@@ -65,6 +65,9 @@ export class ImportRecordItemList extends ItemList{
     }
 
     async act_verify_record_detail(opt,id){
+        if(!confirm("Verify record?")){
+            return
+        }
         if(opt==="mat"){
             await this.orm.call(
                 "cpm_odoo.logistics_mat_imp_rec",

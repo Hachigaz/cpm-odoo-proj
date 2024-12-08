@@ -71,7 +71,7 @@ class ProjectManageUI extends Component {
         },
         {
             id: "quality_controls",
-            name:"Qualty Controls",
+            name:"Quality Controls",
             page:QualityControlUI,
             group_id:"cpm_manage_project_plans"
         },

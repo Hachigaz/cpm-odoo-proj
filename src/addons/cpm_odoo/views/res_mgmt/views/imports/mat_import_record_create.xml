@@ -80,6 +80,7 @@
                         <group cols="3" string="General Info">
                             <group colspan="2">
                                 <field name="warehouse_id" string="Warehouse" readonly="True"></field>
+                                <field name="title" string="Title"></field>
                                 <field name="supplier_id" string="Supplier" domain="[('supplier_type','in',['general_supplier','material_supplier'])]"></field>
                             </group>
                             <group colspan="1">

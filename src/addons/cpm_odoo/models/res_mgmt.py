@@ -138,11 +138,6 @@ class WarehouseInfo(models.Model):
         size = 1024
     )
     
-    assigned_manager_ids = fields.Many2many(
-        comodel_name = 'cpm_odoo.human_res_staff', 
-        string='assigned_manager'
-    )
-    
     mat_storage_rec_ids = fields.One2many(
         comodel_name = 'cpm_odoo.res_mgmt_mat_storage_rec', 
         inverse_name = 'warehouse_id', 
@@ -209,6 +204,89 @@ class WarehouseInfo(models.Model):
             
         pass
     
+    warehouse_manager_group_id = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='head_mgmt_group',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
+    warehouse_manager_ids = fields.Many2many(
+        comodel_name = 'cpm_odoo.human_res_staff', 
+        string='warehouse_manager',
+        relation='proj_warehouse_managers_tab',
+        column1="pid",
+        column2="sid"
+    )
+        
+    def add_warehouse_manager(self,staff_id):
+        for record in self:
+            staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+            staff_rec.write({
+                'groups_id':[[4,record.warehouse_manager_group_id.id]]
+            })
+        pass
+    
+    def rem_warehouse_manager(self,staff_id):
+        for record in self:
+            staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+            staff_rec.write({
+                'groups_id':[[3,record.warehouse_manager_group_id.id]]
+            })
+        pass
+    
+    def act_edit_info(self):
+        for rec in self:
+            return {
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'name': 'Edit Warehouse Info',
+                'res_model': 'cpm_odoo.res_mgmt_warehouse_info',
+                'res_id':rec.id,
+                'views':[(False,'form')],
+                'context': {
+                    
+                },
+                'target': 'new'
+            }
+    
+    @api.model_create_multi
+    def create(self, vals):
+        recs = super().create(vals)
+        for record in recs:
+            head_mgmt_gr_rec = self.env["res.groups"].sudo().create({
+                "id":f"cpm_gr.proj{record.id}",
+                "name":f"Warehouse Manager Group {record.id}",
+                "implied_ids":[self.env.ref("cpm_gr.warehouse_manager").id],
+                "comment":f"Warehouse Manager Group {record.id}"
+            })
+            
+            record.warehouse_manager_group_id = head_mgmt_gr_rec.id
+            
+            record.add_warehouse_manager(self.env["cpm_odoo.human_res_staff"].search(["&",["user_id",'=',self.env.user.id],"|",['active','=',True],['active','=',False]]).id)
+        
+        return recs
+    
+    def write(self, vals):
+        for rec in self:
+            staff_ids = vals.get('warehouse_manager_ids')
+            if staff_ids:
+                added_ids = [rec[1] for rec in staff_ids if rec[0] == 4]
+                deleted_ids = [rec[1] for rec in staff_ids if rec[0] == 3]
+                
+                add_staff_recs = self.env["cpm_odoo.human_res_staff"].sudo().browse(added_ids)
+                del_staff_recs = self.env["cpm_odoo.human_res_staff"].sudo().browse(deleted_ids)
+                
+                for srec in add_staff_recs:
+                    srec.write({
+                        'groups_id':[(4,rec.warehouse_manager_group_id.id)]
+                    })
+                    
+                for srec in del_staff_recs:
+                    srec.write({
+                        'groups_id':[(3,rec.warehouse_manager_group_id.id)]
+                    })
+        return super().write(vals)
     
 class Mat_StorageRecord(models.Model):
     _name = 'cpm_odoo.res_mgmt_mat_storage_rec'

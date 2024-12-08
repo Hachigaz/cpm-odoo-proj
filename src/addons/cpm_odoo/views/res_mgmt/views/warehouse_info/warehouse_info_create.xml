@@ -11,7 +11,7 @@
                         <group>
                             <field name="name" string="Name"></field>
                             <field name="address" string="Address"></field>
-                            <field name="assigned_manager_ids" string="Warehouse Managers"></field>
+                            <field name="warehouse_manager_ids" string="Warehouse Managers"></field>
                         </group>
                     </sheet>
                 </form>
