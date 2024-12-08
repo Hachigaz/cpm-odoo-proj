@@ -614,12 +614,12 @@ export class ProjectManagerUI extends Component{
     }
 
     static availablePages = [
-        {
-            id:ManagerOverviewPage.page_name,
-            name:"Overview",
-            page:ManagerOverviewPage,
-            group_id:""
-        },
+        // {
+        //     id:ManagerOverviewPage.page_name,
+        //     name:"Overview",
+        //     page:ManagerOverviewPage,
+        //     group_id:""
+        // },
         {
             id:FinanceManagerPage.page_name,
             name:"Finance Managers",

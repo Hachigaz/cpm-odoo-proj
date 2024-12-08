@@ -11,7 +11,7 @@
                             <group colspan="2">
                                 <field name="title" string="Title"></field>
                                 <field name="description" string="Description"></field>
-                                <field name="category_id" string="Category" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
+                                <field name="category_id" string="Category" options="{'no_create':False, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                             </group>
                             <group colspan="1">
                                 <field name="amount" string="Amount" widget="monetary"></field>

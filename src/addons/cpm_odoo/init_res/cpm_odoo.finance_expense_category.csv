@@ -1,0 +1,18 @@
+id,name,description,color
+cpm_exp_cat.staff_cuts,Staff Cuts,"Expenses related to staff reduction", #ABCABC
+cpm_exp_cat.materials,Materials,"Costs for raw materials used in construction", #FF5733
+cpm_exp_cat.labor,Labor Costs,"Expenses for workforce wages and salaries", #C70039
+cpm_exp_cat.equipment_rent,Equipment Rental,"Costs for renting construction equipment", #900C3F
+cpm_exp_cat.transportation,Transportation,"Expenses for transporting materials and equipment", #581845
+cpm_exp_cat.subcontractors,Subcontractors,"Costs for third-party contractors", #DAF7A6
+cpm_exp_cat.permits,Permits,"Expenses for required legal permits and fees", #FFC300
+cpm_exp_cat.insurance,Insurance,"Costs for insurance coverage during construction", #FF5733
+cpm_exp_cat.site_preparation,Site Preparation,"Expenses for clearing, grading, and preparing the construction site",#8E44AD
+cpm_exp_cat.testing,Testing,"Costs for testing materials, soil, and structures for quality control",#F39C12
+cpm_exp_cat.project_management,Project Management,"Expenses for overseeing the construction project",#16A085
+cpm_exp_cat.contingency,Contingency,"Funds set aside for unexpected expenses",#D35400
+cpm_exp_cat.cleaning,Site Cleaning,"Costs for cleaning up construction waste and debris",#E74C3C
+cpm_exp_cat.security,Security,"Expenses for securing the construction site",#2980B9
+cpm_exp_cat.insurance,Insurance,"Costs for insurance coverage during construction",#FF5733
+cpm_exp_cat.utilities,Utilities,"Costs for electricity, water, and other utilities on-site",#28B463
+cpm_exp_cat.site_preparation,Site Preparation,"Expenses for clearing, grading, and preparing the construction site",#8E44AD

@@ -106,6 +106,9 @@ Long description of module's purpose
         'init_res/cpm_odoo.res_mgmt_material.csv',
         'init_res/cpm_odoo.res_mgmt_material.csv',
         
+        
+        'init_res/cpm_odoo.finance_expense_category.csv',
+        
         'init_res/cpm_odoo.risk_mgmt_category.csv',
         'init_res/cpm_odoo.risk_mgmt_issue_category.csv',
         

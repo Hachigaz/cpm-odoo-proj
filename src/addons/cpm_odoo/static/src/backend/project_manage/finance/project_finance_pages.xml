@@ -46,7 +46,7 @@
     <t t-name="cpm_odoo.ProjectFinanceDashboardTab">
         <!-- Overview Section -->
         <section class="container my-5" id="finance-overview-section">
-            <h2 class="mb-4">Overview</h2>
+            <h2 class="fs-4 fw-bold mb-4">Overview</h2>
             <div class="row">
                 <div class="col-4">
                     <div class="card h-100">
@@ -233,7 +233,7 @@
                 <tr>
                     <th scope="col">Description</th>
                     <th scope="col">Amount</th>
-                    <th scope="col">Date</th>
+                    <th scope="col">Created At</th>
                     <th scope="col">Category</th>
                     <th scope="col">Status</th>
                 </tr>
@@ -259,7 +259,7 @@
                             </t>
                         </td>
                         <td scope="col">
-                            <t t-esc="item.status"/>
+                            <t t-esc="this.constructor.formatSnakeStr(item.status)"/>
                         </td>
                     </tr>
                 </t>
@@ -281,8 +281,8 @@
                 <tr>
                     <th scope="col">Description</th>
                     <th scope="col">Amount</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Category</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Investor</th>
                     <th scope="col">Status</th>
                 </tr>
             </thead>
@@ -299,15 +299,15 @@
                             <t t-esc="this.constructor.formatDateTime(item.date_created)"/>
                         </td>
                         <td scope="col">
-                            <t t-if="item.category_id">
-                               <t t-esc="item.category_id.name"/> 
+                            <t t-if="item.investor_id">
+                               <t t-esc="item.investor_id.name"/> 
                             </t>
                             <t t-else="">
                                 No Category
                             </t>
                         </td>
                         <td scope="col">
-                            <t t-esc="item.status"/>
+                            <t t-esc="this.constructor.formatSnakeStr(item.status)"/>
                         </td>
                     </tr>
                 </t>
@@ -319,7 +319,7 @@
         <!-- Project Overview Section -->
         <section class="container my-5">
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h2 class="m-0">Budgets</h2>
+                <h2 class="fs-2 fw-bold mb-4">Overview</h2>
                 <div class="btn-list">
                     <div class="btn btn-secondary me-2" t-on-click="()=>{this.act_add_investment_record()}">
                         New Investment Record
@@ -333,7 +333,7 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Total Investments</h5>
+                            <h5 class="fs-5 fw-bold card-title">Total Investments</h5>
                             <t t-if="this.page_data.cur_id">
                                 <p class="card-text"><t t-esc="this.constructor.formatCurrency(this.page_data.total_investments_value,this.page_data.cur_id)"/></p>
                             </t>
@@ -346,7 +346,7 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Total Expenses</h5>
+                            <h5 class="fs-5 fw-bold card-title">Total Expenses</h5>
                             <t t-if="this.page_data.cur_id">
                                 <p class="card-text"><t t-esc="this.constructor.formatCurrency(this.page_data.total_expenses_value,this.page_data.cur_id)"/></p>
                             </t>
@@ -359,7 +359,7 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Remaining Budget</h5>
+                            <h5 class="fs-5 fw-bold card-title">Current Budget</h5>
                             <t t-if="this.page_data.cur_id">
                                 <p class="card-text"><t t-esc="this.constructor.formatCurrency(this.page_data.total_investments_value - this.page_data.total_expenses_value,this.page_data.cur_id)"/></p>
                             </t>
@@ -373,14 +373,14 @@
         </section>
 
         <section class="container my-5">
-            <h2 class="mb-4">Investment Details</h2>
+            <h2 class="fs-2 fw-bold mb-4">Investment Details</h2>
             <FinanceInvestmentItemList finance_id="this.finance_id" extra_domain="[['project_finance_id','=',this.finance_id]]">
 
             </FinanceInvestmentItemList>
         </section>
         
         <section class="container my-5">
-            <h2 class="mb-4">Expense Details</h2>
+            <h2 class="fs-2 fw-bold mb-4">Expense Details</h2>
             <FinanceExpenseItemList finance_id="this.finance_id" extra_domain="[['project_finance_id','=',this.finance_id]]">
 
             </FinanceExpenseItemList>

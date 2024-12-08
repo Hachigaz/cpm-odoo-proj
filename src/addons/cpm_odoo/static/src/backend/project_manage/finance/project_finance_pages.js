@@ -1,7 +1,7 @@
 /** @odoo-module **/
 import { GanttDisplay, ItemList, ListFilter, SearchBar} from "../../components/components";
 import { useService } from "@web/core/utils/hooks";
-import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, joinDatas} from "../../components/component_utils";
+import { storePageContext,getPageContext,moveToPage,storePageInfo,getPageInfo, formatDate, formatDateTime, joinDatas, formatSnakeStr} from "../../components/component_utils";
 import { Component, onWillStart, onMounted, useEffect, useState, useRef} from "@odoo/owl";
 import { formatCurrency, processTransactionList } from "./components";
 
@@ -10,6 +10,7 @@ import { formatCurrency, processTransactionList } from "./components";
 class ProjectFinanceDashboardTab extends Component {
     static template = "cpm_odoo.ProjectFinanceDashboardTab"
     static formatDateTime = formatDateTime
+    static formatSnakeStr = formatSnakeStr
     setup(){
         this.finance_id = this.props.context_data.finance_id
 
@@ -586,6 +587,7 @@ class FinanceInvestmentItemList extends ItemList{
     }
     static formatDateTime = formatDateTime
     static formatCurrency = formatCurrency
+    static formatSnakeStr = formatSnakeStr
     setup(){
         super.init()
 
@@ -658,6 +660,7 @@ class FinanceExpenseItemList extends ItemList{
     }
     static formatDateTime = formatDateTime
     static formatCurrency = formatCurrency
+    static formatSnakeStr = formatSnakeStr
     setup(){
         super.init()
 
@@ -718,6 +721,8 @@ class FinanceBudgetsTab extends Component {
         FinanceExpenseItemList
     }
 
+    static formatSnakeStr = formatSnakeStr
+    
     setup(){
         this.finance_id = this.props.context_data.finance_id
 

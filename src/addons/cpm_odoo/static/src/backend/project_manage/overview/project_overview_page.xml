@@ -70,7 +70,6 @@
                                                         <p class="card-text text-primary mb-2">Total Investments:
                                                             <t t-esc="investor.investments?this.constructor.formatCurrency(investor.investments.total_investments,investor.investments.cur_id):'No Investment'"/>
                                                         </p>
-                                                        <a href="#" class="btn btn-outline-primary btn-sm">Contact</a>
                                                     </div>
                                                 </div>
                                             </div>
