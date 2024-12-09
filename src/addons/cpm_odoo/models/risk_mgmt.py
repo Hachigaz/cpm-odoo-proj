@@ -234,12 +234,6 @@ class Issue(models.Model):
         string="Is Editable", 
         store=False
     )
-        
-    resolved_date = fields.Date(
-        compute = "_compute_get_date",
-        string = "Resolved Date",
-        store=True
-    )
     
     project_id = fields.Many2one(
         comodel_name = "cpm_odoo.root_project",

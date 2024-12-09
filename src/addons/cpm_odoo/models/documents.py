@@ -338,7 +338,6 @@ class ContractSet(models.Model):
         return super().unlink()
     
     
-    #FIX ATTACH WHEN CREATE DOC IN TASK VIEW
     @api.model_create_multi
     def create(self, vals):
         recs = super().create(vals)
