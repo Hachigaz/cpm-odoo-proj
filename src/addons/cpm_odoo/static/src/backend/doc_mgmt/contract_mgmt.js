@@ -185,7 +185,7 @@ export class ContractSetItemList extends ItemList{
 
         this.page_data.model_name = "cpm_odoo.contracts_contract_set"
         this.page_data.column_list = []
-        this.page_data.order_by_str = " updated_at desc, name asc"
+        this.page_data.order_by_str = "document_count, updated_at desc, name asc"
         this.page_data.join_cols = [
             ['contractor_id','cpm_odoo.stakeholders_contractor']
         ]

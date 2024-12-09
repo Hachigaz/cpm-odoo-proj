@@ -273,7 +273,7 @@ export class DocumentSetItemList extends ItemList{
 
         this.page_data.model_name = "cpm_odoo.documents_document_set"
         this.page_data.column_list = []
-        this.page_data.order_by_str = "category_id asc, updated_at desc, name asc"
+        this.page_data.order_by_str = "document_count desc, updated_at desc, name asc,category_id asc"
         this.page_data.join_cols = [
             ['category_id','cpm_odoo.documents_document_category']
         ]
@@ -336,6 +336,27 @@ class GeneralDocumentTab extends Component{
 
     static components={
         DocumentSetItemList
+    }
+
+    setup(){
+        this.action = useService("action")
+        this.orm = useService("orm")
+    }
+
+    async act_create_document(){
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Create Document Set',
+            res_model: 'cpm_odoo.documents_document_set',  // Model name
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context: { 
+                'add_doc_to_task': this.props.task_info.id,
+                'project_id':this.props.context_data.project_id,
+                'default_is_project_specicic':False
+            },  // Optional: default values for fields
+        });
     }
 }
 
