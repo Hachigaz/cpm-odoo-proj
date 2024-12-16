@@ -110,6 +110,12 @@ cpm_ma.task_mem_view_issue_categories,cpm_ma.task_mem_view_issue_categories,cpm_
 cpm_ma.task_mem_view_risks,cpm_ma.task_mem_view_risks,cpm_odoo.risk_mgmt,cpm_gr.project_mem_gr,1,0,0,0
 cpm_ma.task_mem_view_risk_categories,cpm_ma.task_mem_view_risk_categories,cpm_odoo.risk_mgmt_category,cpm_gr.project_mem_gr,1,0,0,0
 
+cpm_ma.proj_risk_mgmt_manage_issue,cpm_ma.risk_mgmt_manage_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.proj_risk_mgmt_manage_issue_categories,cpm_ma.risk_mgmt_manage_issue_categories,cpm_odoo.risk_mgmt_issue_category,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.proj_risk_mgmt_manage_risk,cpm_ma.risk_mgmt_manage_risk,cpm_odoo.risk_mgmt,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.proj_risk_mgmt_manage_risk_categories,cpm_ma.risk_mgmt_manage_risk_categories,cpm_odoo.risk_mgmt_category,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.proj_risk_mgmt_manage_solution,cpm_ma.risk_mgmt_manage_solution,cpm_odoo.risk_mgmt_solution,cpm_gr.project_mgmt_gr,1,0,0,0
+
 
 cpm_ma.warehouse_manager_res_mgmt_equipment,warehouse_manager_res_mgmt_equipment,cpm_odoo.res_mgmt_equipment,cpm_gr.warehouse_manager,1,1,1,1
 cpm_ma.warehouse_manager_res_mgmt_eqp_type,warehouse_manager_res_mgmt_eqp_type,cpm_odoo.res_mgmt_eqp_type,cpm_gr.warehouse_manager,1,1,1,1

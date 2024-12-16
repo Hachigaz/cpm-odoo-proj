@@ -545,7 +545,7 @@
                                                     </div>
                                                     <div class="col-9 d-flex align-items-center">
                                                         <div class="staff-info-wrapper rounded px-2 py-2 w-100 h-100">
-                                                            <h5 class="card-title fs-5">
+                                                            <h5 class="fs-5 fw-bold card-title">
                                                                 <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
                                                                 <t t-esc="staff.first_name + ' ' +staff.last_name"/>
                                                             </h5>
@@ -625,7 +625,7 @@
                                                     </div>
                                                     <div class="col-9 d-flex align-items-center">
                                                         <div class="contractor-info-wrapper rounded px-2 py-2 w-100 h-100">
-                                                            <h5 class="card-title">
+                                                            <h5 class="fs-5 fw-bold card-title">
                                                                 <t t-esc="contractor.contractor_id.name"/>
                                                             </h5>
                                                             <!-- <div class="d-flex justify-content-between">
@@ -718,7 +718,7 @@
                             <div class="grid gap-3 staff-card-list" id="assign-list">
                                 <t t-foreach="page_data.item_list" t-as="staff" t-key="staff.id">
                                     <div class="card g-col-4" t-att-id="'staff-'+staff.id">
-                                        <div class="card-body">
+                                        <div class="card-body p-2">
                                             <div class="row mb-3">
                                                 <div class="col-3 d-flex align-items-center">
                                                     <div class="img-wrapper w-100 h-100">
@@ -730,8 +730,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-9 d-flex align-items-center">
-                                                    <div class="staff-info-wrapper bg-light rounded px-2 py-2 w-100 h-100">
-                                                        <h5 class="card-title">
+                                                    <div class="staff-info-wrapper rounded px-2 py-2 w-100 h-100">
+                                                        <h5 class="fs-5 fw-bold card-title">
                                                             <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
                                                             <t t-esc="staff.first_name + ' ' +staff.last_name"/>
                                                         </h5>
@@ -829,7 +829,7 @@
                             <div class="grid gap-3 contractor-card-list" id="assign-list">
                                 <t t-foreach="page_data.item_list" t-as="contractor" t-key="contractor.id">
                                     <div class="card g-col-4" t-att-id="'contractor-'+contractor.id">
-                                        <div class="card-body">
+                                        <div class="card-body p-2">
                                             <div class="row mb-3">
                                                 <div class="col-3 d-flex align-items-center">
                                                     <div class="img-wrapper w-100 h-100">
@@ -841,8 +841,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-9 d-flex align-items-center">
-                                                    <div class="contractor-info-wrapper bg-light rounded px-2 py-2 w-100 h-100">
-                                                        <h5 class="card-title">
+                                                    <div class="contractor-info-wrapper rounded px-2 py-2 w-100 h-100">
+                                                        <h5 class="fs-5 fw-bold card-title">
                                                             <!-- <i class="fas fa-circle fa-sm" style="color: red; font-size:0.6rem; margin-right: 8px;"></i> -->
                                                             <t t-esc="contractor.name"/>
                                                         </h5>

@@ -35,7 +35,7 @@
             <div class="container mt-5">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="px-2 fs-4 fw-bold">
-                        Project Risks And Safety
+                        Project Risks
                     </div>
                     <div class="btn-list">
                         <button class="btn btn-secondary" t-on-click="()=>{this.act_create_risk()}">

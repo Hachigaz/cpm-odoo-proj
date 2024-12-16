@@ -598,6 +598,16 @@ class Project(models.Model):
         })
         pass
     
+    @api.model
+    def act_remove_contract_manager(self,project_id,staff_id):
+        record = self.env["cpm_odoo.root_project"].browse(project_id)
+        staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
+        staff_rec.write({
+            'groups_id':[[3,record.contract_group_id.id]]
+        })
+        return True
+        pass
+    
     risk_issue_group_id = fields.Many2one(
         comodel_name = 'res.groups', 
         string='risk_issue_group_id',
@@ -629,14 +639,15 @@ class Project(models.Model):
         pass
     
     @api.model
-    def act_remove_contract_manager(self,project_id,staff_id):
+    def act_remove_risk_issue_manager(self,project_id,staff_id):
         record = self.env["cpm_odoo.root_project"].browse(project_id)
         staff_rec = self.env["cpm_odoo.human_res_staff"].sudo().search(["&",['id','=',staff_id],"|",['active','=',True],['active','=',False]])[0]
         staff_rec.write({
-            'groups_id':[[3,record.contract_group_id.id]]
+            'groups_id':[[3,record.risk_issue_group_id.id]]
         })
         return True
         pass
+    
     
     qa_group_id = fields.Many2one(
         comodel_name = 'res.groups', 
@@ -648,7 +659,7 @@ class Project(models.Model):
     @api.model
     def act_get_qa_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
         proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
-        uids = [user.id for user in proj_rec.qa_group_id.users]
+        uids = [user.id for user in proj_rec.qa_group_id.users if user not in proj_rec.planning_group_id.users or user not in proj_rec.head_mgmt_group_id.users]
         staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
             domain + [['user_id','in',uids]],
             cols,
@@ -806,6 +817,8 @@ class Project(models.Model):
                 "comment":f"Project Planning Group {record.short_name}"
             })
             
+            record.planning_group_id = planning_group_id.id
+            
             #qa group
             qa_group_id = self.env["res.groups"].sudo().create({
                 "id":f"cpm_gr.proj{record.id}",
@@ -813,6 +826,8 @@ class Project(models.Model):
                 "implied_ids":[mgmt_gr_rec.id],
                 "comment":f"Project Planning Group {record.short_name}"
             })
+            
+            record.qa_group_id = qa_group_id.id
             
             #risk_issue group
             risk_issue_group_id = self.env["res.groups"].sudo().create({
@@ -822,7 +837,7 @@ class Project(models.Model):
                 "comment":f"Project Planning Group {record.short_name}"
             })
             
-            record.planning_group_id = planning_group_id.id
+            record.risk_issue_group_id = risk_issue_group_id.id
             
             record.add_head_manager(self.env["cpm_odoo.human_res_staff"].search(["&",["user_id",'=',self.env.user.id],"|",['active','=',True],['active','=',False]]).id)
             # for user in record.head_manager_ids:

@@ -17,17 +17,17 @@ cpm_gr.project_head_mem_gr,cpm_gr.project_head_mem_gr,Task Head Member Group,cpm
 
 cpm_gr.project_head_manager,cpm_gr.project_head_manager,Head Manager,"cpm_gr_cat.cpm_groups","cpm_gr.project_mgmt_gr,cpm_gr.project_mem_gr,cpm_gr.manage_project_plans,cpm_gr.manage_project_finances,cpm_gr.manage_project_documents"
 
-cpm_gr.create_and_edit_projects,cpm_gr.create_and_edit_projects,Create and Edit Projects,cpm_gr_cat.cpm_groups,"cpm_gr.project_mgmt_gr,cpm_gr.project_mem_gr,cpm_gr.manage_project_plans,cpm_gr.manage_project_finances,cpm_gr.manage_project_documents",
+cpm_gr.create_and_edit_projects,Create and Edit Projects,Create and Edit Projects,cpm_gr_cat.manage_groups,"cpm_gr.project_mgmt_gr,cpm_gr.project_mem_gr,cpm_gr.manage_project_plans,cpm_gr.manage_project_finances,cpm_gr.manage_project_documents",
 
-cpm_gr.manage_issues,cpm_gr.manage_issues,Manage Issues,cpm_gr_cat.cpm_groups,,
-cpm_gr.user_issues,cpm_gr.user_issues,User Issues,cpm_gr_cat.cpm_groups,,
+cpm_gr.manage_issues,Manage Issues,Manage Issues,cpm_gr_cat.manage_groups,,
+cpm_gr.user_issues,View Issues,User Issues,cpm_gr_cat.manage_groups,,
 
-cpm_gr.hr_manage,cpm_gr.hr_manage,HR Manage Group,cpm_gr_cat.cpm_groups,,
+cpm_gr.hr_manage,Manage Company HR,HR Manage Group,cpm_gr_cat.manage_groups,,
 
-cpm_gr.stk_manage,cpm_gr.stk_manage,Stakeholders Manage Group,cpm_gr_cat.cpm_groups,,
+cpm_gr.stk_manage,Manage Stakeholders,Stakeholders Manage Group,cpm_gr_cat.manage_groups,,
 
 cpm_gr.qc,cpm_gr.qc,Quality Control Group,cpm_gr_cat.cpm_groups,,
 
 cpm_gr.warehouse_manager,cpm_gr.warehouse_manager,Warehouse Manager,"cpm_gr_cat.cpm_groups",""
-cpm_gr.warehouse_create,cpm_gr.warehouse_create,Warehouse Create,"cpm_gr_cat.cpm_groups","cpm_gr.warehouse_manager"
+cpm_gr.warehouse_create,Create and Edit Warehouses,Warehouse Create,"cpm_gr_cat.manage_groups","cpm_gr.warehouse_manager"
 cpm_gr.warehouse_deliverer,cpm_gr.warehouse_deliverer,Warehouse Delivery,"cpm_gr_cat.cpm_groups",""

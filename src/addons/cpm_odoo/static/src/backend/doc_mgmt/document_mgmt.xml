@@ -85,6 +85,11 @@
     </t>
 
     <t t-name="cpm_odoo.ProjectDocumentTab">
+        <div class="btn-list mb-2">
+            <div class="btn btn-secondary" t-on-click="()=>{this.act_create_document()}">
+                Add Document
+            </div>
+        </div>
         <DocumentSetItemList extra_domain="[['is_project_specific','=',true],['project_doc_mgmt_id','=',this.props.context_data.doc_id]]">
             
         </DocumentSetItemList>

@@ -273,6 +273,26 @@ class ProjectContractTab extends Component{
     static components={
         ContractSetItemList
     }
+
+    setup(){
+        this.action = useService("action")
+        this.orm = useService("orm")
+    }
+
+    async act_create_document(){
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Create Contract Set',
+            res_model: 'cpm_odoo.contracts_contract_set',  // Model name
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context: { 
+                'project_id':this.props.context_data.project_id,
+                'default_is_project_specicic':false
+            },  // Optional: default values for fields
+        });
+    }
 }
 
 class GeneralContractTab extends Component{
@@ -281,6 +301,26 @@ class GeneralContractTab extends Component{
 
     static components={
         ContractSetItemList
+    }
+
+    setup(){
+        this.action = useService("action")
+        this.orm = useService("orm")
+    }
+
+    async act_create_document(){
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Create Contract Set',
+            res_model: 'cpm_odoo.contracts_contract_set',  // Model name
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context: { 
+                'project_id':this.props.context_data.project_id,
+                'default_is_project_specicic':false
+            },  // Optional: default values for fields
+        });
     }
 }
 

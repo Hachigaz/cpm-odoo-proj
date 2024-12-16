@@ -39,7 +39,6 @@
                     <sheet>
                         <group string="Department Info">
                             <field name="name"/>
-                            <field name="department_role_id"/>
                         </group>
                     </sheet>
                 </form>

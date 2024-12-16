@@ -859,7 +859,7 @@ class Task(models.Model):
         for rec in recs:
             staff_rec = self.env["cpm_odoo.human_res_staff"].find_staff_by_user_id(self.env.user.id)
             rec.add_log(
-                f"{staff_rec.name if staff_rec else ''} created the task",
+                f"{staff_rec.get('name') if staff_rec else ''} created the task",
                 staff_rec.get('id') if staff_rec else None
             )
 

@@ -119,7 +119,8 @@ class Mat_ImportRecord(models.Model):
     def write(self, vals):
         for record in self:
             if record.is_verified:
-                raise ValidationError("Cannot edit verified import record.")
+                # raise ValidationError("Cannot edit verified import record.")
+                pass
         return super().write(vals)
     
     @api.model_create_multi
@@ -234,7 +235,8 @@ class Eqp_ImportRecord(models.Model):
     def write(self, vals):
         for record in self:
             if record.is_verified:
-                raise ValidationError("Cannot edit verified import record.")
+                # raise ValidationError("Cannot edit verified import record.")
+                pass
         return super().write(vals)
     
     @api.model_create_multi
@@ -359,12 +361,6 @@ class Mat_ExportRecord(models.Model):
         string='exp_det'
     )
     
-    trans_exp_det_ids = fields.One2many(
-        'cpm_odoo.logistics_mat_exp_rec_det_transient', 
-        'exp_rec_id', 
-        string='trans_exp_det'
-    )
-    
     @api.constrains('exp_det_ids')
     def _constrains_exp_det_ids(self):
         dets = self.exp_det_ids
@@ -455,12 +451,6 @@ class Eqp_ExportRecord(models.Model):
         'cpm_odoo.logistics_eqp_exp_rec_det', 
         'exp_rec_id', 
         string='exp_det'
-    )
-    
-    trans_exp_det_ids = fields.One2many(
-        'cpm_odoo.logistics_eqp_exp_rec_det_transient', 
-        'exp_rec_id', 
-        string='trans_exp_det'
     )
     
     # @api.model_create_multi

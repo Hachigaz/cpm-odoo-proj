@@ -23,7 +23,7 @@ export class ImportRecordItemList extends ItemList{
             this.current_render_content = 'mat'
             this.page_data.model_name = 'cpm_odoo.logistics_mat_imp_rec'
         }
-        this.page_data.column_list = ['id','created_by','date_created','imp_det_ids','is_verified']
+        this.page_data.column_list = ['id','title','verified_at','created_by','date_created','imp_det_ids','is_verified']
         this.page_data.order_by_str = "date_created desc"
         this.page_data.join_cols =[
             

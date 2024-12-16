@@ -7,10 +7,10 @@
             <field name="model">cpm_odoo.contracts_contract_set</field>
             <field name="arch" type="xml">
                 <form string="context.get('action_name')">
-                    <sheet string="Document Set Info">
+                    <sheet string="Contract Set Info">
                         <group col="3">
                             <group colspan="2">
-                                <field name="name" string="Document Name"></field>
+                                <field name="name" string="Contract Name"></field>
                                 <field name="contractor_id" string="Contractor" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                             </group>
                             <group colspan="2">
@@ -28,10 +28,10 @@
             <field name="model">cpm_odoo.contracts_contract_set</field>
             <field name="arch" type="xml">
                 <form string="context.get('action_name')">
-                    <sheet string="Document Set Info">
+                    <sheet string="Contract Set Info">
                         <group col="3">
                             <group colspan="2">
-                                <field name="name" string="Document Name"></field>
+                                <field name="name" string="Contract Name"></field>
                                 <field name="contractor_id" readonly="True" string="Contractor" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                             </group>
                             <group colspan="2">

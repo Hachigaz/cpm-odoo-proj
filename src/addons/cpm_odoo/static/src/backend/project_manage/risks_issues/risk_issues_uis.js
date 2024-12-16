@@ -384,7 +384,7 @@ export class RiskIssuesUI extends Component{
     static availablePages = [
         {
             id:RiskAndSafetyPage.page_name,
-            name:"Project Risks and Safety",
+            name:"Project Risks",
             page:RiskAndSafetyPage,
             group_id:""
         },

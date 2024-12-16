@@ -140,7 +140,7 @@ export class ExportRecordItemList extends ItemList{
             await this.action.doAction({
                 type: 'ir.actions.act_window',
                 name: 'Record Details',
-                res_model: 'cpm_odoo.logistics_mat_exp_rec',
+                res_model: 'cpm_odoo.logistics_eqp_exp_rec',
                 res_id: id,
                 view_mode: 'form',
                 views: [[false, 'form']],

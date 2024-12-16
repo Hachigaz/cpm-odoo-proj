@@ -101,6 +101,7 @@ class FinanceManagerPage extends ItemList{
             view_mode: 'tree',
             views: [[view_id, 'tree']],
             domain:[['id','not in',this.manager_id_list]],
+            flags: {'selectable': false},
             target: 'new',
             context:{
                 'action_model_name':'cpm_odoo.root_project',
@@ -218,6 +219,7 @@ class PlanningManagerPage extends ItemList{
             res_model: 'cpm_odoo.human_res_staff',
             view_mode: 'tree',
             views: [[view_id, 'tree']],
+            flags: {'selectable': false},
             domain:[['id','not in',this.manager_id_list]],
             target: 'new',
             context:{
@@ -337,6 +339,7 @@ class DocumentManagerPage extends ItemList{
             view_mode: 'tree',
             views: [[view_id, 'tree']],
             domain:[['id','not in',this.manager_id_list]],
+            flags: {'selectable': false},
             target: 'new',
             context:{
                 'action_model_name':'cpm_odoo.root_project',
@@ -455,6 +458,7 @@ class QAManagerPage extends ItemList{
             view_mode: 'tree',
             views: [[view_id, 'tree']],
             domain:[['id','not in',this.manager_id_list]],
+            flags: {'selectable': false},
             target: 'new',
             context:{
                 'action_model_name':'cpm_odoo.root_project',
@@ -573,6 +577,7 @@ class ContractManagerPage extends ItemList{
             view_mode: 'tree',
             views: [[view_id, 'tree']],
             domain:[['id','not in',this.manager_id_list]],
+            flags: {'selectable': false},
             target: 'new',
             context:{
                 'action_model_name':'cpm_odoo.root_project',

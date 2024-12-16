@@ -328,6 +328,26 @@ class ProjectDocumentTab extends Component{
     static components={
         DocumentSetItemList
     }
+
+    setup(){
+        this.action = useService("action")
+        this.orm = useService("orm")
+    }
+
+    async act_create_document(){
+        await this.action.doAction({
+            type: 'ir.actions.act_window',
+            name: 'Create Document Set',
+            res_model: 'cpm_odoo.documents_document_set',  // Model name
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new',
+            context: { 
+                'project_id':this.props.context_data.project_id,
+                'default_is_project_specicic':false
+            },  // Optional: default values for fields
+        });
+    }
 }
 
 class GeneralDocumentTab extends Component{
@@ -352,9 +372,8 @@ class GeneralDocumentTab extends Component{
             views: [[false, 'form']],
             target: 'new',
             context: { 
-                'add_doc_to_task': this.props.task_info.id,
                 'project_id':this.props.context_data.project_id,
-                'default_is_project_specicic':False
+                'default_is_project_specicic':false
             },  // Optional: default values for fields
         });
     }
@@ -394,13 +413,13 @@ export class DocumentManagementTab extends Component{
             name:"General Documents",
             page:GeneralDocumentTab,
             group_id:""
-        },
-        {
-            id:DocumentCategoryTab.page_name,
-            name:"Document Categories",
-            page:DocumentCategoryTab,
-            group_id:""
         }
+        // {
+        //     id:DocumentCategoryTab.page_name,
+        //     name:"Document Categories",
+        //     page:DocumentCategoryTab,
+        //     group_id:""
+        // }
     ]
 
     setup(){
