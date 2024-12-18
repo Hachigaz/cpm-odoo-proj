@@ -1,5 +1,5 @@
 id,name,model_id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-cpm_ma.view_projects,cpm_ma.view_projects,cpm_odoo.root_project,base.group_user,1,0,0,0
+cpm_ma.view_projects,cpm_ma.view_projects,cpm_odoo.root_project,base.group_user,1,1,0,0
 
 cpm_ma.create_and_edit_projects,cpm_ma.create_and_edit_projects,cpm_odoo.root_project,cpm_gr.create_and_edit_projects,1,1,1,0
 cpm_ma.create_and_edit_proj_doc,cpm_ma.create_and_edit_proj_doc,cpm_odoo.root_project_doc_mgmt,cpm_gr.create_and_edit_projects,1,1,1,0

@@ -393,6 +393,13 @@ class Project(models.Model):
         ondelete="restrict"
     )
     
+    proj_mgmt_group_id2 = fields.Many2one(
+        comodel_name = 'res.groups', 
+        string='proj_mgmt_group2',
+        readonly=True,
+        ondelete="restrict"
+    )
+    
     proj_mem_group_id = fields.Many2one(
         comodel_name = 'res.groups', 
         string='proj_mem_group',
@@ -458,8 +465,9 @@ class Project(models.Model):
     @api.model
     def act_get_finance_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
         proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
-        uids = [user.id for user in proj_rec.finance_group_id.users if user not in proj_rec.head_mgmt_group_id.users]
-        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+        proj_rec = proj_rec.sudo()
+        uids = [user.id for user in proj_rec.finance_group_id.sudo().users if user not in proj_rec.head_mgmt_group_id.sudo().users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].sudo().search_read(
             domain + [['user_id','in',uids]],
             cols,
             offset,
@@ -498,8 +506,9 @@ class Project(models.Model):
     @api.model
     def act_get_planning_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
         proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
-        uids = [user.id for user in proj_rec.planning_group_id.users if user not in proj_rec.head_mgmt_group_id.users]
-        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+        proj_rec = proj_rec.sudo()
+        uids = [user.id for user in proj_rec.planning_group_id.sudo().users if user not in proj_rec.head_mgmt_group_id.sudo().users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].sudo().search_read(
             domain + [['user_id','in',uids]],
             cols,
             offset,
@@ -538,8 +547,9 @@ class Project(models.Model):
     @api.model
     def act_get_document_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
         proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
-        uids = [user.id for user in proj_rec.document_group_id.users if user not in proj_rec.planning_group_id.users or user not in proj_rec.head_mgmt_group_id.users]
-        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+        proj_rec = proj_rec.sudo()
+        uids = [user.id for user in proj_rec.document_group_id.sudo().users if user not in proj_rec.head_mgmt_group_id.sudo().users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].sudo().search_read(
             domain + [['user_id','in',uids]],
             cols,
             offset,
@@ -578,8 +588,9 @@ class Project(models.Model):
     @api.model
     def act_get_contract_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
         proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
-        uids = [user.id for user in proj_rec.contract_group_id.users if user not in proj_rec.planning_group_id.users or user not in proj_rec.head_mgmt_group_id.users]
-        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+        proj_rec = proj_rec.sudo()
+        uids = [user.id for user in proj_rec.contract_group_id.sudo().users if user not in proj_rec.head_mgmt_group_id.sudo().users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].sudo().search_read(
             domain + [['user_id','in',uids]],
             cols,
             offset,
@@ -618,8 +629,9 @@ class Project(models.Model):
     @api.model
     def act_get_risk_issue_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
         proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
-        uids = [user.id for user in proj_rec.risk_issue_group_id.users if user not in proj_rec.planning_group_id.users or user not in proj_rec.head_mgmt_group_id.users]
-        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+        proj_rec = proj_rec.sudo()
+        uids = [user.id for user in proj_rec.risk_issue_group_id.sudo().users if user not in proj_rec.head_mgmt_group_id.sudo().users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].sudo().search_read(
             domain + [['user_id','in',uids]],
             cols,
             offset,
@@ -659,8 +671,9 @@ class Project(models.Model):
     @api.model
     def act_get_qa_managers(self,project_id,domain=[],cols=[],offset=0,count=0,order=""):
         proj_rec = self.env["cpm_odoo.root_project"].browse(project_id)
-        uids = [user.id for user in proj_rec.qa_group_id.users if user not in proj_rec.planning_group_id.users or user not in proj_rec.head_mgmt_group_id.users]
-        staff_recs = self.env["cpm_odoo.human_res_staff"].search_read(
+        proj_rec = proj_rec.sudo()
+        uids = [user.id for user in proj_rec.qa_group_id.sudo().users if user not in proj_rec.head_mgmt_group_id.sudo().users]
+        staff_recs = self.env["cpm_odoo.human_res_staff"].sudo().search_read(
             domain + [['user_id','in',uids]],
             cols,
             offset,
@@ -720,10 +733,10 @@ class Project(models.Model):
         
     def get_user_mgmt_groups(self,user_id):
         user_rec = self.env["res.users"].sudo().browse(user_id)
-        
+        user_rec = user_rec.sudo()
         for record in self:
             result = {}
-            if record.head_mgmt_group_id.id in user_rec.groups_id.ids:
+            if record.head_mgmt_group_id.id in user_rec.sudo().groups_id.ids:
                 result['finance_group_id']=True
                 result['planning_group_id']=True
                 result['document_group_id']=True
@@ -732,12 +745,12 @@ class Project(models.Model):
                 result['risk_issue_group_id']=True
                 result['head_mgmt_group_id'] = True
             else:
-                result['finance_group_id']=True if record.finance_group_id.id in user_rec.groups_id.ids else False
-                result['planning_group_id']=True if record.planning_group_id.id in user_rec.groups_id.ids else False
-                result['document_group_id']=True if record.document_group_id.id in user_rec.groups_id.ids else False
-                result['contract_group_id']=True if record.contract_group_id.id in user_rec.groups_id.ids else False
-                result['qa_group_id']=True if record.qa_group_id.id in user_rec.groups_id.ids else False
-                result['risk_issue_group_id']=True if record.risk_issue_group_id.id in user_rec.groups_id.ids else False
+                result['finance_group_id']=True if record.finance_group_id.id in user_rec.sudo().groups_id.ids else False
+                result['planning_group_id']=True if record.planning_group_id.id in user_rec.sudo().groups_id.ids else False
+                result['document_group_id']=True if record.document_group_id.id in user_rec.sudo().groups_id.ids else False
+                result['contract_group_id']=True if record.contract_group_id.id in user_rec.sudo().groups_id.ids else False
+                result['qa_group_id']=True if record.qa_group_id.id in user_rec.sudo().groups_id.ids else False
+                result['risk_issue_group_id']=True if record.risk_issue_group_id.id in user_rec.sudo().groups_id.ids else False
                 result['head_mgmt_group_id'] = False
             return result
         
@@ -752,11 +765,22 @@ class Project(models.Model):
             record.proj_doc_id.project_id = record.id
             
             
-            mgmt_gr_rec = self.env["res.groups"].sudo().create({
+            mgmt_gr_rec2 = self.env["res.groups"].sudo().create({
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Mgmt Group {record.id}",
                 "implied_ids":[self.env.ref("cpm_gr.project_mgmt_gr").id],
-                "comment":f"Project Management Group {record.short_name}"
+                "comment":f"Project Management Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
+            })
+            
+            record.proj_mgmt_group_id2 = mgmt_gr_rec2.id
+            
+            mgmt_gr_rec = self.env["res.groups"].sudo().create({
+                "id":f"cpm_gr.proj{record.id}",
+                "name":f"Project Manager Mgmt Group {record.id}",
+                "implied_ids":[mgmt_gr_rec2.id],
+                "comment":f"Project Manager Management Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
             })
             
             record.proj_mgmt_group_id = mgmt_gr_rec.id
@@ -765,7 +789,8 @@ class Project(models.Model):
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Member Group {record.id}",
                 "implied_ids":[self.env.ref("cpm_gr.project_mem_gr").id],
-                "comment":f"Project Member Group {record.short_name}"
+                "comment":f"Project Member Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
             })
             
             record.proj_mem_group_id = mem_gr_rec.id
@@ -773,8 +798,9 @@ class Project(models.Model):
             head_mgmt_gr_rec = self.env["res.groups"].sudo().create({
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Head Manager Group {record.id}",
-                "implied_ids":[self.env.ref("cpm_gr.project_head_manager").id,mgmt_gr_rec.id],
-                "comment":f"Project Header Manager Group {record.short_name}"
+                "implied_ids":[self.env.ref("cpm_gr.project_head_manager").id,mgmt_gr_rec2.id],
+                "comment":f"Project Head Manager Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
             })
             
             record.head_mgmt_group_id = head_mgmt_gr_rec.id
@@ -784,7 +810,8 @@ class Project(models.Model):
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Document Group {record.id}",
                 "implied_ids":[mgmt_gr_rec.id],
-                "comment":f"Project Document Group {record.short_name}"
+                "comment":f"Project Document Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
             })
             
             record.document_group_id = document_group_id.id
@@ -794,7 +821,8 @@ class Project(models.Model):
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Contract Group {record.id}",
                 "implied_ids":[mgmt_gr_rec.id],
-                "comment":f"Project Contract Group {record.short_name}"
+                "comment":f"Project Contract Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
             })
             
             record.contract_group_id = contract_group_id.id
@@ -804,7 +832,8 @@ class Project(models.Model):
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Finance Group {record.id}",
                 "implied_ids":[mgmt_gr_rec.id],
-                "comment":f"Project Finance Group {record.short_name}"
+                "comment":f"Project Finance Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
             })
             
             record.finance_group_id = finance_group_id.id
@@ -814,7 +843,8 @@ class Project(models.Model):
                 "id":f"cpm_gr.proj{record.id}",
                 "name":f"Project Planning Group {record.id}",
                 "implied_ids":[mgmt_gr_rec.id,contract_group_id.id,document_group_id.id],
-                "comment":f"Project Planning Group {record.short_name}"
+                "comment":f"Project Planning Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
             })
             
             record.planning_group_id = planning_group_id.id
@@ -822,9 +852,10 @@ class Project(models.Model):
             #qa group
             qa_group_id = self.env["res.groups"].sudo().create({
                 "id":f"cpm_gr.proj{record.id}",
-                "name":f"Project Planning Group {record.id}",
+                "name":f"Project QA Group {record.id}",
                 "implied_ids":[mgmt_gr_rec.id],
-                "comment":f"Project Planning Group {record.short_name}"
+                "comment":f"Project QA Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
             })
             
             record.qa_group_id = qa_group_id.id
@@ -832,16 +863,17 @@ class Project(models.Model):
             #risk_issue group
             risk_issue_group_id = self.env["res.groups"].sudo().create({
                 "id":f"cpm_gr.proj{record.id}",
-                "name":f"Project Planning Group {record.id}",
+                "name":f"Project Risk Issue Group {record.id}",
                 "implied_ids":[mgmt_gr_rec.id],
-                "comment":f"Project Planning Group {record.short_name}"
+                "comment":f"Project Risk Issue Group {record.short_name}",
+                "category_id":self.env.ref("cpm_gr_cat.cpm_groups").id
             })
             
             record.risk_issue_group_id = risk_issue_group_id.id
             
             record.add_head_manager(self.env["cpm_odoo.human_res_staff"].search(["&",["user_id",'=',self.env.user.id],"|",['active','=',True],['active','=',False]]).id)
-            # for user in record.head_manager_ids:
-            #     record.add_head_manager(user.id)
+            for user in record.head_manager_ids:
+                record.add_head_manager(user.id)
         return records
     
     def write(self, vals):

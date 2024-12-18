@@ -33,7 +33,6 @@ class ProjectInvestorPage extends Component{
         )
 
         project_rec = project_rec[0]
-        console.log(project_rec)
         this.investor_list = await this.orm.call(
             "cpm_odoo.stakeholders_investor",
             "search_read",

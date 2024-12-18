@@ -25,7 +25,7 @@
                                 <div class="project_desc oe_kanban_content">
                                     <div class="description mb-2">
                                         <t t-if="record.description.value">
-                                            <t t-esc="record.description"/> 
+                                            <t t-esc="record.description.value"/> 
                                         </t>
                                         <t t-else="">
                                             No Description

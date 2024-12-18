@@ -40,7 +40,6 @@
         <!-- Header -->
         <div class="row h-100">
             <div class="container mt-5">
-                <t t-esc="console.log(this.page_data.item_list)"/>
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="fs-5 fw-bold">
                         <t t-esc="this.page_title"/>
@@ -81,7 +80,6 @@
                     </div>
                     
                     <div class="row g-3">
-                        <t t-esc="console.log(this.page_data.item_list)"/>
                         <t t-if="page_data.page_arr.length > 0">
                             <t t-foreach="this.page_data.item_list" t-as="item" t-key="item.id">
                                 <div class="col-md-4">

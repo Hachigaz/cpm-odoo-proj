@@ -86,6 +86,19 @@ class FinanceManagerPage extends ItemList{
     }
 
     async act_add_manager(){
+        let head_manager_list = await this.orm.call(
+            "cpm_odoo.root_project",
+            "search_read",
+            [
+                [
+                    ["id",'=',this.props.context_data.project_id]
+                ],
+                ["head_manager_ids"],
+                0,1,""
+            ]
+        )
+        head_manager_list=head_manager_list[0].head_manager_ids
+
         let view_id = await this.orm.call(
             "cpm_odoo.root_project",
             "get_model_view_id",
@@ -94,13 +107,14 @@ class FinanceManagerPage extends ItemList{
             ]
         )
 
+
         await this.action.doAction({
             type: 'ir.actions.act_window',
             name: 'Add Manager',
             res_model: 'cpm_odoo.human_res_staff',
             view_mode: 'tree',
             views: [[view_id, 'tree']],
-            domain:[['id','not in',this.manager_id_list]],
+            domain:[['id','not in',this.manager_id_list],['id','not in',head_manager_list?head_manager_list:[]]],
             flags: {'selectable': false},
             target: 'new',
             context:{

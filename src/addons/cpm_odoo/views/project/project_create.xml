@@ -15,7 +15,7 @@
                             <field name="exp_end" widget='date' string="Expected End Date"></field>
                         </group>
                         <group string="Members">
-                            <field name="head_manager_ids" string="Project Head Managers" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
+                            <field name="head_manager_ids" string="Project Head Managers" domain="[['user_id','!=',uid]]" options="{'no_create':True, 'no_quick_create':True, 'no_open':True,'no_create_edit':True}"></field>
                         </group>
                         <group string="Stakeholders">
                             <field name="investor_ids" string="Investors"></field>
