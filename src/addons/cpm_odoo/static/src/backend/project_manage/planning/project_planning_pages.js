@@ -671,8 +671,8 @@ class PlanningContractorList extends ItemList{
     async act_view_contract(contract_id){
         await this.action.doAction({
             type: 'ir.actions.client',
-            tag: 'cpm_odoo.document_set_detail',
-            context: {document_set_id:contract_id}
+            tag: 'cpm_odoo.contract_set_detail',
+            context: {contract_set_id:contract_id}
         });
     }
 

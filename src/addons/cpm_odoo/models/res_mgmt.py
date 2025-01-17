@@ -183,6 +183,16 @@ class WarehouseInfo(models.Model):
                 'avail_eqps':[(4,rec.equipment_id.id,0) for rec in w_rec.eqp_storage_rec_ids if rec.amount > 0]
             })
             
+        # for w_rec in self:
+        #     add_rec = []
+        #     for rec in w_rec.eqp_storage_rec_ids:
+        #         if not any(eqp.id == rec.equipment_id.id for eqp in w_rec.avail_eqps):
+        #             add_rec.append()
+        #     w_rec.write({
+        #         'avail_eqps':[(4,rec.equipment_id.id,0) for rec in w_rec.eqp_storage_rec_ids if rec.amount > 0]
+        #     })
+                    
+        #     w_rec.avail_eqps.unlink()
         pass
     
     avail_mats = fields.Many2many(

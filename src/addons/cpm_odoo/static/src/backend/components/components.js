@@ -300,6 +300,8 @@ export class ItemList extends Component{
                 await this.append_to_list(item_list)
                 this.page_data.item_list = item_list
             }
+
+            console.log(domain,item_list,this.page_data.model_name)
         }
     }
 

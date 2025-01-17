@@ -40,8 +40,6 @@
 
         <menuitem id="cpm_odoo.menu_investor_root" name="Investors" parent="cpm_odoo.stakeholders_root" action="cpm_odoo.action_investor" sequence="10"/>
         <menuitem id="cpm_odoo.menu_contractor_root" name="Contractors" parent="cpm_odoo.stakeholders_root" action="cpm_odoo.action_contractor" sequence="20"/>
-        <menuitem id="cpm_odoo.menu_contractor_contractors" name="Contractors" parent="cpm_odoo.menu_contractor_root" action="cpm_odoo.action_contractor" sequence="10"/>
-        <menuitem id="cpm_odoo.menu_contractor_category_menu_item" name="Categories" parent="cpm_odoo.menu_contractor_root" action="cpm_odoo.action_contractor_categories" sequence="20"/>
         <menuitem id="cpm_odoo.menu_supplier_root" name="Suppliers" parent="cpm_odoo.stakeholders_root" action="cpm_odoo.action_supplier" sequence="30"/>
         <menuitem id="cpm_odoo.menu_other_contact_root" name="Other Contacts" parent="cpm_odoo.stakeholders_root" action="cpm_odoo.action_other_contact" sequence="40"/>
     </data>

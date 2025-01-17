@@ -60,12 +60,14 @@ cpm_ma.view_contract_sets,cpm_ma.view_contract_sets,cpm_odoo.contracts_contract_
 cpm_ma.view_document_sets,cpm_ma.view_document_sets,cpm_odoo.documents_document_set,cpm_gr.project_mgmt_gr,1,0,0,0
 cpm_ma.view_document_categories,cpm_ma.view_document_categories,cpm_odoo.documents_document_category,cpm_gr.project_mgmt_gr,1,0,0,0
 cpm_ma.view_documents,cpm_ma.view_documents,cpm_odoo.documents_document,cpm_gr.project_mgmt_gr,1,0,0,0
+cpm_ma.view_contracts,cpm_ma.view_contracts,cpm_odoo.contracts_contract,cpm_gr.project_mgmt_gr,1,0,0,0
 
 cpm_ma.manage_proj_documents,cpm_ma.manage_proj_documents,cpm_odoo.root_project_doc_mgmt,cpm_gr.manage_project_documents,1,1,0,0
 cpm_ma.manage_contract_sets,cpm_ma.manage_contract_sets,cpm_odoo.contracts_contract_set,cpm_gr.manage_project_documents,1,1,1,1
 cpm_ma.manage_document_sets,cpm_ma.manage_document_sets,cpm_odoo.documents_document_set,cpm_gr.manage_project_documents,1,1,1,1
 cpm_ma.manage_document_categories,cpm_ma.manage_document_categories,cpm_odoo.documents_document_category,cpm_gr.manage_project_documents,1,1,1,1
 cpm_ma.manage_documents,cpm_ma.manage_documents,cpm_odoo.documents_document,cpm_gr.manage_project_documents,1,1,1,1
+cpm_ma.manage_contracts,cpm_ma.manage_contracts,cpm_odoo.contracts_contract,cpm_gr.project_mgmt_gr,1,1,1,1
 
 cpm_ma.manage_issue,cpm_ma.manage_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.manage_issues,1,1,0,0
 cpm_ma.user_issue,cpm_ma.user_issue,cpm_odoo.risk_mgmt_issue,cpm_gr.user_issues,1,1,1,1

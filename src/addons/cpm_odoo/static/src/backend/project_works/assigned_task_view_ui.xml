@@ -183,10 +183,10 @@
                                         </div>
                                         <div class="col-2">
                                             <t t-if="item.is_completed">
-                                                <span class="bg-success bg-gradient text-white">Completed</span>
+                                                <span class="bg-success badge bg-gradient text-white">Completed</span>
                                             </t>
                                             <t t-else="">
-                                                <span class="bg-warning bg-gradient">In Progress</span>
+                                                <span class="bg-warning badge bg-gradient">In Progress</span>
                                             </t>
                                         </div>
                                         <div class="col-2 d-flex justify-content-end">

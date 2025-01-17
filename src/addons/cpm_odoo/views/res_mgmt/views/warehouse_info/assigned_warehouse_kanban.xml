@@ -28,6 +28,7 @@
                                         </t>
                                     </div>
                                 </div>
+                                <br></br>
                                 <div class="option">
                                     <button name='cpm_odoo.res_mgmt_manage_warehouse_act' type="action" class="btn btn-primary me-2" context="{'warehouse_id':id}">
                                         Manage
